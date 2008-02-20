@@ -11,7 +11,12 @@ pre.block {
   background-color: LightGoldenRodYellow;
   white-space: pre;
   font-family: courier;
-  font-size: 80%;
+  font-size: 90%;
+}
+code {
+  white-space: pre;
+  font-family: courier;
+  font-size: 90%;
 }
 </style>
 </head>
@@ -57,8 +62,8 @@ represents an instance of NSMutableArray, so we may as well say so.</p>
 
 <p>Now we need an instance of this inner class to call our method. Rococoa will
 create this for us, if we tell it the name of the Objective-C class that we are
-wrapping, and the type of the wrapper. I call these statics.
-<code>CLASS</code></p>
+wrapping, and the type of the wrapper. I call these statics
+<code>CLASS</code>.</p>
  
 <pre class="block">
 public interface NSMutableArray extends NSObject {
