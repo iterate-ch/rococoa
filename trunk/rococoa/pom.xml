@@ -4,7 +4,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa</artifactId>
   <packaging>jar</packaging>
-  <version>0.1</version>
+  <version>0.1.1</version>
   <name>Rococoa</name>
   <url>http://maven.apache.org</url>
   
@@ -104,17 +104,7 @@
         </configuration>
       </plugin>
     </plugins>
-    
-  
-  	<testResources>
-  		<testResource>
-  			<directory>res/test</directory>
-  		</testResource>
-  		<testResource>
-  			<directory>testdata</directory>
-  		</testResource>
-  	</testResources>
-  
+      
   </build>
   
   

@@ -1,8 +1,7 @@
 <assembly>
-  <id>bin</id>
+  <id>src</id>
   <formats>
     <format>tar.gz</format>
-    <format>tar.bz2</format>
     <format>zip</format>
   </formats>
   <fileSets>
