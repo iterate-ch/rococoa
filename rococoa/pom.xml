@@ -102,6 +102,14 @@
         <configuration>
           <descriptor>src/main/assembly/dist.xml</descriptor>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
       
