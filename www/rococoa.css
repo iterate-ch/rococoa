@@ -12,3 +12,6 @@ code {
   font-family: courier;
   font-size: 90%;
 }
+q {
+  font-style: italic;
+}
