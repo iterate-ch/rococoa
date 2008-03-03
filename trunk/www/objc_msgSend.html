@@ -112,7 +112,7 @@ structs in memory, so objc_msgSend_stret() is the correct call there.</q>
 
 <p>Ooh, another special case, not even hinted at in the docs seen so far. 
 The post includes a link to the 
-<a href="http://developer.apple.com/documentation/developertools/Conceptual/LowLevelABI/LowLevelABI.pdf">
+<a href="http://developer.apple.com/documentation/DeveloperTools/Conceptual/LowLevelABI/Introduction.html">
 Mac OS X ABI Function Call Guide</a> which is dense, and doesn't describe when
 to use objc_msgSend or objc_msgSend_stret. It does say that 8 byte structs are
 returned in registers in IA-32 and memory for PPC-32, which I guess hints at the
@@ -148,5 +148,11 @@ return values, why are there 2 functions?</li>
 
 <li>Is there a comprehensive reference to this subject that I'm missing?</li>
 </ul>
+
+<h2>And Some Answers</h2>
+
+<p>Pending a re-write of this page, some very helpful answers can be found on the 
+<a href="http://lists.apple.com/archives/cocoa-dev/2008/Feb/msg02335.html">
+Cocoa-dev Mailing List</a>.</p>
 
 </body>
