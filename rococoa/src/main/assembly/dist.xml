@@ -28,6 +28,13 @@
   	<fileSet>
   		<directory>src</directory>
   	</fileSet>
+    <fileSet>
+      <directory>src/main/doc</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
   </fileSets>
   <dependencySets>
     <dependencySet>
