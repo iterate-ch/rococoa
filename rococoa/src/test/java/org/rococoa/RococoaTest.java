@@ -141,8 +141,8 @@ public class RococoaTest extends NSTestCase {
     }
     
     public void testToString() {
-        NSDate epoc = NSDate.CLASS.dateWithTimeIntervalSince1970(0);
-        assertEquals("1970-01-01 01:00:00 +0100", epoc.toString());        
+        NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
+        assertEquals("42", fortyTwo.toString());        
     }
 
 }
