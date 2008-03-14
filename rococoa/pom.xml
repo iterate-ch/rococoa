@@ -4,7 +4,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.2</version>
+  <version>0.1.3</version>
   <name>Rococoa</name>
   <url>http://maven.apache.org</url>
   
