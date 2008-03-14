@@ -1,0 +1,11 @@
+Rococoa Release Notes
+
+0.1.2
+    Added LGPL licence files and these release notes.
+
+0.1.1
+    Changes to allow the checked-out code to build.
+
+0.1.0
+    First published to dev.java.net.
+
