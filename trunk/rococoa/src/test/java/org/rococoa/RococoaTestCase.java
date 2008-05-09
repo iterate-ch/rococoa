@@ -34,7 +34,7 @@ public abstract class RococoaTestCase extends TestCase {
     
     static {initializeLogging();};
 
-    protected static Logger logging = LoggerFactory.getLogger("Rococoa");
+    protected static Logger logging = LoggerFactory.getLogger("org.rococoa.RococoaTestCase");
 
     public static void initializeLogging() {
         try {
