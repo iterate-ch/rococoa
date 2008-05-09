@@ -21,6 +21,8 @@ package org.rococoa;
 
 import java.lang.reflect.Proxy;
 
+import net.sf.cglib.core.DefaultNamingPolicy;
+import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
 
 public abstract class Rococoa  {
@@ -31,7 +33,7 @@ public abstract class Rococoa  {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T createProxy(Class<T> type, ProxyForOC invocationHandler) {
+    private static <T> T createProxy(final Class<T> type, ProxyForOC invocationHandler) {
         if (type.isInterface()) {
             return (T) Proxy.newProxyInstance(
                 invocationHandler.getClass().getClassLoader(), 
@@ -39,6 +41,13 @@ public abstract class Rococoa  {
         } else {
             Enhancer e = new Enhancer();
             e.setUseCache(true); // make sure that we reuse if we've already defined
+            e.setNamingPolicy(new DefaultNamingPolicy() {
+                public String getClassName(String prefix, String source, Object key, Predicate names) {
+                    if (source.equals(net.sf.cglib.proxy.Enhancer.class.getName()))
+                        return type.getName() + "$$ByRococoa";
+                    else 
+                        return super.getClassName(prefix, source, key, names);
+                }});
             e.setSuperclass(type);
             e.setCallback(invocationHandler);
             return (T) e.create();            
