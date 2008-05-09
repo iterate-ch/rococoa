@@ -27,6 +27,9 @@ public interface NSArray extends NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSArray", _Class.class);  //$NON-NLS-1$
     public interface _Class extends NSClass {
+        /**
+         * @param objects Contents and then a trailing null
+         */
         NSArray arrayWithObjects(NSObject...objects);
     }
     
