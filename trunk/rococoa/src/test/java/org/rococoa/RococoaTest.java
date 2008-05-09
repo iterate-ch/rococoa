@@ -144,5 +144,12 @@ public class RococoaTest extends NSTestCase {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         assertEquals("42", fortyTwo.toString());        
     }
+    
+    public void testGeneratedClassName() {
+        NSString string = NSString.stringWithString("Hello World");
+        Class<? extends NSString> stringClass = string.getClass();
+        assertEquals(NSString.class.getPackage(), stringClass.getPackage());
+        assertEquals("NSString$$ByRococoa", stringClass.getSimpleName());
+    }
 
 }
