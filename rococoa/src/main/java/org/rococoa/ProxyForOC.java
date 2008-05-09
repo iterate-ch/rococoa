@@ -38,7 +38,7 @@ import com.sun.jna.Pointer;
 @SuppressWarnings("nls")
 public class ProxyForOC implements InvocationHandler, MethodInterceptor {
     
-    private static Logger logging = LoggerFactory.getLogger("Rococoa");
+    private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
     
     static final Method OBJECT_TOSTRING;
     static final Method OBJECT_HASHCODE;

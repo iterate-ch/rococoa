@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CFString extends ID {
 
-    private static Logger logging = LoggerFactory.getLogger("Rococoa");
+    private static Logger logging = LoggerFactory.getLogger("org.rococoa.CFString");
 
     private String valueForDebug;
     private final boolean createdWithDefaultCtor;

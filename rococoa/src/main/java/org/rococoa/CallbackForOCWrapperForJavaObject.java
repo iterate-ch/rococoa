@@ -37,7 +37,7 @@ import com.sun.jna.Memory;
 @SuppressWarnings("nls")
 public class CallbackForOCWrapperForJavaObject {
 
-    private static Logger logging = LoggerFactory.getLogger("Rococoa");
+    private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
 
     private final Object javaObject;
     
