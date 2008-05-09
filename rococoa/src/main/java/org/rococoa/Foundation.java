@@ -38,7 +38,8 @@ import com.sun.jna.Structure;
 @SuppressWarnings("nls")
 public abstract class Foundation {
     
-    private static Logger logging = LoggerFactory.getLogger("Rococoa");
+    private static Logger logging = LoggerFactory.getLogger("org.rococoa.foundation");
+    
     
     private static final Method SEND_MSG;
    
@@ -51,6 +52,8 @@ public abstract class Foundation {
         
         ID CFStringCreateWithCString(ID allocator, String string, int encoding);        
         String CFStringGetCStringPtr(ID string, int encoding);
+        byte CFStringGetCString(ID theString, byte[] buffer, int bufferSize, int encoding);
+        int CFStringGetLength(ID theString);
         
         void CFRetain(ID cfTypeRef);
         void CFRelease(ID cfTypeRef);
@@ -143,8 +146,11 @@ public abstract class Foundation {
      * Note that the returned string must be freed with {@link #cfRelease(ID)}.
      */
     public static ID cfString(String s) {
-        // TODO - Unicode
-        return foundationLibrary.CFStringCreateWithCString(null, s, 0);
+        return cfString(s, StringEncoding.kCFStringEncodingMacRoman);
+    }
+    
+    public static ID cfString(String s, StringEncoding encoding) {
+        return foundationLibrary.CFStringCreateWithCString(null, s, encoding.value);
     }
     
     public static void cfRetain(ID cfTypeRef) {
@@ -162,7 +168,29 @@ public abstract class Foundation {
     }
     
     public static String toString(ID cfString) {
-        return foundationLibrary.CFStringGetCStringPtr(cfString, 0);
+        return toString(cfString, StringEncoding.kCFStringEncodingMacRoman);
+    }
+
+    public static String toString(ID cfString, StringEncoding encoding) {
+        // We try to just copy the chars out of the CFString, and if that fails, 
+        // ask for the chars to be copied in the specified encoding
+        String result = foundationLibrary.CFStringGetCStringPtr(cfString, encoding.value);
+        if (result != null)
+            return result;
+        else 
+            return toStringWithBuffer(cfString, encoding);
+    }
+    
+    private static String toStringWithBuffer(ID cfString, StringEncoding encoding) {
+        // TODO DMCG 2008/04/24 - I'm not very sure about this, as the length is in chars,
+        // but they might require more than one byte each depending on the encoding?
+        // But I can't see a UTF-16 encoding to try it on.
+        int length = foundationLibrary.CFStringGetLength(cfString);
+        byte[] buffer = new byte[length + 1];
+        byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, encoding.value);
+        if (ok == 0)
+            throw new RuntimeException("Could not convert string");
+        return Native.toString(buffer);
     }
     
     public static ID nsClass(String className) {

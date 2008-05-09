@@ -35,6 +35,18 @@ public class FoundationTest extends NSTestCase {
         assertEquals("Hello World", Foundation.toString(string));
     }
     
+    public void testStringWithDifferentEncoding() {
+        // I think that this means, interpret the bytes in this char* as ASCII and build a CFString
+    	ID string = Foundation.cfString("Hello World", StringEncoding.kCFStringEncodingASCII);
+
+    	// Now this just works, suggesting that the returned CFString has MacRoman encoding 
+    	assertEquals("Hello World", Foundation.toString(string));
+
+    	// because this fails the call to CFStringGetCStringPtr, and we have to fall back
+    	// on CFStringGetCString, suggesting that it is translating from MacRoman to ASCII
+    	assertEquals("Hello World", Foundation.toString(string, StringEncoding.kCFStringEncodingASCII));
+    }
+    
     public void testInt() {
         ID clas = Foundation.nsClass("NSNumber");
         ID anInt = Foundation.sendReturnsID(clas, "numberWithInt:", 42);
@@ -60,8 +72,8 @@ public class FoundationTest extends NSTestCase {
 
     public void testSendNoArgs() {
         ID clas = Foundation.nsClass("NSDate");
-        ID instance = (ID) Foundation.sendReturnsID(clas, "date");
-        ID result = (ID) Foundation.sendReturnsID(instance, "description");
+        ID instance = Foundation.sendReturnsID(clas, "date");
+        ID result = Foundation.sendReturnsID(instance, "description");
         assertTrue(Foundation.toString(result).startsWith("20")); // 2007-11-15 16:01:50 +0000
     }
     
