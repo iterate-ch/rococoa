@@ -54,21 +54,21 @@ public class MovieComponentTest extends RococoaTestCase {
         showAndWaitUntilClosed(frame);
     }
 
-    private void showAndWaitUntilClosed(JFrame frame)
-            throws Exception {
+    private void showAndWaitUntilClosed(JFrame frame) throws Exception {
         frame.pack();
         frame.setVisible(true);
-        
-        final CyclicBarrier done = new CyclicBarrier(2); 
+
+        final CyclicBarrier done = new CyclicBarrier(2);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-            	try {
-					done.await();
-				} catch (Exception x) {
-					throw new RuntimeException(x);
-				}
-            }});
-        
+                try {
+                    done.await();
+                } catch (Exception x) {
+                    throw new RuntimeException(x);
+                }
+            }
+        });
+
         done.await();
     }
 
