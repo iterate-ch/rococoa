@@ -2,7 +2,23 @@ package org.rococoa;
 
 public enum StringEncoding {
     
+    // This set is CFStringBuiltInEncodings 
     kCFStringEncodingMacRoman(0),
+    kCFStringEncodingWindowsLatin1(0x0500), /* ANSI codepage 1252 */
+    kCFStringEncodingISOLatin1(0x0201), /* ISO 8859-1 */
+    kCFStringEncodingNextStepLatin(0x0B01), /* NextStep encoding*/
+    kCFStringEncodingASCII(0x0600), /* 0..127 (in creating CFString, values greater than 0x7F are treated as corresponding Unicode value) */
+    kCFStringEncodingUnicode(0x0100), /* kTextEncodingUnicodeDefault  + kTextEncodingDefaultFormat (aka kUnicode16BitFormat) */
+    kCFStringEncodingUTF8(0x08000100), /* kTextEncodingUnicodeDefault + kUnicodeUTF8Format */
+    kCFStringEncodingNonLossyASCII(0x0BFF), /* 7bit Unicode variants used by Cocoa & Java */
+    kCFStringEncodingUTF16(0x0100), /* kTextEncodingUnicodeDefault + kUnicodeUTF16Format (alias of kCFStringEncodingUnicode) */
+    kCFStringEncodingUTF16BE(0x10000100), /* kTextEncodingUnicodeDefault + kUnicodeUTF16BEFormat */
+    kCFStringEncodingUTF16LE(0x14000100), /* kTextEncodingUnicodeDefault + kUnicodeUTF16LEFormat */
+    kCFStringEncodingUTF32(0x0c000100), /* kTextEncodingUnicodeDefault + kUnicodeUTF32Format */
+    kCFStringEncodingUTF32BE(0x18000100), /* kTextEncodingUnicodeDefault + kUnicodeUTF32BEFormat */
+    kCFStringEncodingUTF32LE(0x1c000100), /* kTextEncodingUnicodeDefault + kUnicodeUTF32LEFormat */
+
+    // Others are from CFStringEncodingExt.h
     kCFStringEncodingMacJapanese(1),
     kCFStringEncodingMacChineseTrad(2),
     kCFStringEncodingMacKorean(3),
@@ -46,7 +62,6 @@ public enum StringEncoding {
     kCFStringEncodingMacInuit(0xEC),
     kCFStringEncodingMacVT100(0xFC),
     kCFStringEncodingMacHFS(0xFF),
-    kCFStringEncodingISOLatin1(0x0201),
     kCFStringEncodingISOLatin2(0x0202),
     kCFStringEncodingISOLatin3(0x0203),
     kCFStringEncodingISOLatin4(0x0204),
@@ -82,7 +97,6 @@ public enum StringEncoding {
     kCFStringEncodingDOSChineseSimplif(0x0421),
     kCFStringEncodingDOSKorean(0x0422),
     kCFStringEncodingDOSChineseTrad(0x0423),
-    kCFStringEncodingWindowsLatin1(0x0500),
     kCFStringEncodingWindowsLatin2(0x0501),
     kCFStringEncodingWindowsCyrillic(0x0502),
     kCFStringEncodingWindowsGreek(0x0503),
@@ -92,7 +106,6 @@ public enum StringEncoding {
     kCFStringEncodingWindowsBalticRim(0x0507),
     kCFStringEncodingWindowsVietnamese(0x0508),
     kCFStringEncodingWindowsKoreanJohab(0x0510),
-    kCFStringEncodingASCII(0x0600),
     kCFStringEncodingANSEL(0x0601),
     kCFStringEncodingJIS_X0201_76(0x0620),
     kCFStringEncodingJIS_X0208_83(0x0621),
@@ -129,7 +142,6 @@ public enum StringEncoding {
     kCFStringEncodingVISCII(0x0A07),
     kCFStringEncodingKOI8_U(0x0A08),
     kCFStringEncodingBig5_E(0x0A09),
-    kCFStringEncodingNextStepLatin(0x0B01),
     kCFStringEncodingNextStepJapanese(0x0B02),
     kCFStringEncodingEBCDIC_US(0x0C01),
     kCFStringEncodingEBCDIC_CP037(0x0C0);

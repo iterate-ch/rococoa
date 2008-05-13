@@ -35,7 +35,7 @@ import com.sun.jna.Memory;
  *
  */
 @SuppressWarnings("nls")
-public class CallbackForOCWrapperForJavaObject {
+class CallbackForOCWrapperForJavaObject {
 
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
 
@@ -100,6 +100,7 @@ public class CallbackForOCWrapperForJavaObject {
                         method.getName(), selectorName, typeToReturnToObjC));
                 
             Object[] marshalledArgs = argsForFrom(method, invocation, nsMethodSignature);
+            method.setAccessible(true); // needed if implementation is an anonymous subclass of Object
             Object result  = method.invoke(o, marshalledArgs);
             putResultIntoInvocation(invocation, typeToReturnToObjC, result);
         } catch (Exception e) {
@@ -112,19 +113,38 @@ public class CallbackForOCWrapperForJavaObject {
         if (typeToReturnToObjC.equals("v")) // void
             return;
         
-        Memory buffer;
-    
-        // TODO - just this one conversion for now
-        if (result instanceof ID && typeToReturnToObjC.equals("@")) {
-            buffer = new Memory(4);
-            buffer.setInt(0, ((ID) result).intValue());
-        } else {
+        Memory buffer = bufferForReturn(typeToReturnToObjC, result);
+        if (buffer == null)
             throw new IllegalStateException(
-                    String.format("Don't (yet) know how to marshall %s as Objective-C type %s", result, typeToReturnToObjC));
-        }
+                    String.format("Don't (yet) know how to marshall result %s as Objective-C type %s", result, typeToReturnToObjC));
             
         invocation.setReturnValue(buffer);
     }
+
+    private Memory bufferForReturn(String typeToReturnToObjC, Object result) {
+    
+        // TODO - more conversions
+        if (typeToReturnToObjC.equals("@")) {
+            Memory buffer = new Memory(4);
+            if (result instanceof ID)
+                buffer.setInt(0, ((ID) result).intValue());
+            else if (result instanceof String)
+                buffer.setInt(0, Foundation.cfString((String) result).intValue());
+            return buffer;
+        }
+        if (typeToReturnToObjC.equals("c")) {
+            Memory buffer = new Memory(1);
+            if (result instanceof Boolean)
+                buffer.setByte(0, ((Boolean) result) ? (byte) 1 : (byte) 0);
+            else if (result instanceof Byte)
+                buffer.setByte(0, ((Byte) result).byteValue());
+            else 
+                return null;
+            return buffer;
+        }
+        return null;
+    }
+    
 
     private Object[] argsForFrom(Method method, NSInvocation invocation, NSMethodSignature nsMethodSignature) {
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -144,7 +164,8 @@ public class CallbackForOCWrapperForJavaObject {
         String objCTypeString = nsMethodSignature.getArgumentTypeAtIndex(indexAccountingForSelfAndCmd); // self and _cmd
         Class<?> parameterType = parameterTypes[index];
         
-        if (objCTypeString.equals("@")) {
+       // TODO - more conversions
+       if (objCTypeString.equals("@")) {
             Memory buffer = new Memory(4);
             invocation.getArgument_atIndex(buffer, indexAccountingForSelfAndCmd);
             ID id = new ID(buffer.getInt(0));
@@ -152,14 +173,26 @@ public class CallbackForOCWrapperForJavaObject {
                 return id;
             if (NSObject.class.isAssignableFrom(parameterType))
                 return Rococoa.wrap(id, (Class<? extends NSObject>)parameterType);
+            if (parameterType == String.class) {
+                return Foundation.toString(id);
+            }
         }
         if (objCTypeString.equals("i")) {
             Memory buffer = new Memory(4);
             invocation.getArgument_atIndex(buffer, indexAccountingForSelfAndCmd);
             return buffer.getInt(0);
         }
+        if (objCTypeString.equals("c")) {
+            Memory buffer = new Memory(1);
+            invocation.getArgument_atIndex(buffer, indexAccountingForSelfAndCmd);
+            byte character = buffer.getByte(0);
+            if (parameterType == boolean.class)
+                return character == 0 ? Boolean.FALSE : Boolean.TRUE;
+            else
+                return character;            
+        }
         throw new IllegalStateException(
-                String.format("Don't (yet) know how to marshall Objective-C type %s as %s", objCTypeString, parameterType));
+                String.format("Don't (yet) know how to marshall parameter Objective-C type %s as %s", objCTypeString, parameterType));
     }
 
     protected Method methodForSelector(String selectorName) {
@@ -211,7 +244,13 @@ public class CallbackForOCWrapperForJavaObject {
             return "i";
         if (clas == ID.class)
             return "@";
+        if (clas == byte.class)
+            return "c";
         if (NSObject.class.isAssignableFrom(clas))
+            return "@";
+        if (clas == boolean.class)
+            return "c"; // Cocoa BOOL is defined as signed char
+        if (clas == String.class)
             return "@";
         logging.error("Unable to give Objective-C type string for {}", clas);
         return null;

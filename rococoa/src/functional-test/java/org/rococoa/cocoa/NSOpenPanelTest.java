@@ -1,8 +1,12 @@
 package org.rococoa.cocoa;
 
+import java.io.File;
+
 import javax.swing.JFrame;
 
-import org.rococoa.*;
+import org.rococoa.ID;
+import org.rococoa.Rococoa;
+import org.rococoa.RococoaTestCase;
 
 public class NSOpenPanelTest extends RococoaTestCase {
 
@@ -10,8 +14,21 @@ public class NSOpenPanelTest extends RococoaTestCase {
     public void testShow() {
         new JFrame().setVisible(true); // otherwise no panel
         NSOpenPanel panel = NSOpenPanel.CLASS.openPanel();
-        int button = panel.runModalForTypes(NSArray.CLASS.arrayWithObjects(
-                NSString.stringWithString("txt"), null));
+        
+        // Keep this reference!
+        ID ocProxy = Rococoa.wrap(new Object() {
+            @SuppressWarnings("unused")
+            public boolean panel_shouldShowFilename(ID panel, String filename) {
+                char initialChar = new File(filename).getName().toLowerCase().charAt(0);
+                return initialChar % 2 == 0;
+            }
+        });
+        
+        panel.setDelegate(ocProxy);
+        int button = panel.runModalForTypes(null);
+//              or, eg        
+//                NSArray.CLASS.arrayWithObjects(
+//                    NSString.stringWithString("txt"), null));
         NSString filenameAsNSString = panel.filename();
         if (button == NSOpenPanel.NSOKButton) {
             assertTrue(filenameAsNSString.toString().startsWith("/Users"));

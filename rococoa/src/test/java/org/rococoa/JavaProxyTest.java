@@ -19,14 +19,9 @@
  
 package org.rococoa;
 
-import org.rococoa.CallbackForOCWrapperForJavaObject;
-import org.rococoa.Foundation;
-import org.rococoa.ID;
 import org.rococoa.cocoa.NSNotification;
 import org.rococoa.cocoa.NSNotificationCenter;
 import org.rococoa.cocoa.NSString;
-
-
 
 @SuppressWarnings("nls")
 public class JavaProxyTest extends NSTestCase {
@@ -55,21 +50,38 @@ public class JavaProxyTest extends NSTestCase {
             arg = new Object[] {a, b};
         }
         
+        public byte takesStringReturnsByte(NSString s) {
+            arg = s;
+            return 42;
+        }
+        
+        public boolean takesBooleanReturnsBoolean(boolean b) {
+            arg = b;
+            return !b;
+        }
+        
+        public String takesJavaStringReturnsJavaString(String s) {
+            return s.toLowerCase();
+        }
+        
         public void notify(NSNotification notification) {
             this.arg = notification;
         }
      }
 
     private JavaImplementor implementor;
-    private CallbackForOCWrapperForJavaObject wrapper;
     private ID ocProxy;
     
     @Override
     protected void setUp() throws Exception {
         implementor = new JavaImplementor();
-        wrapper = new CallbackForOCWrapperForJavaObject(implementor);
-            // TODO - if we don't hold a reference to this, OC won't!
-        ocProxy  = Foundation.createOCProxy(wrapper.selectorInvokedCallback, wrapper.methodSignatureCallback);
+        ocProxy = Rococoa.wrap(implementor); // hang onto this to prevent GC issues
+    }
+    
+    public void testRepondsToSelector() {
+        // respond to selector is required for delegates
+        assertEquals(0, (byte) Foundation.send(ocProxy, "respondsToSelector:", byte.class, Foundation.selector("Bo")));
+        assertEquals(1, (byte) Foundation.send(ocProxy, "respondsToSelector:", byte.class, Foundation.selector("sayHello")));
     }
     
     public void testNoArgsReturnsVoid() {
@@ -94,15 +106,30 @@ public class JavaProxyTest extends NSTestCase {
     public void testTakesOCObject() {
         ID result =  Foundation.sendReturnsID(ocProxy, "takesOCObject:", Foundation.cfString("hello"));
         assertTrue(result.isNull());
-        assertEquals("hello", Foundation.toString(((NSString) implementor.arg).id()));
+        assertEquals("hello", ((NSString) implementor.arg).toString());
     }
 
+    public void testTakesStringReturnsByte() {
+        byte result = Foundation.send(ocProxy, "takesStringReturnsByte:", byte.class, Foundation.cfString("hello"));
+        assertEquals(42, result);
+        assertEquals("hello", ((NSString) implementor.arg).toString());
+    }
+    
+    public void testTakesBooleanReturnsBoolean() {
+        assertTrue(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", boolean.class, false));
+        assertFalse(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", boolean.class, true));
+    }
+    
     public void testTakesIntAndInt() {
         ID result =  Foundation.sendReturnsID(ocProxy, "takesInt:AndInt:", 42, -1);
         assertTrue(result.isNull());
         Object[] arg = (Object[]) implementor.arg;
         assertEquals(42, arg[0]);
         assertEquals(-1, arg[1]);
+    }
+    
+    public void testTakesJavaStringReturnsJavaString() {
+        assertEquals("lower", Foundation.send(ocProxy, "takesJavaStringReturnsJavaString:", String.class, "LoWeR"));
     }
     
     public void testNotifications() {
