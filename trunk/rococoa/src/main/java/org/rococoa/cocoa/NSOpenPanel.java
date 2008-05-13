@@ -17,4 +17,6 @@ public @RunOnMainThread interface NSOpenPanel extends NSObject {
     NSString filename();
 
     NSArray filenames();
+    
+    void setDelegate(ID ocProxy);
 }

@@ -26,7 +26,13 @@ id createProxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCa
 	SEL selector = [anInvocation selector];
 	NSString* selectorName = NSStringFromSelector(selector);
 	// NSLog(@"forwardInvocation for %@", selectorName);
-	methodInvokedCallback(CFStringGetCStringPtr(selectorName, 0), anInvocation);
+	methodInvokedCallback(CFStringGetCStringPtr((CFStringRef) selectorName, 0), anInvocation);
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+	// NSLog(@"respondsToSelector called");
+	NSMethodSignature* signature = [self methodSignatureForSelector:aSelector];
+	return signature != nil;
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
@@ -35,9 +41,8 @@ id createProxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCa
 	if (aSelector == @selector(hash) || aSelector == @selector(isEqual:))
 		return [super methodSignatureForSelector: aSelector];
 	
-	char* methodSignature = methodSignatureCallback(CFStringGetCStringPtr(selectorName, 0));
+	char* methodSignature = methodSignatureCallback(CFStringGetCStringPtr((CFStringRef) selectorName, 0));
 	if (methodSignature == 0) { 
-		NSLog(@"No method signature for selector %@", selectorName);
 		return nil;
 	}
 	NSMethodSignature* result = [NSMethodSignature signatureWithObjCTypes: methodSignature];

@@ -18,13 +18,10 @@
  */
  
 package org.rococoa;
-import java.util.concurrent.Callable;
-
-import org.rococoa.Foundation;
-import org.rococoa.ID;
-import org.rococoa.Selector;
-
-import com.sun.jna.Native;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 
 @SuppressWarnings({"nls", "unused"})
 public class FoundationTest extends NSTestCase {
@@ -35,16 +32,10 @@ public class FoundationTest extends NSTestCase {
         assertEquals("Hello World", Foundation.toString(string));
     }
     
-    public void testStringWithDifferentEncoding() {
-        // I think that this means, interpret the bytes in this char* as ASCII and build a CFString
-    	ID string = Foundation.cfString("Hello World", StringEncoding.kCFStringEncodingASCII);
-
-    	// Now this just works, suggesting that the returned CFString has MacRoman encoding 
-    	assertEquals("Hello World", Foundation.toString(string));
-
-    	// because this fails the call to CFStringGetCStringPtr, and we have to fall back
-    	// on CFStringGetCString, suggesting that it is translating from MacRoman to ASCII
-    	assertEquals("Hello World", Foundation.toString(string, StringEncoding.kCFStringEncodingASCII));
+    public void testStringWithDifferentEncoding() throws Exception {
+        String stringWithOddChar = "Hello \u2648"; // Aries
+    	ID string = Foundation.cfString(stringWithOddChar); 
+    	assertEquals(stringWithOddChar, Foundation.toString(string));
     }
     
     public void testInt() {

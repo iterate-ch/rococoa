@@ -72,5 +72,35 @@ public abstract class Rococoa  {
         return wrap(Foundation.nsClass(ocClassName), type);
     }
 
+    /**
+     * Create an Objective-C object which will forward invocations to javaObject 
+     * and return its ID.
+     * 
+     * Keep hold of the ID all the time that methods may be invoked on the Obj-C
+     * object, otherwise the callbacks may be GC'd, with amusing consequences.
+     */
+    public static ID wrap(Object javaObject) {
+        // TODO - could we set up some interesting weak-reference to javaObject, allowing the
+        // callbacks to be GC'd once it has been let go?
+        CallbackForOCWrapperForJavaObject callbacks = new CallbackForOCWrapperForJavaObject(javaObject);
+        ID idOfOCProxy = Foundation.createOCProxy(callbacks.selectorInvokedCallback, callbacks.methodSignatureCallback);
+        return new WrapperID(idOfOCProxy, callbacks);
+    }
+    
+    // Public only because JNA doesn't call setAccessible to access ctor.
+    public static class WrapperID extends ID {
+        // used to prevent callbacks being GC'd as long as we hang onto this ID
+        @SuppressWarnings("unused")
+        private CallbackForOCWrapperForJavaObject callbacks;
+        
+        public WrapperID() {
+            // required by jna
+        }
+        
+        public WrapperID(ID anotherID, CallbackForOCWrapperForJavaObject callbacks) {
+            super(anotherID.intValue());
+            this.callbacks = callbacks;
+        }
+    }
 
 }

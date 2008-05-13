@@ -37,6 +37,9 @@ public class CallbackForOCWrapperForJavaObjectTest extends TestCase {
         }
         public void returnsVoidTakesInt_andInt(int arg1, int arg2) {}
         public void returnsVoidTakesOCObject(NSObject o) {}
+        public byte returnsByteTakesOCObject(NSObject o) {
+            return -1;
+        }
         
      }
     
@@ -72,6 +75,7 @@ public class CallbackForOCWrapperForJavaObjectTest extends TestCase {
         assertEquals("@@:", callback.methodSignatureForSelector("returnsIDTakesVoid"));
         assertEquals("v@:ii", callback.methodSignatureForSelector("returnsVoidTakesInt:andInt:"));
         assertEquals("v@:@", callback.methodSignatureForSelector("returnsVoidTakesOCObject:"));
+        assertEquals("c@:@", callback.methodSignatureForSelector("returnsByteTakesOCObject:"));
         
         assertNull(callback.methodSignatureForSelector("nosuch"));
         
