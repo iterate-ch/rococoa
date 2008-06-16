@@ -7,9 +7,24 @@
 //
 
 #import "test.h"
+#import <stdarg.h>
 
 MyStruct returnStructByValue(int a, double b) {
 	MyStruct result = {a, b};
+	return result;
+}
+
+double addFieldsOfStructByValue(MyStruct s) {
+	return s.anInt + s.aDouble;
+}
+
+// JNA got broken for this case
+double addFieldsOfStructByValueVARARGS(size_t count, ...) {
+	va_list vl;
+	va_start(vl, count);
+	MyStruct s = va_arg(vl, MyStruct);
+	double result = addFieldsOfStructByValue(s);
+	va_end(vl);
 	return result;
 }
 
@@ -23,8 +38,8 @@ int passQTTimeRangeByValue(QTTimeRange r) {
 	return returnStructByValue(a, b);
 }
 
-- (double) testPassStructByValue: (MyStruct) s {
-	return s.b;
+- (double) testAddFieldsOfStructByValue: (MyStruct) s {
+	return addFieldsOfStructByValue(s);
 }
 
 - (MyStructOfStruct) testReturnStructOfStructByValue: (int) a and: (double) b {
@@ -34,7 +49,7 @@ int passQTTimeRangeByValue(QTTimeRange r) {
 }
 
 - (double) testPassStructOfStructByValue: (MyStructOfStruct) s {
-	return s.b.b;
+	return s.aStruct.aDouble;
 }
 
 - (int) testPassQTTimeRangeByValue: (QTTimeRange) r {

@@ -10,16 +10,18 @@
 #import <QTKit/QTKit.h>
 
 typedef struct MyStruct {
-	int a;
-	double b;
+	int anInt;
+	double aDouble;
 } MyStruct;
 
 typedef struct MyStructOfStruct {
-	double a;
-	MyStruct b;
+	double aDouble;
+	MyStruct aStruct;
 } MyStructOfStruct;
 
 MyStruct returnStructByValue(int a, double b);
+
+double addFieldsOfStructByValue(MyStruct s);
 
 int passQTTimeRangeByValue(QTTimeRange r);
 
@@ -27,7 +29,7 @@ int passQTTimeRangeByValue(QTTimeRange r);
 
 - (MyStruct) testReturnStructByValue: (int) a and: (double) b;
 
-- (double) testPassStructByValue: (MyStruct) s;
+- (double) testAddFieldsOfStructByValue: (MyStruct) s;
 
 - (MyStructOfStruct) testReturnStructOfStructByValue: (int) a and: (double) b;
 
