@@ -132,6 +132,20 @@ public class JavaProxyTest extends NSTestCase {
         assertEquals("lower", Foundation.send(ocProxy, "takesJavaStringReturnsJavaString:", String.class, "LoWeR"));
     }
     
+    public void testMultipleCallbacks() {
+        // We managed to have static callback data, so that the last callback
+        // registered was always the one called!
+        // @see https://rococoa.dev.java.net/issues/show_bug.cgi?id=9
+        JavaImplementor implementor2 = new JavaImplementor();
+        ID ocProxy2 = Rococoa.wrap(implementor2); // hang onto this to prevent GC issues
+        
+        Foundation.sendReturnsID(ocProxy, "testTakesIDReturnsID:", new ID(42));
+        assertEquals(new ID(42), implementor.arg);        
+
+        Foundation.sendReturnsID(ocProxy2, "testTakesIDReturnsID:", new ID(43));
+        assertEquals(new ID(43), implementor2.arg);        
+    }    
+    
     public void testNotifications() {
         NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
         
