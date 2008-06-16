@@ -28,6 +28,8 @@ public class FoundationStructureReturnTest extends NSTestCase {
        
     private interface StructLibrary extends Library {
         MyStructByValue  returnStructByValue(int a, double b);
+        double addFieldsOfStructByValue(MyStructByValue s);
+        double addFieldsOfStructByValueVARARGS(int count, MyStructByValue ...objects);
     }
     
     private StructLibrary instance = (StructLibrary) Native.loadLibrary("rococoa", StructLibrary.class);    
@@ -63,6 +65,19 @@ public class FoundationStructureReturnTest extends NSTestCase {
         assertEquals(Math.E, result.aDouble);        
     }
     
+    public void testStaticPassStructure() {
+        MyStructByValue arg = new MyStructByValue(42, Math.PI);
+        double result = instance.addFieldsOfStructByValue(arg);
+        assertEquals(42 + Math.PI, result);
+    }
+
+    public void testStaticPassStructureVARARGS() {
+        // demonstrate JNA bug
+        MyStructByValue arg = new MyStructByValue(42, Math.PI);
+        double result = instance.addFieldsOfStructByValueVARARGS(1, arg);
+        assertEquals(42 + Math.PI, result);
+    }
+    
     public void testCallMethod() {
         ID testID = Foundation.createInstance(Foundation.nsClass("TestShunt"));
         Object[] args = { 42, Math.E };
@@ -73,14 +88,14 @@ public class FoundationStructureReturnTest extends NSTestCase {
         assertEquals(Math.E, result.aDouble);        
     }
     
-    public void testAsArgument() {
+    public void testAsPassStructAsArgument() {
         ID testID = Foundation.createInstance(Foundation.nsClass("TestShunt"));
-        MyStruct arg = new MyStructByValue(42, Math.PI);
+        MyStructByValue arg = new MyStructByValue(42, Math.PI);
         Object[] args = { arg };
         double result = Foundation.send(testID, 
-                Foundation.selector("testPassStructByValue:"), 
+                Foundation.selector("testAddFieldsOfStructByValue:"), 
                 double.class, args);
-        assertEquals(Math.PI, result);        
+        assertEquals(42 + Math.PI, result);        
     }
     
     public void testStructOfStruct() {
