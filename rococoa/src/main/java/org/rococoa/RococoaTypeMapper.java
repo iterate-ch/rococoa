@@ -102,7 +102,7 @@ public class RococoaTypeMapper extends DefaultTypeMapper {
         addToNativeConverter(NSObject.class, new NSObjectTypeConverter(NSObject.class));
         addTypeConverter(String.class, new StringTypeConverter());
         addToNativeConverter(NSObjectByReference.class, new ObjectByReferenceConverter());
-            // not actually used at present because ProxyForOC does marshalling
+            // not actually used at present because NSObjectInvocationHandler does marshalling
     }
     
     @SuppressWarnings("unchecked")
