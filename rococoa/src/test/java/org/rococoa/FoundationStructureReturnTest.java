@@ -72,7 +72,7 @@ public class FoundationStructureReturnTest extends NSTestCase {
     }
 
     public void testStaticPassStructureVARARGS() {
-        // demonstrate JNA bug
+        // demonstrate bug in JNA 3.0.3
         MyStructByValue arg = new MyStructByValue(42, Math.PI);
         double result = instance.addFieldsOfStructByValueVARARGS(1, arg);
         assertEquals(42 + Math.PI, result);
