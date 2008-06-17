@@ -35,6 +35,13 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Pointer;
 
+/**
+ * Listens to invocations of methods on a Java NSObject, and forwards them to
+ * its Objective-C counterpart.
+ * 
+ * @author duncan
+ *
+ */
 @SuppressWarnings("nls")
 public class ProxyForOC implements InvocationHandler, MethodInterceptor {
     
@@ -53,38 +60,21 @@ public class ProxyForOC implements InvocationHandler, MethodInterceptor {
             OCOBJECT_ID = NSObject.class.getMethod("id");
         }
         catch (Exception e) {
-            throw new Error("Error retrieving method");
+            throw new RuntimeException("Error retrieving method");
         }
     }
 
     
-    private ID ocInstance;
-    private Class<? extends NSObject> javaClass;
-    private boolean invokeOnMainThread;
+    private final ID ocInstance;
+    private final String javaClassName;
+    private final boolean invokeOnMainThread;
 
-    /**
-     * Create with alloc init
-     */
-    public ProxyForOC(String ocClassName, Class<? extends NSObject> javaClass) {
-        this(
-            Foundation.sendReturnsID(
-                    Foundation.sendReturnsID(Foundation.nsClass(ocClassName), "alloc"),
-                    "init"),
-            javaClass);
-    }
-
-    public ProxyForOC(String ocClassName, Class<? extends NSObject> javaClass, String ocFactoryName, Object... args) {
-        // TODO, marshal these args
-        this(Foundation.sendReturnsID(Foundation.nsClass(ocClassName), ocFactoryName, args),
-                javaClass);
-    }
-    
     public ProxyForOC(final ID ocInstance, Class<? extends NSObject> javaClass) {
         this.ocInstance = ocInstance;
-        this.javaClass = javaClass;
+        this.javaClassName = javaClass.getSimpleName();
+        invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
         if (ocInstance.isNull())
             return;
-        invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
         if (invokeOnMainThread) {
             Foundation.runOnMainThread(new Runnable() {
                 public void run() {
@@ -111,12 +101,11 @@ public class ProxyForOC implements InvocationHandler, MethodInterceptor {
     public Object invoke(Object proxy, final Method method, final Object[] args)  throws Throwable {
         if (logging.isTraceEnabled()) {
             logging.trace("invoking [{} {}].{}({})", 
-                    new Object[] {javaClass.getSimpleName(), ocInstance, method.getName(), new VarArgsUnpacker(args)});
+                    new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
         }
         if (isSpecialMethod(method))
             return invokeSpecialMethod(method, args);        
-        else 
-            return invokeCococaOnThisOrMainThread(method, args);
+        return invokeCococaOnThisOrMainThread(method, args);
     }
 
     /**
@@ -125,14 +114,16 @@ public class ProxyForOC implements InvocationHandler, MethodInterceptor {
     public Object intercept(Object proxy, final Method method, final Object[] args, MethodProxy methodProxy) throws Throwable {
         if (logging.isTraceEnabled()) {
             logging.trace("invoking [{} {}].{}({})", 
-                    new Object[] {javaClass.getSimpleName(), ocInstance, method.getName(), new VarArgsUnpacker(args)});
+                    new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
         }
         if (isSpecialMethod(method))
             return invokeSpecialMethod(method, args);
-        else if (Modifier.isAbstract(method.getModifiers()))
-            return invokeCococaOnThisOrMainThread(method, args);            
-        else 
-            return methodProxy.invokeSuper(proxy, args); // Java override
+        if (!Modifier.isAbstract(method.getModifiers())) {
+            // method is not abstract, so a Java override has been provided, which we call
+            return methodProxy.invokeSuper(proxy, args);
+        }
+        // normal case
+        return invokeCococaOnThisOrMainThread(method, args);            
     }
 
     private boolean isSpecialMethod(Method method) {

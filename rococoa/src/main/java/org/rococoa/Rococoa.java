@@ -25,13 +25,77 @@ import net.sf.cglib.core.DefaultNamingPolicy;
 import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
 
+/**
+ * Static factory for creating Java wrappers for Objective-C instances, and Objective-C
+ * wrappers for Java instances. <strong>START HERE</strong>.
+ * 
+ * @author duncan
+ *
+ */
 public abstract class Rococoa  {
 
+    /**
+     * Create a Java NSClass representing the Objective-C class with ocClassName
+     */
+    public static <T extends NSClass> T createClass(String ocClassName, Class<T> type) {
+        return wrap(Foundation.nsClass(ocClassName), type);
+    }
+    
+    /**
+     * Create a Java NSObject representing an instance of the Objective-C class
+     * ocClassName. The Objective-C instance is created by calling the static 
+     * factory ocFactoryName, passing args.
+     */
     public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass, String ocFactoryName, Object... args) {
-        ProxyForOC invocationHandler = new ProxyForOC(ocClassName, javaClass, ocFactoryName, args);
+        ID ocClass = Foundation.nsClass(ocClassName);
+        ID ocInstance = Foundation.sendReturnsID(ocClass, ocFactoryName, args);
+        return wrap(ocInstance, javaClass);
+    }
+
+    /**
+     * Create a Java NSObject representing an instance of the Objective-C class
+     * ocClassName, created with the class method <code>+new</code>.
+     */
+    public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass) {
+        return create(ocClassName, javaClass, "new");
+    }
+        
+    /**
+     * Create a Java NSObject wrapping an existing Objective-C instance, represented
+     * by id.
+     */
+    public static <T extends NSObject> T wrap(ID id, Class<T> javaClass) {
+        ProxyForOC invocationHandler = new ProxyForOC(id, javaClass);
         return createProxy(javaClass, invocationHandler);
     }
 
+    /**
+     * Create a Java NSObject down-casting an existing NSObject to a more derived
+     * type.
+     */
+    public static <T extends NSObject> T cast(NSObject object, Class<T> desiredType) {
+        return wrap(object.id(), desiredType);
+    }
+
+    /**
+     * Return the ID of a new Objective-C object which will forward messages to
+     * javaObject.
+     * 
+     * Keep hold of the ID all the time that methods may be invoked on the Obj-C
+     * object, otherwise the callbacks may be GC'd, with amusing consequences.
+     */
+    public static ID wrap(Object javaObject) {
+        // TODO - could we set up some interesting weak-reference to javaObject, allowing the
+        // callbacks to be GC'd once it has been let go?
+        CallbackForOCWrapperForJavaObject callbacks = new CallbackForOCWrapperForJavaObject(javaObject);
+        ID idOfOCProxy = Foundation.createOCProxy(callbacks.selectorInvokedCallback, callbacks.methodSignatureCallback);
+        return new WrapperID(idOfOCProxy, callbacks);
+    }
+    
+    /**
+     * Create a java.lang.reflect.Proxy or cglib proxy of type, forwarding
+     * invocations to invococationHandler.
+     */
     @SuppressWarnings("unchecked")
     private static <T> T createProxy(final Class<T> type, ProxyForOC invocationHandler) {
         if (type.isInterface()) {
@@ -54,39 +118,6 @@ public abstract class Rococoa  {
         }
     }
     
-    public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass) {
-        ProxyForOC invocationHandler = new ProxyForOC(ocClassName, javaClass);
-        return createProxy(javaClass, invocationHandler);
-    }
-        
-    public static <T extends NSObject> T  wrap(ID id, Class<T> javaClass) {
-        ProxyForOC invocationHandler = new ProxyForOC(id, javaClass);
-        return createProxy(javaClass, invocationHandler);
-    }
-
-    public static <T extends NSObject> T cast(NSObject object, Class<T> desiredType) {
-        return wrap(object.id(), desiredType);
-    }
-
-    public static <T extends NSClass> T createClass(String ocClassName, Class<T> type) {
-        return wrap(Foundation.nsClass(ocClassName), type);
-    }
-
-    /**
-     * Create an Objective-C object which will forward invocations to javaObject 
-     * and return its ID.
-     * 
-     * Keep hold of the ID all the time that methods may be invoked on the Obj-C
-     * object, otherwise the callbacks may be GC'd, with amusing consequences.
-     */
-    public static ID wrap(Object javaObject) {
-        // TODO - could we set up some interesting weak-reference to javaObject, allowing the
-        // callbacks to be GC'd once it has been let go?
-        CallbackForOCWrapperForJavaObject callbacks = new CallbackForOCWrapperForJavaObject(javaObject);
-        ID idOfOCProxy = Foundation.createOCProxy(callbacks.selectorInvokedCallback, callbacks.methodSignatureCallback);
-        return new WrapperID(idOfOCProxy, callbacks);
-    }
-    
     // Public only because JNA doesn't call setAccessible to access ctor.
     public static class WrapperID extends ID {
         // used to prevent callbacks being GC'd as long as we hang onto this ID
@@ -101,6 +132,13 @@ public abstract class Rococoa  {
             super(anotherID.intValue());
             this.callbacks = callbacks;
         }
+    }
+    
+    /**
+     * Enforce static factoriness.
+     */
+    private Rococoa() {
+        
     }
 
 }
