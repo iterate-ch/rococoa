@@ -247,6 +247,8 @@ class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor 
     }
 
     private Object marshall(Object arg) {
+        // Note that this is not the only marshalling that is done. 
+        // RococoaTypeMapper also gets involved.
         if (arg == null)
             return null;
         if (arg instanceof NSObjectByReference)
