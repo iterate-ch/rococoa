@@ -49,7 +49,7 @@ import com.sun.jna.Structure;
  * @author duncan
  * 
  */
-public class MsgSendHandler implements InvocationHandler {
+class MsgSendHandler implements InvocationHandler {
 
     private final Function objc_msgSend_stret_Function;
     private final Function objc_msgSend_Function;

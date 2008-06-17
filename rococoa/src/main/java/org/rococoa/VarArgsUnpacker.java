@@ -20,7 +20,7 @@
 package org.rococoa;
 
 @SuppressWarnings("nls")
-public class VarArgsUnpacker {
+class VarArgsUnpacker {
 
     private static final String SEPERATOR = ", ";
     private static final Object[] NULLARGS = new Object[0];
