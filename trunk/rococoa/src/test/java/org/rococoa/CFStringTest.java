@@ -26,7 +26,7 @@ public class CFStringTest extends NSTestCase {
     public void testCFStringImpersonatesNSString() throws Exception {
         CFString s = new CFString("Hello World");        
         ID clas = Foundation.nsClass("NSString");
-        ID instance = (ID) Foundation.sendReturnsID(clas, "stringWithString:", s);
+        ID instance = Foundation.sendReturnsID(clas, "stringWithString:", s);
         assertEquals("Hello World",
                 Foundation.toString(Foundation.sendReturnsID(instance, "description")));
     }
