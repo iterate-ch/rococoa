@@ -18,8 +18,7 @@
  */
  
 package org.rococoa;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -27,79 +26,23 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jna.Callback;
-import com.sun.jna.InvocationMapper;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-import com.sun.jna.Structure;
 
 
+/**
+ * The core of Rococoa - handles the selectors and messaging at a function call level.
+ * 
+ * Marshalling of Java types to C and Objective-C types is handled by JNA and 
+ * RococoaTypeMapper respectively.
+ * 
+ * @author duncan
+ */
 @SuppressWarnings("nls")
 public abstract class Foundation {
     
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.foundation");
-
-    private static final Method SEND_MSG;
-    private static final StringEncoding STRING_ENCODING_MAC;
    
-    /**
-     * JNA Library for plain C calls
-     */
-    public interface FoundationLibrary extends Library {
-        // standard JNA marshalling applies to these
-        void NSLog(ID pString, Object thing);
-        
-        ID CFStringCreateWithCString(ID allocator, String string, int encoding);        
-        String CFStringGetCStringPtr(ID string, int encoding);
-        byte CFStringGetCString(ID theString, byte[] buffer, int bufferSize, int encoding);
-        int CFStringGetLength(ID theString);
-        
-        void CFRetain(ID cfTypeRef);
-        void CFRelease(ID cfTypeRef);
-        int CFGetRetainCount (ID cfTypeRef);
-            
-        ID objc_getClass(String className);
-        ID class_createInstance(ID pClass, int extraBytes);        
-        Selector sel_registerName(String selectorName);
-    }
-
-    /**
-     * JNA Library for special message send calls, called and marshalled specially.
-     */
-    public interface MsgSendLibrary extends Library {        
-        // This doesn't exist in the library, but is synthesised by msgSendHandler
-        Object syntheticSendMessage(Class<?> returnType, ID receiver, Selector selector,  Object... args);
-        
-        // We don't call these directly, but through send_msg
-        Object objc_msgSend(ID receiver, Selector selector, Object... args);        
-        Structure objc_msgSend_stret(ID receiver, Selector selector, Object... args);         
-        
-    }
-    
-    /** Callback from Obj-C to get method signature string for Java method matching selectorName */
-    public  interface MethodSignatureCallback extends Callback {
-        String callback(String selectorName);
-    }
-    
-    /** Callback from Obj-C to invoke method on Java object */
-    public  interface SelectorInvokedCallback extends Callback {
-        void callback(String selectorName, ID nsInvocation);    
-    }
-    
-    /**
-     * JNA Library for special operations provided by our own native code
-     */
-    public interface RococoaLibrary extends Library {
-        public interface VoidCallback extends Callback {
-            void callback();        
-        }
-        void callOnMainThread(VoidCallback callback);
-        
-        public ID createProxyForJavaObject(SelectorInvokedCallback selectorInvokedCallback, 
-                MethodSignatureCallback methodSignatureCallback);
-    }
-
     private static final FoundationLibrary foundationLibrary;
     private static final MsgSendLibrary messageSendLibrary;
     private static final RococoaLibrary rococoaLibrary;
@@ -109,39 +52,18 @@ public abstract class Foundation {
         
         // Set JNA to convert java.lang.String to char* using UTF-8, and match that with
         // the way we tell CF to interpret our char*
+        // May be removed if we use toStringViaUTF16
         System.setProperty("jna.encoding", "UTF8");
-        STRING_ENCODING_MAC = StringEncoding.kCFStringEncodingUTF8;
-
-        try {
-            SEND_MSG = MsgSendLibrary.class.getDeclaredMethod("syntheticSendMessage", 
-                    Class.class, ID.class, Selector.class, Object[].class);
-        }
-        catch (Exception e) {
-            throw new Error("Error retrieving method");
-        }
         
-        Map<String, Object> optionMap = new HashMap<String, Object>();
-        optionMap.put(Library.OPTION_INVOCATION_MAPPER, createInvocationMapper(optionMap));
-        optionMap.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
+        Map<String, Object> messageSendLibraryOptions = new HashMap<String, Object>(1);
+        messageSendLibraryOptions.put(Library.OPTION_INVOCATION_MAPPER, new MsgSendInvocationMapper());
+        messageSendLibrary = (MsgSendLibrary) Native.loadLibrary("Foundation", MsgSendLibrary.class, messageSendLibraryOptions);
                 
         foundationLibrary = (FoundationLibrary) Native.loadLibrary("Foundation", FoundationLibrary.class);
-        messageSendLibrary = (MsgSendLibrary) Native.loadLibrary("Foundation", MsgSendLibrary.class, optionMap);
         rococoaLibrary = (RococoaLibrary) Native.loadLibrary("rococoa", RococoaLibrary.class);        
         logging.trace("exit initializing Foundation");
     }
 
-    private static InvocationMapper createInvocationMapper(final Map<String, Object> optionMap) {
-        return new InvocationMapper() {
-            public InvocationHandler getInvocationHandler(NativeLibrary lib, Method m) {
-                if (!m.equals(SEND_MSG))
-                    return null; // default handler
-                return new MsgSendHandler(
-                        lib.getFunction("objc_msgSend"),
-                        lib.getFunction("objc_msgSend_stret"),
-                        optionMap);
-            }};
-    }
-       
     public static void nsLog(String format, Object thing) {
         foundationLibrary.NSLog(cfString(format), thing);
     }    
@@ -152,8 +74,16 @@ public abstract class Foundation {
      * Note that the returned string must be freed with {@link #cfRelease(ID)}.
      */
     public static ID cfString(String s) {
-        return foundationLibrary.CFStringCreateWithCString(null, s, 
-                STRING_ENCODING_MAC.value);
+        // Use a byte[] rather than letting jna do the String -> char* marshalling itself.
+        // Turns out about 10% quicker for long strings.
+        try {
+            byte[] utf16Bytes = s.getBytes("UTF-16LE");
+            return foundationLibrary.CFStringCreateWithBytes(null, utf16Bytes,
+                    utf16Bytes.length,
+                    StringEncoding.kCFStringEncodingUTF16LE.value, (byte) 0);
+        } catch (UnsupportedEncodingException x) {
+            throw new RuntimeException(x);
+        }
     }
     
     public static void cfRetain(ID cfTypeRef) {
@@ -171,21 +101,31 @@ public abstract class Foundation {
     }
     
     public static String toString(ID cfString) {
-        // We try to just copy the chars out of the CFString, and if that fails, 
-        // ask for the chars to be copied in the specified encoding
-        String result = foundationLibrary.CFStringGetCStringPtr(cfString, STRING_ENCODING_MAC.value);
-        if (result != null)
-            return result;
-        else 
-            return toStringWithBuffer(cfString);
+        return toStringViaUTF8(cfString);
     }
 
-    private static String toStringWithBuffer(ID cfString) {
+    /* Experimental */
+    static String toStringViaUTF16(ID cfString) {
+        try {
+            int lengthInChars = foundationLibrary.CFStringGetLength(cfString);
+            int potentialLengthInBytes = 3 * lengthInChars + 1; // UTF16 fully escaped 16 bit chars, plus nul
+            
+            byte[] buffer = new byte[potentialLengthInBytes];
+            byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF16LE.value);
+            if (ok == 0)
+                throw new RuntimeException("Could not convert string");
+            return new String(buffer, "UTF-16LE").substring(0, lengthInChars); 
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    static String toStringViaUTF8(ID cfString) {
         int lengthInChars = foundationLibrary.CFStringGetLength(cfString);
         int potentialLengthInBytes = 3 * lengthInChars + 1; // UTF8 fully escaped 16 bit chars, plus nul
         
         byte[] buffer = new byte[potentialLengthInBytes];
-        byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, STRING_ENCODING_MAC.value);
+        byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF8.value);
         if (ok == 0)
             throw new RuntimeException("Could not convert string");
         return Native.toString(buffer);
@@ -272,8 +212,8 @@ public abstract class Foundation {
             throw new RuntimeException(thrown[0]);
     }
 
-    public static ID createOCProxy(SelectorInvokedCallback selectorInvokedCallback, 
-            MethodSignatureCallback methodSignatureCallback) {
+    public static ID createOCProxy(RococoaLibrary.SelectorInvokedCallback selectorInvokedCallback, 
+            RococoaLibrary.MethodSignatureCallback methodSignatureCallback) {
         return rococoaLibrary.createProxyForJavaObject(selectorInvokedCallback, methodSignatureCallback);
     }
 

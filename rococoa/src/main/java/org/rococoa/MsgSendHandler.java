@@ -21,11 +21,13 @@ package org.rococoa;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.rococoa.cocoa.NSSize;
 
 import com.sun.jna.Function;
+import com.sun.jna.Library;
 import com.sun.jna.Structure;
 
 /**
@@ -51,13 +53,12 @@ public class MsgSendHandler implements InvocationHandler {
 
     private final Function objc_msgSend_stret_Function;
     private final Function objc_msgSend_Function;
-    private Map<String, Object> options;    
+    private Map<String, Object> options = new HashMap<String, Object>(1);    
 
-    public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_stret_Function, 
-            Map<String, Object> options) {
+    public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_stret_Function) {
         this.objc_msgSend_Function = objc_msgSend_Function;
         this.objc_msgSend_stret_Function = objc_msgSend_stret_Function;
-        this.options = options;
+        options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
     }
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

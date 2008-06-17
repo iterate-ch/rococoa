@@ -47,8 +47,8 @@ class OCInvocationCallbacks {
      * 
      * @see http://www.cocoadev.com/index.pl?NSMethodSignature
      */
-    public final Foundation.MethodSignatureCallback methodSignatureCallback = 
-        new Foundation.MethodSignatureCallback() {
+    public final RococoaLibrary.MethodSignatureCallback methodSignatureCallback = 
+        new RococoaLibrary.MethodSignatureCallback() {
             public String callback(String selectorName) {
                 logging.trace("callback wanting methodSignature for selector {}", selectorName);
                 return methodSignatureForSelector(selectorName);
@@ -58,8 +58,8 @@ class OCInvocationCallbacks {
     /**
      * Called when method has been invoked on OC proxy and needs to be forwarded to javaObject
      */
-    public final Foundation.SelectorInvokedCallback selectorInvokedCallback = 
-        new Foundation.SelectorInvokedCallback() {
+    public final RococoaLibrary.SelectorInvokedCallback selectorInvokedCallback = 
+        new RococoaLibrary.SelectorInvokedCallback() {
             public void callback(String selectorName, ID nsInvocation) {
                 logging.trace("callback invoking {} on {}", selectorName, javaObject);
                 callMethod(javaObject, selectorName, 

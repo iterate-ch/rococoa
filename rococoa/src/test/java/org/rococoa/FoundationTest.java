@@ -38,6 +38,20 @@ public class FoundationTest extends NSTestCase {
     	assertEquals(stringWithOddChar, Foundation.toString(string));
     }
     
+    public void xtestStringPerformance() {
+        String stringWithOddChar = "Hello \u2648";
+        StringBuilder longStringBuilder = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            longStringBuilder.append(stringWithOddChar);
+        }
+        String longString = longStringBuilder.toString();
+        ID string = Foundation.cfString(longString); 
+
+        for (int i = 0; i < 10000; i++) {
+            String s = Foundation.toStringViaUTF16(string);
+        }
+    }
+    
     public void testInt() {
         ID clas = Foundation.nsClass("NSNumber");
         ID anInt = Foundation.sendReturnsID(clas, "numberWithInt:", 42);
