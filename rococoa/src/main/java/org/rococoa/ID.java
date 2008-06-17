@@ -19,6 +19,9 @@
  
 package org.rococoa;
 
+import com.sun.jna.FromNativeContext;
+import com.sun.jna.NativeMapped;
+
 
 /**
  * Represents an Objective-C ID.
@@ -29,23 +32,63 @@ package org.rococoa;
  * @author duncan
  *
  */
-public class ID extends com.sun.jna.IntegerType {
+public class ID implements NativeMapped {
 
+    private int value;
+    
     public ID() {
         this(0);
     };
     
     public ID(int value) {
-        super(4, value);
+        this.value = value;
     }
     
     @Override
     public String toString() {
-        return String.format("[ID 0x%x]", intValue()); //$NON-NLS-1$
+        return String.format("[ID 0x%x]", value); //$NON-NLS-1$
     }
     
     public boolean isNull() {
-        return intValue() == 0;
+        return value == 0;
+    }
+
+    public Object fromNative(Object nativeValue, FromNativeContext context) {
+        if (nativeValue == null)
+            return 0;
+        Integer nativeAsInteger = (Integer) nativeValue;
+        return new ID(nativeAsInteger);
+    }
+    
+    public Class<?> nativeType() {
+        return Integer.class;
+    }
+
+    public Object toNative() {
+        return value;
+    }
+    
+    public int intValue() {
+        return value;
+    }
+    
+    @Override
+    public int hashCode() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ID other = (ID) obj;
+        if (value != other.value)
+            return false;
+        return true;
     }
 
 }
