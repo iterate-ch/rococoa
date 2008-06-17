@@ -29,29 +29,18 @@ import org.slf4j.LoggerFactory;
 import com.sun.jna.Memory;
 
 /**
- * Callback from Objective-C when a method has been invoked on our proxy.
+ * Holds the callbacks called when a method is invoked on an Objective-C proxy
+ * for a Java object.
  * 
  * @author duncan
  *
  */
 @SuppressWarnings("nls")
-class CallbackForOCWrapperForJavaObject {
+class OCInvocationCallbacks {
 
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
 
     private final Object javaObject;
-    
-    /**
-     * Called when method has been invoked on OC proxy and needs to be forwarded to javaObject
-     */
-    public final Foundation.SelectorInvokedCallback selectorInvokedCallback = 
-        new  Foundation.SelectorInvokedCallback() {
-            public void callback(String selectorName, ID nsInvocation) {
-                logging.trace("callback invoking {} on {}", selectorName, javaObject);
-                callMethod(javaObject, selectorName, 
-                        Rococoa.wrap(nsInvocation, NSInvocation.class));
-            };        
-    };
     
     /**
      * Called when method is about to be invoked on OC proxy and needs a method signature as String
@@ -66,7 +55,19 @@ class CallbackForOCWrapperForJavaObject {
             }
     };
     
-    public CallbackForOCWrapperForJavaObject(Object javaObject) {
+    /**
+     * Called when method has been invoked on OC proxy and needs to be forwarded to javaObject
+     */
+    public final Foundation.SelectorInvokedCallback selectorInvokedCallback = 
+        new Foundation.SelectorInvokedCallback() {
+            public void callback(String selectorName, ID nsInvocation) {
+                logging.trace("callback invoking {} on {}", selectorName, javaObject);
+                callMethod(javaObject, selectorName, 
+                        Rococoa.wrap(nsInvocation, NSInvocation.class));
+            };        
+    };
+    
+    public OCInvocationCallbacks(Object javaObject) {
         this.javaObject = javaObject;
     }
 

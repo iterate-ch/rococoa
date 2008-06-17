@@ -19,14 +19,14 @@
  
 package org.rococoa;
 
-import org.rococoa.CallbackForOCWrapperForJavaObject;
+import org.rococoa.OCInvocationCallbacks;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 
 import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
-public class CallbackForOCWrapperForJavaObjectTest extends TestCase {
+public class OCInvocationCallbacksTest extends TestCase {
     
     public static class JavaImplementor {
     
@@ -45,7 +45,7 @@ public class CallbackForOCWrapperForJavaObjectTest extends TestCase {
     
     public void testMethodForSelector() throws SecurityException, NoSuchMethodException {
         JavaImplementor implementor = new JavaImplementor();
-        CallbackForOCWrapperForJavaObject callback = new CallbackForOCWrapperForJavaObject(implementor);
+        OCInvocationCallbacks callback = new OCInvocationCallbacks(implementor);
         
         assertEquals(
             JavaImplementor.class.getDeclaredMethod("returnsIDTakesVoid"),                
@@ -68,7 +68,7 @@ public class CallbackForOCWrapperForJavaObjectTest extends TestCase {
     
     public void testMethodSignatureForSelector() {
         JavaImplementor implementor = new JavaImplementor();
-        CallbackForOCWrapperForJavaObject callback = new CallbackForOCWrapperForJavaObject(implementor);
+        OCInvocationCallbacks callback = new OCInvocationCallbacks(implementor);
         
         assertEquals("v@:", callback.methodSignatureForSelector("returnsVoidTakesVoid"));
         assertEquals("v@:i", callback.methodSignatureForSelector("returnsVoidTakesInt:"));

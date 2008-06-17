@@ -65,7 +65,7 @@ public abstract class Rococoa  {
      * by id.
      */
     public static <T extends NSObject> T wrap(ID id, Class<T> javaClass) {
-        ProxyForOC invocationHandler = new ProxyForOC(id, javaClass);
+        NSObjectInvocationHandler invocationHandler = new NSObjectInvocationHandler(id, javaClass);
         return createProxy(javaClass, invocationHandler);
     }
 
@@ -87,17 +87,17 @@ public abstract class Rococoa  {
     public static ID wrap(Object javaObject) {
         // TODO - could we set up some interesting weak-reference to javaObject, allowing the
         // callbacks to be GC'd once it has been let go?
-        CallbackForOCWrapperForJavaObject callbacks = new CallbackForOCWrapperForJavaObject(javaObject);
+        OCInvocationCallbacks callbacks = new OCInvocationCallbacks(javaObject);
         ID idOfOCProxy = Foundation.createOCProxy(callbacks.selectorInvokedCallback, callbacks.methodSignatureCallback);
         return new WrapperID(idOfOCProxy, callbacks);
     }
     
     /**
-     * Create a java.lang.reflect.Proxy or cglib proxy of type, forwarding
+     * Create a java.lang.reflect.Proxy or cglib proxy of type, which forwards
      * invocations to invococationHandler.
      */
     @SuppressWarnings("unchecked")
-    private static <T> T createProxy(final Class<T> type, ProxyForOC invocationHandler) {
+    private static <T> T createProxy(final Class<T> type, NSObjectInvocationHandler invocationHandler) {
         if (type.isInterface()) {
             return (T) Proxy.newProxyInstance(
                 invocationHandler.getClass().getClassLoader(), 
@@ -122,20 +122,20 @@ public abstract class Rococoa  {
     public static class WrapperID extends ID {
         // used to prevent callbacks being GC'd as long as we hang onto this ID
         @SuppressWarnings("unused")
-        private CallbackForOCWrapperForJavaObject callbacks;
+        private OCInvocationCallbacks callbacks;
         
         public WrapperID() {
             // required by jna
         }
         
-        public WrapperID(ID anotherID, CallbackForOCWrapperForJavaObject callbacks) {
+        public WrapperID(ID anotherID, OCInvocationCallbacks callbacks) {
             super(anotherID.intValue());
             this.callbacks = callbacks;
         }
     }
     
     /**
-     * Enforce static factoriness.
+     * Enforce static factory-ness.
      */
     private Rococoa() {
         

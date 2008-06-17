@@ -43,7 +43,7 @@ import com.sun.jna.Pointer;
  *
  */
 @SuppressWarnings("nls")
-public class ProxyForOC implements InvocationHandler, MethodInterceptor {
+class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
     
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
     
@@ -69,7 +69,7 @@ public class ProxyForOC implements InvocationHandler, MethodInterceptor {
     private final String javaClassName;
     private final boolean invokeOnMainThread;
 
-    public ProxyForOC(final ID ocInstance, Class<? extends NSObject> javaClass) {
+    public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass) {
         this.ocInstance = ocInstance;
         this.javaClassName = javaClass.getSimpleName();
         invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
@@ -169,7 +169,6 @@ public class ProxyForOC implements InvocationHandler, MethodInterceptor {
         } else {
             return Foundation.send(ocInstance, "isEqual:", Boolean.class, another);
         }
-        
     }
 
     private Object invokeCococaOnThisOrMainThread(final Method method, final Object[] args) {
