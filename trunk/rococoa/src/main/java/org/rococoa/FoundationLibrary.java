@@ -5,7 +5,7 @@ import com.sun.jna.Library;
 /**
  * JNA Library for plain C calls, standard JNA marshalling applies to these
  */
-public interface FoundationLibrary extends Library {
+interface FoundationLibrary extends Library {
     
     void NSLog(ID pString, Object thing);
     

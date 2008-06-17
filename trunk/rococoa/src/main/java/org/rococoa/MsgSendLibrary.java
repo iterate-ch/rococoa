@@ -6,7 +6,7 @@ import com.sun.jna.Structure;
 /**
  * JNA Library for special message send calls, called and marshalled specially.
  */
-public interface MsgSendLibrary extends Library {                
+interface MsgSendLibrary extends Library {                
     // This doesn't exist in the library, but is synthesised by msgSendHandler
     Object syntheticSendMessage(Class<?> returnType, ID receiver, Selector selector,  Object... args);
     

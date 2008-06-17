@@ -31,7 +31,7 @@ import com.sun.jna.TypeConverter;
  * @author duncan
  *
  */
-public class RococoaTypeMapper extends DefaultTypeMapper {
+class RococoaTypeMapper extends DefaultTypeMapper {
     
     private class NSObjectTypeConverter implements TypeConverter {
 

@@ -6,7 +6,7 @@ import com.sun.jna.Library;
 /**
  * JNA Library for special operations provided by our own native code
  */
-public interface RococoaLibrary extends Library {
+interface RococoaLibrary extends Library {
     
     /** Callback from Obj-C to get method signature string for Java method matching selectorName */
     public interface MethodSignatureCallback extends Callback {
