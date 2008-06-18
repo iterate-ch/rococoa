@@ -19,7 +19,10 @@
  
 package org.rococoa;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.rococoa.cocoa.NSInvocation;
 import org.rococoa.cocoa.NSMethodSignature;
@@ -27,10 +30,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Structure;
 
 /**
  * Holds the callbacks called when a method is invoked on an Objective-C proxy
  * for a Java object.
+ * 
+ * When a message is sent to an OC object first it is sent respondsToSelector: 
+ * then methodSignatureForSelector: Our Obj-C proxy forwards these to
+ * methodSignatureCallback; we build a method signature string in Java 
+ * corresponding to the Java method and return it.
+ * 
+ * The object is then sent forwardInvocation: passing an NSInvocation. It
+ * forwards this to selectorInvokedCallback, which we use to invoke the method
+ * on the Java Object.
  * 
  * @author duncan
  *
@@ -73,9 +86,9 @@ class OCInvocationCallbacks {
 
     protected String methodSignatureForSelector(String selectorName) {
         Method method = methodForSelector(selectorName);
-        return method != null ? 
-                ocMethodSignatureAsString(method):
-                null;
+        return method == null ? 
+                null :
+                ocMethodSignatureAsString(method);
     }
 
     private void callMethod(Object o, String selectorName, NSInvocation invocation) {
@@ -151,49 +164,53 @@ class OCInvocationCallbacks {
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] result = new Object[parameterTypes.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = javaObjectForObjCArgument(parameterTypes, 
-                    invocation,
-                    nsMethodSignature,
-                    i);
+            int indexAccountingForSelfAndCmd = 2 + i;
+            result[i] = javaObjectForOCArgumentParam(invocation, 
+                    indexAccountingForSelfAndCmd,
+                    nsMethodSignature.getArgumentTypeAtIndex(indexAccountingForSelfAndCmd), 
+                    parameterTypes[i]);
         }
         return result;
     }
 
+    /**
+     * At this point we have an NSInvocation, which has the arguments to the
+     * call in it. We know the type of the argument, and the type of the
+     * parameter expected by the Java method. [1]
+     * Our mission is to get the value of the argument from the NSInvocation
+     * and return a Java object of the desired type.
+     */
     @SuppressWarnings("unchecked")
-    private Object javaObjectForObjCArgument(Class<?>[] parameterTypes,  NSInvocation invocation, NSMethodSignature nsMethodSignature, int index) {
-        int indexAccountingForSelfAndCmd = 2 + index;
-        String objCTypeString = nsMethodSignature.getArgumentTypeAtIndex(indexAccountingForSelfAndCmd); // self and _cmd
-        Class<?> parameterType = parameterTypes[index];
+    private Object javaObjectForOCArgumentParam(NSInvocation invocation,
+            int indexInInvocation, String objCArgumentTypeAsString, Class<?> javaParameterType) {
         
-       // TODO - more conversions
-       if (objCTypeString.equals("@")) {
-            Memory buffer = new Memory(4);
-            invocation.getArgument_atIndex(buffer, indexAccountingForSelfAndCmd);
+        // TODO - I can't help feeling that JNA's marshalling code must come in handy here.
+        Memory buffer = new Memory(4);
+        invocation.getArgument_atIndex(buffer, indexInInvocation);
+        
+        // TODO - more conversions
+        if (objCArgumentTypeAsString.equals("@")) {
             ID id = new ID(buffer.getInt(0));
-            if (parameterType == ID.class)
+            if (javaParameterType == ID.class)
                 return id;
-            if (NSObject.class.isAssignableFrom(parameterType))
-                return Rococoa.wrap(id, (Class<? extends NSObject>)parameterType);
-            if (parameterType == String.class) {
+            if (NSObject.class.isAssignableFrom(javaParameterType))
+                return Rococoa.wrap(id, (Class<? extends NSObject>)javaParameterType);
+            if (javaParameterType == String.class) {
                 return Foundation.toString(id);
             }
         }
-        if (objCTypeString.equals("i")) {
-            Memory buffer = new Memory(4);
-            invocation.getArgument_atIndex(buffer, indexAccountingForSelfAndCmd);
+        if (objCArgumentTypeAsString.equals("i")) {
             return buffer.getInt(0);
         }
-        if (objCTypeString.equals("c")) {
-            Memory buffer = new Memory(1);
-            invocation.getArgument_atIndex(buffer, indexAccountingForSelfAndCmd);
+        if (objCArgumentTypeAsString.equals("c")) {
             byte character = buffer.getByte(0);
-            if (parameterType == boolean.class)
+            if (javaParameterType == boolean.class)
                 return character == 0 ? Boolean.FALSE : Boolean.TRUE;
             else
                 return character;            
         }
         throw new IllegalStateException(
-                String.format("Don't (yet) know how to marshall parameter Objective-C type %s as %s", objCTypeString, parameterType));
+                String.format("Don't (yet) know how to marshall parameter Objective-C type %s as %s", objCArgumentTypeAsString, javaParameterType));
     }
 
     protected Method methodForSelector(String selectorName) {
@@ -238,6 +255,7 @@ class OCInvocationCallbacks {
         return result.toString();
     }
 
+    @SuppressWarnings("unchecked")
     private String stringForType(Class<?> clas) {
         if (clas == void.class)
             return "v";
@@ -253,11 +271,50 @@ class OCInvocationCallbacks {
             return "c"; // Cocoa BOOL is defined as signed char
         if (clas == String.class)
             return "@";
+        if (clas == double.class)
+            return "d";
+        if (clas == float.class)
+            return "f";
+        if (Structure.class.isAssignableFrom(clas))
+            return encodeStruct((Class<? extends Structure>) clas);
         logging.error("Unable to give Objective-C type string for {}", clas);
         return null;
     }
 
+    private String encodeStruct(Class<? extends Structure> clas) {
+        StringBuilder result = new StringBuilder();
+        if (!(Structure.ByValue.class.isAssignableFrom(clas)))
+            result.append('^'); // pointer to
+            
+        result.append('{').append(clas.getSimpleName()).append('=');
+        for (Field f : collectStructFields(clas, new ArrayList<Field>())) {
+            result.append(stringForType(f.getType()));
+        }
+        return result.append('}').toString();
+    }
 
-
+    @SuppressWarnings("unchecked")
+    private List<Field> collectStructFields(Class<? extends Structure> clas, List<Field> list) {
+        if (clas == Structure.class)
+            return list;
+        for (Field f : clas.getDeclaredFields()) {
+            list.add(f);
+        }
+        return collectStructFields((Class<? extends Structure>) clas.getSuperclass(), list);
+    }
+    
+    /*
+     * [1] - http://en.wikipedia.org/wiki/Parameter_(computer_science)
+     * Although parameters are also commonly referred to as arguments,
+     * arguments are more properly thought of as the actual values or references
+     * assigned to the parameter variables when the subroutine is called at
+     * runtime. When discussing code that is calling into a subroutine, any
+     * values or references passed into the subroutine are the arguments, and
+     * the place in the code where these values or references are given is the
+     * parameter list. When discussing the code inside the subroutine
+     * definition, the variables in the subroutine's parameter list are the
+     * parameters, while the values of the parameters at runtime are the
+     * arguments.
+     */
 
 }
