@@ -21,20 +21,9 @@ package org.rococoa;
 
 import junit.framework.TestCase;
 
-import com.sun.jna.Structure;
-
 @SuppressWarnings("nls")
 public class OCInvocationCallbacksTest extends TestCase {
 
-    @SuppressWarnings("unused")
-    public static class MyStruct extends Structure {
-        private int anInt;
-        private double aDouble;
-    }
-
-    public static class MyStructByValue extends MyStruct implements Structure.ByValue {
-    }
-    
     public static class JavaImplementor {
         public void returnsVoidTakesVoid() {}
         public void returnsVoidTakesInt(int i) {}      
@@ -47,11 +36,11 @@ public class OCInvocationCallbacksTest extends TestCase {
             return -1;
         }
         public void returnsVoidTakesMyStruct(MyStruct s) {}
-        public void returnsVoidTakesMyStructByValue(MyStructByValue s) {}
+        public void returnsVoidTakesMyStructByValue(MyStruct.MyStructByValue s) {}
         public MyStruct returnsMyStructTakesVoid() {
             return null;
         }
-        public MyStructByValue returnsMyStructByValueTakesVoid() {
+        public MyStruct.MyStructByValue returnsMyStructByValueTakesVoid() {
             return null;
         }
     }
