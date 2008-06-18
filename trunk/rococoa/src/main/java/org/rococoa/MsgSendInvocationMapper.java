@@ -35,6 +35,9 @@ class MsgSendInvocationMapper implements InvocationMapper {
     public InvocationHandler getInvocationHandler(NativeLibrary lib, Method m) {
         if (!m.equals(SYNTHETIC_SEND_MSG))
             return null; // default handler
+        
+        // Have to late bind this, as it's the only time we get to see lib.
+        // Not too bad as the results are cached.
         return new MsgSendHandler(
                 lib.getFunction("objc_msgSend"),
                 lib.getFunction("objc_msgSend_stret"));

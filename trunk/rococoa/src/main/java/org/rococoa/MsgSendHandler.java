@@ -51,24 +51,44 @@ import com.sun.jna.Structure;
  */
 class MsgSendHandler implements InvocationHandler {
 
+    private final String OPTION_INVOKING_METHOD = "invoking-method";
+    	// TODO - use JNA string when made public
+    private final static Method OBJC_MSGSEND;
+    private final static Method OBJC_MSGSEND_STRET;
+    
     private final Function objc_msgSend_stret_Function;
     private final Function objc_msgSend_Function;
-    private Map<String, Object> options = new HashMap<String, Object>(1);    
+    
+    static {
+        try {
+            OBJC_MSGSEND = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend", 
+                ID.class, Selector.class, Object[].class);
+            OBJC_MSGSEND_STRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_stret", 
+                    ID.class, Selector.class, Object[].class);
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        }
+    }
 
     public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_stret_Function) {
         this.objc_msgSend_Function = objc_msgSend_Function;
         this.objc_msgSend_stret_Function = objc_msgSend_stret_Function;
-        options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
     }
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class<?> returnTypeForThisCall = (Class<?>) args[0];
         Object[] argsWithoutReturnType = removeReturnTypeFrom(args);
         
-        if (shouldCallStretFor(returnTypeForThisCall))
+        Map<String, Object> options = new HashMap<String, Object>(1);    
+        options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
+        
+        if (shouldCallStretFor(returnTypeForThisCall)) {
+            options.put(OPTION_INVOKING_METHOD, OBJC_MSGSEND_STRET);
             return objc_msgSend_stret_Function.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
-        else
+        } else {
+            options.put(OPTION_INVOKING_METHOD, OBJC_MSGSEND);
             return objc_msgSend_Function.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
+        }
     }
     
     private Object[] removeReturnTypeFrom(Object[] args) {
