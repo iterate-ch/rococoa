@@ -19,17 +19,23 @@
  
 package org.rococoa;
 
-import org.rococoa.OCInvocationCallbacks;
-import org.rococoa.ID;
-import org.rococoa.NSObject;
-
 import junit.framework.TestCase;
+
+import com.sun.jna.Structure;
 
 @SuppressWarnings("nls")
 public class OCInvocationCallbacksTest extends TestCase {
+
+    @SuppressWarnings("unused")
+    public static class MyStruct extends Structure {
+        private int anInt;
+        private double aDouble;
+    }
+
+    public static class MyStructByValue extends MyStruct implements Structure.ByValue {
+    }
     
     public static class JavaImplementor {
-    
         public void returnsVoidTakesVoid() {}
         public void returnsVoidTakesInt(int i) {}      
         public ID returnsIDTakesVoid() {
@@ -40,44 +46,56 @@ public class OCInvocationCallbacksTest extends TestCase {
         public byte returnsByteTakesOCObject(NSObject o) {
             return -1;
         }
-        
-     }
+        public void returnsVoidTakesMyStruct(MyStruct s) {}
+        public void returnsVoidTakesMyStructByValue(MyStructByValue s) {}
+        public MyStruct returnsMyStructTakesVoid() {
+            return null;
+        }
+        public MyStructByValue returnsMyStructByValueTakesVoid() {
+            return null;
+        }
+    }
+
+    private OCInvocationCallbacks callbacks;
+    
+    @Override
+    protected void setUp() throws Exception {
+        callbacks = new OCInvocationCallbacks(new JavaImplementor());
+    }
     
     public void testMethodForSelector() throws SecurityException, NoSuchMethodException {
-        JavaImplementor implementor = new JavaImplementor();
-        OCInvocationCallbacks callback = new OCInvocationCallbacks(implementor);
-        
+        assertNull(callbacks.methodForSelector("nosuch"));
         assertEquals(
             JavaImplementor.class.getDeclaredMethod("returnsIDTakesVoid"),                
-            callback.methodForSelector("returnsIDTakesVoid"));
-        
+            callbacks.methodForSelector("returnsIDTakesVoid"));
         assertEquals(
             JavaImplementor.class.getDeclaredMethod("returnsVoidTakesInt", int.class),                
-            callback.methodForSelector("returnsVoidTakesInt:"));
-        
+            callbacks.methodForSelector("returnsVoidTakesInt:"));
         assertEquals(
             JavaImplementor.class.getDeclaredMethod("returnsVoidTakesInt_andInt", int.class, int.class),
-            callback.methodForSelector("returnsVoidTakesInt:andInt:"));
-
-        assertNull(callback.methodForSelector("nosuch"));
+            callbacks.methodForSelector("returnsVoidTakesInt:andInt:"));
         
         // wrong number of args
-        assertNull(callback.methodForSelector("returnsVoidTakesVoid:")); 
-        assertNull(callback.methodForSelector("returnsVoidTakesInt"));
+        assertNull(callbacks.methodForSelector("returnsVoidTakesVoid:")); 
+        assertNull(callbacks.methodForSelector("returnsVoidTakesInt"));
     }
     
     public void testMethodSignatureForSelector() {
-        JavaImplementor implementor = new JavaImplementor();
-        OCInvocationCallbacks callback = new OCInvocationCallbacks(implementor);
-        
-        assertEquals("v@:", callback.methodSignatureForSelector("returnsVoidTakesVoid"));
-        assertEquals("v@:i", callback.methodSignatureForSelector("returnsVoidTakesInt:"));
-        assertEquals("@@:", callback.methodSignatureForSelector("returnsIDTakesVoid"));
-        assertEquals("v@:ii", callback.methodSignatureForSelector("returnsVoidTakesInt:andInt:"));
-        assertEquals("v@:@", callback.methodSignatureForSelector("returnsVoidTakesOCObject:"));
-        assertEquals("c@:@", callback.methodSignatureForSelector("returnsByteTakesOCObject:"));
-        
-        assertNull(callback.methodSignatureForSelector("nosuch"));
-        
+        assertNull(callbacks.methodSignatureForSelector("nosuch"));
+
+        assertEquals("v@:", callbacks.methodSignatureForSelector("returnsVoidTakesVoid"));
+        assertEquals("v@:i", callbacks.methodSignatureForSelector("returnsVoidTakesInt:"));
+        assertEquals("@@:", callbacks.methodSignatureForSelector("returnsIDTakesVoid"));
+        assertEquals("v@:ii", callbacks.methodSignatureForSelector("returnsVoidTakesInt:andInt:"));
+        assertEquals("v@:@", callbacks.methodSignatureForSelector("returnsVoidTakesOCObject:"));
+        assertEquals("c@:@", callbacks.methodSignatureForSelector("returnsByteTakesOCObject:"));
+    }
+    
+    
+    public void testMethodSignatureForSelectorForStructures() {
+        assertEquals("v@:^{MyStruct=id}", callbacks.methodSignatureForSelector("returnsVoidTakesMyStruct:"));
+        assertEquals("v@:{MyStructByValue=id}", callbacks.methodSignatureForSelector("returnsVoidTakesMyStructByValue:"));
+        assertEquals("^{MyStruct=id}@:", callbacks.methodSignatureForSelector("returnsMyStructTakesVoid"));
+        assertEquals("{MyStructByValue=id}@:", callbacks.methodSignatureForSelector("returnsMyStructByValueTakesVoid"));
     }
 }
