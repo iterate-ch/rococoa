@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
 /**
@@ -135,25 +137,32 @@ class OCInvocationCallbacks {
         invocation.setReturnValue(buffer);
     }
 
-    private Memory bufferForReturn(String typeToReturnToObjC, Object result) {
+    private Memory bufferForReturn(String typeToReturnToObjC, Object methodCallResult) {
     
         // TODO - more conversions
         if (typeToReturnToObjC.equals("@")) {
             Memory buffer = new Memory(4);
-            if (result instanceof ID)
-                buffer.setInt(0, ((ID) result).intValue());
-            else if (result instanceof String)
-                buffer.setInt(0, Foundation.cfString((String) result).intValue());
+            if (methodCallResult instanceof ID)
+                buffer.setInt(0, ((ID) methodCallResult).intValue());
+            else if (methodCallResult instanceof String)
+                buffer.setInt(0, Foundation.cfString((String) methodCallResult).intValue());
             return buffer;
         }
         if (typeToReturnToObjC.equals("c")) {
             Memory buffer = new Memory(1);
-            if (result instanceof Boolean)
-                buffer.setByte(0, ((Boolean) result) ? (byte) 1 : (byte) 0);
-            else if (result instanceof Byte)
-                buffer.setByte(0, ((Byte) result).byteValue());
+            if (methodCallResult instanceof Boolean)
+                buffer.setByte(0, ((Boolean) methodCallResult) ? (byte) 1 : (byte) 0);
+            else if (methodCallResult instanceof Byte)
+                buffer.setByte(0, ((Byte) methodCallResult).byteValue());
             else 
                 return null;
+            return buffer;
+        }
+        if (methodCallResult instanceof Structure) {
+            Structure resultAsStructure = (Structure) methodCallResult;
+            resultAsStructure.write();
+            Memory buffer = new Memory(Native.POINTER_SIZE);
+            buffer.setPointer(0, resultAsStructure.getPointer());
             return buffer;
         }
         return null;
@@ -209,8 +218,31 @@ class OCInvocationCallbacks {
             else
                 return character;            
         }
+        if (Structure.class.isAssignableFrom(javaParameterType)) {
+            return readStructure(invocation, indexInInvocation, objCArgumentTypeAsString, (Class<? extends Structure>) javaParameterType);
+        }
         throw new IllegalStateException(
                 String.format("Don't (yet) know how to marshall parameter Objective-C type %s as %s", objCArgumentTypeAsString, javaParameterType));
+    }
+
+    private Structure readStructure(NSInvocation invocation, int indexInInvocation, 
+            String objCArgumentTypeAsString, Class<? extends Structure> javaParameterType)
+    {
+        try {
+            // just by reference for now
+            Memory buffer = new Memory(Native.POINTER_SIZE);
+            invocation.getArgument_atIndex(buffer, indexInInvocation);
+            Pointer pointerToResult = buffer.getPointer(0);
+            Structure result = javaParameterType.newInstance();
+            byte[] structBytes = new byte[result.size()];
+            pointerToResult.read(0, structBytes, 0, structBytes.length);
+            Pointer structMemory = result.getPointer();
+            structMemory.write(0, structBytes, 0, structBytes.length);
+            result.read();
+            return result;
+        } catch (Exception x) {
+            throw new RuntimeException("Could not read structure", x);
+        }
     }
 
     protected Method methodForSelector(String selectorName) {

@@ -61,7 +61,13 @@ public class JavaProxyTest extends NSTestCase {
         }
         
         public String takesJavaStringReturnsJavaString(String s) {
+            arg = s;
             return s.toLowerCase();
+        }
+        
+        public MyStruct takesStructureReturnsStructure(MyStruct s) {
+            arg = s;
+            return new MyStruct(s.anInt, s.aDouble);
         }
         
         public void notify(NSNotification notification) {
@@ -130,6 +136,15 @@ public class JavaProxyTest extends NSTestCase {
     
     public void testTakesJavaStringReturnsJavaString() {
         assertEquals("lower", Foundation.send(ocProxy, "takesJavaStringReturnsJavaString:", String.class, "LoWeR"));
+    }
+    
+    public void testSendAndReceiveStructByReference() {
+        MyStruct struct = new MyStruct(42, Math.PI);
+        MyStruct result = Foundation.send(ocProxy, "takesStructureReturnsStructure:", MyStruct.class, struct);
+        assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
+        assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
+        assertEquals("passing to OC", 42, result.anInt);
+        assertEquals("passing to OC", Math.PI, result.aDouble, 0.00001);
     }
     
     public void testMultipleCallbacks() {
