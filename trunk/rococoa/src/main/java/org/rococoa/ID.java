@@ -19,76 +19,36 @@
  
 package org.rococoa;
 
-import com.sun.jna.FromNativeContext;
-import com.sun.jna.NativeMapped;
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 
 
 /**
  * Represents an Objective-C ID.
  * 
- * Maybe this should be a Pointer, or PointerType, in order to be the right size 
- * for 32 and 64 bit platforms.
+ * This extends NativeLong for efficiency, but you should really think of it
+ * as opaque.
  * 
- * @author duncan
+ * Technically, this should be {@link Native#POINTER_SIZE} not {@link Native#LONG_SIZE},
+ * but as they are both 32 on 32-bit and 64 on 64-bit we'll gloss over that.
  *
  */
-public class ID implements NativeMapped {
+public class ID extends NativeLong {
 
-    private int value;
-    
     public ID() {
         this(0);
     };
     
-    public ID(int value) {
-        this.value = value;
+    public ID(long value) {
+        super(value);
     }
     
     @Override
     public String toString() {
-        return String.format("[ID 0x%x]", value); //$NON-NLS-1$
+        return String.format("[ID 0x%x]", longValue()); //$NON-NLS-1$
     }
     
     public boolean isNull() {
-        return value == 0;
+        return longValue() == 0;
     }
-
-    public Object fromNative(Object nativeValue, FromNativeContext context) {
-        if (nativeValue == null)
-            return 0;
-        Integer nativeAsInteger = (Integer) nativeValue;
-        return new ID(nativeAsInteger);
-    }
-    
-    public Class<?> nativeType() {
-        return Integer.class;
-    }
-
-    public Object toNative() {
-        return value;
-    }
-    
-    public int intValue() {
-        return value;
-    }
-    
-    @Override
-    public int hashCode() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ID other = (ID) obj;
-        if (value != other.value)
-            return false;
-        return true;
-    }
-
 }
