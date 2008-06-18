@@ -27,8 +27,7 @@ public class StructsInObjectsTest extends NSTestCase {
     
     public void test() throws Exception {
                 
-        NSSize input = new NSSize(1, 3);
-        NSValue value = NSValue.CLASS.valueWithSize(input);
+        NSValue value = NSValue.CLASS.valueWithSize(new NSSize(1, 3));
         NSSize size = value.sizeValue();
 
         assertEquals(1.0, size.width, 0.0001);
