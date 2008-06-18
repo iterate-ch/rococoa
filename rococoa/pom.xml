@@ -12,7 +12,7 @@
     <dependency>
       <groupId>net.java.dev</groupId>
       <artifactId>jna</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
