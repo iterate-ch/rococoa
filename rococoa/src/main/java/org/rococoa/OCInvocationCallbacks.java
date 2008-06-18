@@ -245,6 +245,9 @@ class OCInvocationCallbacks {
                 candidate;
     }
 
+    /**
+     * @see http://developer.apple.com/documentation/Cocoa/Conceptual/ObjectiveC/Articles/chapter_13_section_9.html
+     */
     protected String ocMethodSignatureAsString(Method method) {
         StringBuilder result = new StringBuilder();
         result.append(stringForType(method.getReturnType()));
