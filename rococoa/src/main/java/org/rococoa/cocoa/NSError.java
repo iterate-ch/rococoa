@@ -19,10 +19,21 @@
  
 package org.rococoa.cocoa;
 
+import org.rococoa.NSClass;
 import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
 
 public interface NSError extends NSObject {
     
-    public int code();
+    public static final _Class CLASS = Rococoa.createClass("NSError", _Class.class); //$NON-NLS-1$
 
+    public interface _Class extends NSClass {
+        NSError alloc();
+    }
+
+    public NSInteger code();
+
+    public String domain();
+
+    public String localizedDescription();
 }

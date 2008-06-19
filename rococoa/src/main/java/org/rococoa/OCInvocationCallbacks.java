@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
@@ -39,9 +40,9 @@ import com.sun.jna.Structure;
  * Holds the callbacks called when a method is invoked on an Objective-C proxy
  * for a Java object.
  * 
- * When a message is sent to an OC object first it is sent respondsToSelector: 
- * then methodSignatureForSelector: Our Obj-C proxy forwards these to
- * methodSignatureCallback; we build a method signature string in Java 
+ * When a message is sent to an OC object first it is sent
+ * methodSignatureForSelector: Our Obj-C proxy forwards this to
+ * methodSignatureCallback; we build a method signature string in Java
  * corresponding to the Java method and return it.
  * 
  * The object is then sent forwardInvocation: passing an NSInvocation. It
@@ -49,13 +50,17 @@ import com.sun.jna.Structure;
  * on the Java Object.
  * 
  * @author duncan
- *
+ * 
  */
 @SuppressWarnings("nls")
 class OCInvocationCallbacks {
 
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
-
+    
+    private static final String NATIVE_LONG_ENCODING = Native.LONG_SIZE == 4 ? "i" : "l"; 
+    @SuppressWarnings("unused")
+    private static final String NATIVE_ULONG_ENCODING = Native.LONG_SIZE == 4 ? "I" : "L"; 
+    
     private final Object javaObject;
     
     /**
@@ -203,7 +208,10 @@ class OCInvocationCallbacks {
             }
         }
         if (objCArgumentTypeAsString.equals("i")) {
-            return buffer.getInt(0);
+            int value = buffer.getInt(0);
+            if (NativeLong.class.isAssignableFrom(javaParameterType))
+                return new NativeLong(value);
+            return value;
         }
         if (objCArgumentTypeAsString.equals("c")) {
             byte character = buffer.getByte(0);
@@ -211,6 +219,10 @@ class OCInvocationCallbacks {
                 return character == 0 ? Boolean.FALSE : Boolean.TRUE;
             else
                 return character;            
+        }
+        if (objCArgumentTypeAsString.equals("s")) {
+            short value = buffer.getShort(0);
+            return value;
         }
         if (Structure.class.isAssignableFrom(javaParameterType)) {
             if (Structure.ByValue.class.isAssignableFrom(javaParameterType))
@@ -313,6 +325,30 @@ class OCInvocationCallbacks {
                 return null;
             return buffer;
         }
+        if (typeToReturnToObjC.equals("s")) {
+            Memory buffer = new Memory(2);
+            if (methodCallResult instanceof Number)
+                buffer.setShort(0, ((Number) methodCallResult).shortValue());
+            else 
+                return null;
+            return buffer;
+        }
+        if (typeToReturnToObjC.equals("i")) {
+            Memory buffer = new Memory(4);
+            if (methodCallResult instanceof Number)
+                buffer.setInt(0, ((Number) methodCallResult).intValue());
+            else 
+                return null;
+            return buffer;
+        }
+        if (typeToReturnToObjC.equals("l")) {
+            Memory buffer = new Memory(8);
+            if (methodCallResult instanceof Number)
+                buffer.setLong(0, ((Number) methodCallResult).longValue());
+            else 
+                return null;
+            return buffer;
+        }
         if (methodCallResult instanceof Structure) {
             if (methodCallResult instanceof Structure.ByValue)
                 return bufferForStructureByValue((Structure) methodCallResult);
@@ -350,24 +386,28 @@ class OCInvocationCallbacks {
     private String stringForType(Class<?> clas) {
         if (clas == void.class)
             return "v";
+        if (clas == boolean.class)
+            return "c"; // Cocoa BOOL is defined as signed char
+        if (clas == byte.class)
+            return "c";
+        if (clas == short.class)
+            return "s";
         if (clas == int.class)
             return "i";
         if (clas == ID.class)
             return "@";
-        if (clas == byte.class)
-            return "c";
         if (NSObject.class.isAssignableFrom(clas))
             return "@";
-        if (clas == boolean.class)
-            return "c"; // Cocoa BOOL is defined as signed char
         if (clas == String.class)
             return "@";
-        if (clas == double.class)
-            return "d";
         if (clas == float.class)
             return "f";
+        if (clas == double.class)
+            return "d";
         if (Structure.class.isAssignableFrom(clas))
             return encodeStruct((Class<? extends Structure>) clas);
+        if (NativeLong.class.isAssignableFrom(clas))
+            return NATIVE_LONG_ENCODING;
         logging.error("Unable to give Objective-C type string for {}", clas);
         return null;
     }

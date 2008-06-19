@@ -67,7 +67,7 @@ public class QTMovieTest extends NSTestCase {
         QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
         assertTrue(movie.id().isNull());
         NSError error = errorReference.getValueAs(NSError.class);
-        assertEquals(-2000, error.code());
+        assertEquals(-2000, error.code().intValue());
     }
 
     public void testAttributeForKey() throws Exception {
