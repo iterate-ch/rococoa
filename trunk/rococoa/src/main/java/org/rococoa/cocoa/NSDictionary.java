@@ -19,6 +19,7 @@
  
 package org.rococoa.cocoa;
 
+import org.rococoa.ID;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
@@ -31,6 +32,6 @@ public interface NSDictionary extends NSObject {
         NSDictionary dictionaryWithObjectsAndKeys(NSObject...objects);
     }
     
-    int count();
-    
+    ID objectForKey(ID aKey);
+    int count();    
 }

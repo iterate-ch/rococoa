@@ -24,6 +24,8 @@ import org.rococoa.cocoa.NSNotification;
 import org.rococoa.cocoa.NSNotificationCenter;
 import org.rococoa.cocoa.NSString;
 
+import com.sun.jna.NativeLong;
+
 @SuppressWarnings("nls")
 public class JavaProxyTest extends NSTestCase {
     
@@ -75,6 +77,11 @@ public class JavaProxyTest extends NSTestCase {
             arg = s;
             return new MyStruct.MyStructByValue(s.anInt, s.aDouble);
         }
+        
+        public NativeLong takesNativeLongReturnsNativeLong(NativeLong l) {
+            arg = l;
+            return l;
+        }
 
         public void notify(NSNotification notification) {
             this.arg = notification;
@@ -92,8 +99,10 @@ public class JavaProxyTest extends NSTestCase {
     
     public void testRepondsToSelector() {
         // respond to selector is required for delegates
-        assertEquals(0, (byte) Foundation.send(ocProxy, "respondsToSelector:", byte.class, Foundation.selector("Bo")));
-        assertEquals(1, (byte) Foundation.send(ocProxy, "respondsToSelector:", byte.class, Foundation.selector("sayHello")));
+        assertEquals(0, (byte) Foundation.send(ocProxy, "respondsToSelector:", 
+                byte.class, Foundation.selector("Bo")));
+        assertEquals(1, (byte) Foundation.send(ocProxy, "respondsToSelector:", 
+                byte.class, Foundation.selector("sayHello")));
     }
     
     public void testNoArgsReturnsVoid() {
@@ -110,30 +119,36 @@ public class JavaProxyTest extends NSTestCase {
     }
 
     public void testTakesIDReturnsID() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "testTakesIDReturnsID:", new ID(42));
+        ID result =  Foundation.sendReturnsID(ocProxy, "testTakesIDReturnsID:", 
+                new ID(42));
         assertEquals("Hello", Foundation.toString(result));        
         assertEquals(new ID(42), implementor.arg);
     }
     
     public void testTakesOCObject() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "takesOCObject:", Foundation.cfString("hello"));
+        ID result =  Foundation.sendReturnsID(ocProxy, "takesOCObject:", 
+                Foundation.cfString("hello"));
         assertTrue(result.isNull());
         assertEquals("hello", ((NSString) implementor.arg).toString());
     }
 
     public void testTakesStringReturnsByte() {
-        byte result = Foundation.send(ocProxy, "takesStringReturnsByte:", byte.class, Foundation.cfString("hello"));
+        byte result = Foundation.send(ocProxy, "takesStringReturnsByte:", 
+                byte.class, Foundation.cfString("hello"));
         assertEquals(42, result);
         assertEquals("hello", ((NSString) implementor.arg).toString());
     }
     
     public void testTakesBooleanReturnsBoolean() {
-        assertTrue(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", boolean.class, false));
-        assertFalse(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", boolean.class, true));
+        assertTrue(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", 
+                boolean.class, false));
+        assertFalse(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", 
+                boolean.class, true));
     }
     
     public void testTakesIntAndInt() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "takesInt:AndInt:", 42, -1);
+        ID result =  Foundation.sendReturnsID(ocProxy, "takesInt:AndInt:", 
+                42, -1);
         assertTrue(result.isNull());
         Object[] arg = (Object[]) implementor.arg;
         assertEquals(42, arg[0]);
@@ -141,12 +156,14 @@ public class JavaProxyTest extends NSTestCase {
     }
     
     public void testTakesJavaStringReturnsJavaString() {
-        assertEquals("lower", Foundation.send(ocProxy, "takesJavaStringReturnsJavaString:", String.class, "LoWeR"));
+        assertEquals("lower", Foundation.send(ocProxy, "takesJavaStringReturnsJavaString:", 
+                String.class, "LoWeR"));
     }
     
     public void testSendAndReceiveStructByReference() {
         MyStruct struct = new MyStruct(42, Math.PI);
-        MyStruct result = Foundation.send(ocProxy, "takesStructureReturnsStructure:", MyStruct.class, struct);
+        MyStruct result = Foundation.send(ocProxy, "takesStructureReturnsStructure:", 
+                MyStruct.class, struct);
         assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
         assertEquals("returning to OC", 42, result.anInt);
@@ -156,11 +173,18 @@ public class JavaProxyTest extends NSTestCase {
     public void testSendAndReceiveStructByValue() {
         // Hmmm, difficult to prove this is passed by value
         MyStructByValue struct = new MyStructByValue(42, Math.PI);
-        MyStruct result = Foundation.send(ocProxy, "takesStructureByValueReturnsStructureByValue:", MyStructByValue.class, struct);
+        MyStruct result = Foundation.send(ocProxy, "takesStructureByValueReturnsStructureByValue:", 
+                MyStructByValue.class, struct);
         assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
         assertEquals("returning to OC", 42, result.anInt);
         assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
+    }
+    
+    public void testSendAndReceiveNativeLong() {
+        NativeLong result = Foundation.send(ocProxy, "takesNativeLongReturnsNativeLong:", 
+                NativeLong.class, new NativeLong(42));
+        assertEquals(42, result.longValue());
     }
     
     public void testMultipleCallbacks() {

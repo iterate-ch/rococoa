@@ -21,6 +21,9 @@ package org.rococoa;
 
 import junit.framework.TestCase;
 
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+
 @SuppressWarnings("nls")
 public class OCInvocationCallbacksTest extends TestCase {
 
@@ -43,6 +46,9 @@ public class OCInvocationCallbacksTest extends TestCase {
         public MyStruct.MyStructByValue returnsMyStructByValueTakesVoid() {
             return null;
         }
+        public NativeLong returnsNativeLongTakesNativeLong(NativeLong l) {
+            return null;
+        }
     }
 
     private OCInvocationCallbacks callbacks;
@@ -63,7 +69,6 @@ public class OCInvocationCallbacksTest extends TestCase {
         assertEquals(
             JavaImplementor.class.getDeclaredMethod("returnsVoidTakesInt_andInt", int.class, int.class),
             callbacks.methodForSelector("returnsVoidTakesInt:andInt:"));
-        
         // wrong number of args
         assertNull(callbacks.methodForSelector("returnsVoidTakesVoid:")); 
         assertNull(callbacks.methodForSelector("returnsVoidTakesInt"));
@@ -78,6 +83,10 @@ public class OCInvocationCallbacksTest extends TestCase {
         assertEquals("v@:ii", callbacks.methodSignatureForSelector("returnsVoidTakesInt:andInt:"));
         assertEquals("v@:@", callbacks.methodSignatureForSelector("returnsVoidTakesOCObject:"));
         assertEquals("c@:@", callbacks.methodSignatureForSelector("returnsByteTakesOCObject:"));
+        if (Native.LONG_SIZE == 4)
+            assertEquals("i@:i", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
+        else 
+            assertEquals("l@:l", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
     }
     
     
