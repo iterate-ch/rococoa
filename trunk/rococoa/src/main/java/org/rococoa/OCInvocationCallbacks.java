@@ -93,6 +93,35 @@ class OCInvocationCallbacks {
                 ocMethodSignatureAsString(method);
     }
 
+    protected Method methodForSelector(String selectorName) {
+        int parameterCount = countColons(selectorName);
+        String methodName = methodNameForSelector(selectorName);
+        try {
+            Method[] methods = javaObject.getClass().getMethods();
+            for (Method method : methods) {
+                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount)
+                    return method;
+            }
+            return null;
+        } catch (Exception e) {
+            logging.error("Exception finding methodForSelector", e);
+            return null;
+        }
+    }
+
+    /**
+     * @see http://developer.apple.com/documentation/Cocoa/Conceptual/ObjectiveC/Articles/chapter_13_section_9.html
+     */
+    protected String ocMethodSignatureAsString(Method method) {
+        StringBuilder result = new StringBuilder();
+        result.append(stringForType(method.getReturnType()));
+        result.append("@:"); // self and cmd - id and selector
+        for (Class<?> parameterType : method.getParameterTypes()) {
+            result.append(stringForType(parameterType));
+        }
+        return result.toString();
+    }
+
     private void callMethod(Object o, String selectorName, NSInvocation invocation) {
         try {
             Method method = methodForSelector(selectorName);
@@ -125,49 +154,12 @@ class OCInvocationCallbacks {
         }
     }
 
-    private void putResultIntoInvocation(NSInvocation invocation, String typeToReturnToObjC, Object result) {
-        if (typeToReturnToObjC.equals("v")) // void
-            return;
-        
-        Memory buffer = bufferForReturn(typeToReturnToObjC, result);
-        if (buffer == null)
-            throw new IllegalStateException(
-                    String.format("Don't (yet) know how to marshall result %s as Objective-C type %s", result, typeToReturnToObjC));
-            
-        invocation.setReturnValue(buffer);
+    private String methodNameForSelector(String selectorName) {
+        String candidate =  selectorName.replaceAll(":", "_");
+        return candidate.endsWith("_") ? 
+                candidate.substring(0, candidate.length() - 1) :
+                candidate;
     }
-
-    private Memory bufferForReturn(String typeToReturnToObjC, Object methodCallResult) {
-    
-        // TODO - more conversions
-        if (typeToReturnToObjC.equals("@")) {
-            Memory buffer = new Memory(4);
-            if (methodCallResult instanceof ID)
-                buffer.setInt(0, ((ID) methodCallResult).intValue());
-            else if (methodCallResult instanceof String)
-                buffer.setInt(0, Foundation.cfString((String) methodCallResult).intValue());
-            return buffer;
-        }
-        if (typeToReturnToObjC.equals("c")) {
-            Memory buffer = new Memory(1);
-            if (methodCallResult instanceof Boolean)
-                buffer.setByte(0, ((Boolean) methodCallResult) ? (byte) 1 : (byte) 0);
-            else if (methodCallResult instanceof Byte)
-                buffer.setByte(0, ((Byte) methodCallResult).byteValue());
-            else 
-                return null;
-            return buffer;
-        }
-        if (methodCallResult instanceof Structure) {
-            Structure resultAsStructure = (Structure) methodCallResult;
-            resultAsStructure.write();
-            Memory buffer = new Memory(Native.POINTER_SIZE);
-            buffer.setPointer(0, resultAsStructure.getPointer());
-            return buffer;
-        }
-        return null;
-    }
-    
 
     private Object[] argsForFrom(Method method, NSInvocation invocation, NSMethodSignature nsMethodSignature) {
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -245,21 +237,49 @@ class OCInvocationCallbacks {
         }
     }
 
-    protected Method methodForSelector(String selectorName) {
-        int parameterCount = countColons(selectorName);
-        String methodName = methodNameForSelector(selectorName);
-        try {
-            Method[] methods = javaObject.getClass().getMethods();
-            for (Method method : methods) {
-                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount)
-                    return method;
-            }
-            return null;
-        } catch (Exception e) {
-            logging.error("Exception finding methodForSelector", e);
-            return null;
-        }
+    private void putResultIntoInvocation(NSInvocation invocation, String typeToReturnToObjC, Object result) {
+        if (typeToReturnToObjC.equals("v")) // void
+            return;
+        
+        Memory buffer = bufferForReturn(typeToReturnToObjC, result);
+        if (buffer == null)
+            throw new IllegalStateException(
+                    String.format("Don't (yet) know how to marshall result %s as Objective-C type %s", result, typeToReturnToObjC));
+            
+        invocation.setReturnValue(buffer);
     }
+
+    private Memory bufferForReturn(String typeToReturnToObjC, Object methodCallResult) {
+    
+        // TODO - more conversions
+        if (typeToReturnToObjC.equals("@")) {
+            Memory buffer = new Memory(4);
+            if (methodCallResult instanceof ID)
+                buffer.setInt(0, ((ID) methodCallResult).intValue());
+            else if (methodCallResult instanceof String)
+                buffer.setInt(0, Foundation.cfString((String) methodCallResult).intValue());
+            return buffer;
+        }
+        if (typeToReturnToObjC.equals("c")) {
+            Memory buffer = new Memory(1);
+            if (methodCallResult instanceof Boolean)
+                buffer.setByte(0, ((Boolean) methodCallResult) ? (byte) 1 : (byte) 0);
+            else if (methodCallResult instanceof Byte)
+                buffer.setByte(0, ((Byte) methodCallResult).byteValue());
+            else 
+                return null;
+            return buffer;
+        }
+        if (methodCallResult instanceof Structure) {
+            Structure resultAsStructure = (Structure) methodCallResult;
+            resultAsStructure.write();
+            Memory buffer = new Memory(Native.POINTER_SIZE);
+            buffer.setPointer(0, resultAsStructure.getPointer());
+            return buffer;
+        }
+        return null;
+    }
+    
 
     private int countColons(String selectorName) {
         int result = 0;
@@ -270,26 +290,6 @@ class OCInvocationCallbacks {
         return result;
     }
     
-    private String methodNameForSelector(String selectorName) {
-        String candidate =  selectorName.replaceAll(":", "_");
-        return candidate.endsWith("_") ? 
-                candidate.substring(0, candidate.length() - 1) :
-                candidate;
-    }
-
-    /**
-     * @see http://developer.apple.com/documentation/Cocoa/Conceptual/ObjectiveC/Articles/chapter_13_section_9.html
-     */
-    protected String ocMethodSignatureAsString(Method method) {
-        StringBuilder result = new StringBuilder();
-        result.append(stringForType(method.getReturnType()));
-        result.append("@:"); // self and cmd - id and selector
-        for (Class<?> parameterType : method.getParameterTypes()) {
-            result.append(stringForType(parameterType));
-        }
-        return result.toString();
-    }
-
     @SuppressWarnings("unchecked")
     private String stringForType(Class<?> clas) {
         if (clas == void.class)
