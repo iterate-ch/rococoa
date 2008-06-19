@@ -21,6 +21,7 @@ package org.rococoa;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,7 +167,7 @@ class OCInvocationCallbacks {
         Object[] result = new Object[parameterTypes.length];
         for (int i = 0; i < result.length; i++) {
             int indexAccountingForSelfAndCmd = 2 + i;
-            result[i] = javaObjectForOCArgumentParam(invocation, 
+            result[i] = javaObjectForOCArgument(invocation, 
                     indexAccountingForSelfAndCmd,
                     nsMethodSignature.getArgumentTypeAtIndex(indexAccountingForSelfAndCmd), 
                     parameterTypes[i]);
@@ -182,16 +183,17 @@ class OCInvocationCallbacks {
      * and return a Java object of the desired type.
      */
     @SuppressWarnings("unchecked")
-    private Object javaObjectForOCArgumentParam(NSInvocation invocation,
+    private Object javaObjectForOCArgument(NSInvocation invocation,
             int indexInInvocation, String objCArgumentTypeAsString, Class<?> javaParameterType) {
         
         // TODO - I can't help feeling that JNA's marshalling code must come in handy here.
+        // also Native.toNativeSize(Class)
         Memory buffer = new Memory(4);
         invocation.getArgument_atIndex(buffer, indexInInvocation);
         
         // TODO - more conversions
         if (objCArgumentTypeAsString.equals("@")) {
-            ID id = new ID(buffer.getInt(0));
+            ID id = new ID(buffer.getInt(0)); // TODO - NativeLong
             if (javaParameterType == ID.class)
                 return id;
             if (NSObject.class.isAssignableFrom(javaParameterType))
@@ -211,35 +213,76 @@ class OCInvocationCallbacks {
                 return character;            
         }
         if (Structure.class.isAssignableFrom(javaParameterType)) {
-            return readStructure(invocation, indexInInvocation, objCArgumentTypeAsString, (Class<? extends Structure>) javaParameterType);
+            if (Structure.ByValue.class.isAssignableFrom(javaParameterType))
+                return readStructureByValue(invocation, indexInInvocation, 
+                        objCArgumentTypeAsString, (Class<? extends Structure>) javaParameterType);
+            else
+                return readStructureByReference(invocation, indexInInvocation, 
+                        objCArgumentTypeAsString, (Class<? extends Structure>) javaParameterType);
+                
         }
         throw new IllegalStateException(
                 String.format("Don't (yet) know how to marshall parameter Objective-C type %s as %s", objCArgumentTypeAsString, javaParameterType));
     }
 
-    private Structure readStructure(NSInvocation invocation, int indexInInvocation, 
+    private Structure readStructureByValue(NSInvocation invocation, int indexInInvocation, 
             String objCArgumentTypeAsString, Class<? extends Structure> javaParameterType)
     {
+        Structure result = newInstance(javaParameterType);
+        Memory buffer = new Memory(result.size());
+        invocation.getArgument_atIndex(buffer, indexInInvocation);
+        return copyBufferToStructure(buffer, result);
+    }
+    
+    private Structure readStructureByReference(NSInvocation invocation, int indexInInvocation, 
+            String objCArgumentTypeAsString, Class<? extends Structure> javaParameterType)
+    {
+        Memory buffer = new Memory(Native.POINTER_SIZE);
+        invocation.getArgument_atIndex(buffer, indexInInvocation);
+        Pointer pointerToResult = buffer.getPointer(0);
+        Structure result = newInstance(javaParameterType);        
+        return copyBufferToStructure(pointerToResult, result);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T newInstance(Class<?> clas) {
         try {
-            // just by reference for now
-            Memory buffer = new Memory(Native.POINTER_SIZE);
-            invocation.getArgument_atIndex(buffer, indexInInvocation);
-            Pointer pointerToResult = buffer.getPointer(0);
-            Structure result = javaParameterType.newInstance();
-            byte[] structBytes = new byte[result.size()];
-            pointerToResult.read(0, structBytes, 0, structBytes.length);
-            Pointer structMemory = result.getPointer();
-            structMemory.write(0, structBytes, 0, structBytes.length);
-            result.read();
-            return result;
-        } catch (Exception x) {
-            throw new RuntimeException("Could not read structure", x);
+            return (T) clas.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Could not instantiate " + clas,  e);
         }
     }
 
+    private Structure copyBufferToStructure(Pointer buffer, Structure structure) {
+        int byteCount = structure.size();
+        memcpy(structure.getPointer(), buffer, byteCount);
+        structure.read();
+        return structure;
+    }
+
+    private void memcpy(Pointer dest, Pointer src, int byteCount) {
+        memcpyViaByteBuffer(dest, src, byteCount);
+    }
+
+    @SuppressWarnings("unused") // kept as naive implementation
+    private void memcpyViaArray(Pointer dest, Pointer src, int byteCount) {
+        byte[] structBytes = new byte[byteCount];
+        src.read(0, structBytes, 0, byteCount);
+        dest.write(0, structBytes, 0, byteCount);
+    }
+
+    private void memcpyViaByteBuffer(Pointer dest, Pointer src, int byteCount) {
+        ByteBuffer destBuffer = dest.getByteBuffer(0, byteCount);
+        ByteBuffer srcBuffer = src.getByteBuffer(0, byteCount);
+        destBuffer.put(srcBuffer);
+    }
+    
     private void putResultIntoInvocation(NSInvocation invocation, String typeToReturnToObjC, Object result) {
-        if (typeToReturnToObjC.equals("v")) // void
+        if (typeToReturnToObjC.equals("v")) {
+            if (result != null)
+                throw new IllegalStateException("Java method returned a result, but expected void");// void
             return;
+        }
         
         Memory buffer = bufferForReturn(typeToReturnToObjC, result);
         if (buffer == null)
@@ -271,15 +314,28 @@ class OCInvocationCallbacks {
             return buffer;
         }
         if (methodCallResult instanceof Structure) {
-            Structure resultAsStructure = (Structure) methodCallResult;
-            resultAsStructure.write();
-            Memory buffer = new Memory(Native.POINTER_SIZE);
-            buffer.setPointer(0, resultAsStructure.getPointer());
-            return buffer;
+            if (methodCallResult instanceof Structure.ByValue)
+                return bufferForStructureByValue((Structure) methodCallResult);
+            else
+                return bufferForStructureByReference((Structure) methodCallResult);
         }
         return null;
     }
-    
+
+    private Memory bufferForStructureByValue(Structure methodCallResult) {
+        methodCallResult.write();
+        int byteCount = methodCallResult.size();
+        Memory buffer = new Memory(byteCount);
+        memcpy(buffer, methodCallResult.getPointer(), byteCount);
+        return buffer;
+    }
+
+    private Memory bufferForStructureByReference(Structure methodCallResult) {
+        methodCallResult.write();
+        Memory buffer = new Memory(Native.POINTER_SIZE);
+        buffer.setPointer(0, methodCallResult.getPointer());
+        return buffer;
+    }
 
     private int countColons(String selectorName) {
         int result = 0;

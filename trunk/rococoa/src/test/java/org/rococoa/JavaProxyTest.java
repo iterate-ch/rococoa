@@ -19,6 +19,7 @@
  
 package org.rococoa;
 
+import org.rococoa.MyStruct.MyStructByValue;
 import org.rococoa.cocoa.NSNotification;
 import org.rococoa.cocoa.NSNotificationCenter;
 import org.rococoa.cocoa.NSString;
@@ -69,7 +70,12 @@ public class JavaProxyTest extends NSTestCase {
             arg = s;
             return new MyStruct(s.anInt, s.aDouble);
         }
-        
+
+        public MyStruct.MyStructByValue takesStructureByValueReturnsStructureByValue(MyStruct.MyStructByValue s) {
+            arg = s;
+            return new MyStruct.MyStructByValue(s.anInt, s.aDouble);
+        }
+
         public void notify(NSNotification notification) {
             this.arg = notification;
         }
@@ -143,8 +149,18 @@ public class JavaProxyTest extends NSTestCase {
         MyStruct result = Foundation.send(ocProxy, "takesStructureReturnsStructure:", MyStruct.class, struct);
         assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
-        assertEquals("passing to OC", 42, result.anInt);
-        assertEquals("passing to OC", Math.PI, result.aDouble, 0.00001);
+        assertEquals("returning to OC", 42, result.anInt);
+        assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
+    }
+
+    public void testSendAndReceiveStructByValue() {
+        // Hmmm, difficult to prove this is passed by value
+        MyStructByValue struct = new MyStructByValue(42, Math.PI);
+        MyStruct result = Foundation.send(ocProxy, "takesStructureByValueReturnsStructureByValue:", MyStructByValue.class, struct);
+        assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
+        assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
+        assertEquals("returning to OC", 42, result.anInt);
+        assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
     }
     
     public void testMultipleCallbacks() {
