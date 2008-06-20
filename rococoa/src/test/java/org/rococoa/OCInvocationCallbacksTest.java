@@ -21,6 +21,8 @@ package org.rococoa;
 
 import junit.framework.TestCase;
 
+import org.rococoa.cocoa.NSString;
+
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 
@@ -47,6 +49,12 @@ public class OCInvocationCallbacksTest extends TestCase {
             return null;
         }
         public NativeLong returnsNativeLongTakesNativeLong(NativeLong l) {
+            return null;
+        }
+        public String returnsStringTakesString(String s) {
+            return null;
+        }
+        public NSString returnsNSStringTakesNSString(NSString s) {
             return null;
         }
     }
@@ -87,6 +95,8 @@ public class OCInvocationCallbacksTest extends TestCase {
             assertEquals("i@:i", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
         else 
             assertEquals("l@:l", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
+        assertEquals("@@:@", callbacks.methodSignatureForSelector("returnsStringTakesString:"));
+        assertEquals("@@:@", callbacks.methodSignatureForSelector("returnsNSStringTakesNSString:"));
     }
     
     
