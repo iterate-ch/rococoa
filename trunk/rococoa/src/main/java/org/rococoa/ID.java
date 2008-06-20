@@ -43,6 +43,10 @@ public class ID extends NativeLong {
         super(value);
     }
     
+    public ID(NativeLong value) {
+        super(value.longValue());
+    }
+    
     @Override
     public String toString() {
         return String.format("[ID 0x%x]", longValue()); //$NON-NLS-1$

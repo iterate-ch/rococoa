@@ -19,11 +19,7 @@
  
 package org.rococoa;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.rococoa.cocoa.NSInvocation;
 import org.rococoa.cocoa.NSMethodSignature;
@@ -31,10 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
 
 /**
  * Holds the callbacks called when a method is invoked on an Objective-C proxy
@@ -56,11 +48,7 @@ import com.sun.jna.Structure;
 class OCInvocationCallbacks {
 
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
-    
-    private static final String NATIVE_LONG_ENCODING = Native.LONG_SIZE == 4 ? "i" : "l"; 
-    @SuppressWarnings("unused")
-    private static final String NATIVE_ULONG_ENCODING = Native.LONG_SIZE == 4 ? "I" : "L"; 
-    
+        
     private final Object javaObject;
     
     /**
@@ -187,108 +175,16 @@ class OCInvocationCallbacks {
      * Our mission is to get the value of the argument from the NSInvocation
      * and return a Java object of the desired type.
      */
-    @SuppressWarnings("unchecked")
     private Object javaObjectForOCArgument(NSInvocation invocation,
             int indexInInvocation, String objCArgumentTypeAsString, Class<?> javaParameterType) {
-        
-        // TODO - I can't help feeling that JNA's marshalling code must come in handy here.
-        // also Native.toNativeSize(Class)
-        Memory buffer = new Memory(4);
-        invocation.getArgument_atIndex(buffer, indexInInvocation);
-        
-        // TODO - more conversions
-        if (objCArgumentTypeAsString.equals("@")) {
-            ID id = new ID(buffer.getInt(0)); // TODO - NativeLong
-            if (javaParameterType == ID.class)
-                return id;
-            if (NSObject.class.isAssignableFrom(javaParameterType))
-                return Rococoa.wrap(id, (Class<? extends NSObject>)javaParameterType);
-            if (javaParameterType == String.class) {
-                return Foundation.toString(id);
-            }
-        }
-        if (objCArgumentTypeAsString.equals("i")) {
-            int value = buffer.getInt(0);
-            if (NativeLong.class.isAssignableFrom(javaParameterType))
-                return new NativeLong(value);
-            return value;
-        }
-        if (objCArgumentTypeAsString.equals("c")) {
-            byte character = buffer.getByte(0);
-            if (javaParameterType == boolean.class)
-                return character == 0 ? Boolean.FALSE : Boolean.TRUE;
-            else
-                return character;            
-        }
-        if (objCArgumentTypeAsString.equals("s")) {
-            short value = buffer.getShort(0);
-            return value;
-        }
-        if (Structure.class.isAssignableFrom(javaParameterType)) {
-            if (Structure.ByValue.class.isAssignableFrom(javaParameterType))
-                return readStructureByValue(invocation, indexInInvocation, 
-                        objCArgumentTypeAsString, (Class<? extends Structure>) javaParameterType);
-            else
-                return readStructureByReference(invocation, indexInInvocation, 
-                        objCArgumentTypeAsString, (Class<? extends Structure>) javaParameterType);
-                
-        }
-        throw new IllegalStateException(
-                String.format("Don't (yet) know how to marshall parameter Objective-C type %s as %s", objCArgumentTypeAsString, javaParameterType));
+        NSInvocationMapper mapper = NSInvocationMapper.mapperForType(javaParameterType);
+        if (mapper == null)
+            throw new IllegalStateException(
+                String.format("Don't (yet) know how to marshall argument Objective-C type %s as %s", 
+                        objCArgumentTypeAsString, javaParameterType));
+        return mapper.readArgumentFrom(invocation, indexInInvocation, javaParameterType);
     }
 
-    private Structure readStructureByValue(NSInvocation invocation, int indexInInvocation, 
-            String objCArgumentTypeAsString, Class<? extends Structure> javaParameterType)
-    {
-        Structure result = newInstance(javaParameterType);
-        Memory buffer = new Memory(result.size());
-        invocation.getArgument_atIndex(buffer, indexInInvocation);
-        return copyBufferToStructure(buffer, result);
-    }
-    
-    private Structure readStructureByReference(NSInvocation invocation, int indexInInvocation, 
-            String objCArgumentTypeAsString, Class<? extends Structure> javaParameterType)
-    {
-        Memory buffer = new Memory(Native.POINTER_SIZE);
-        invocation.getArgument_atIndex(buffer, indexInInvocation);
-        Pointer pointerToResult = buffer.getPointer(0);
-        Structure result = newInstance(javaParameterType);        
-        return copyBufferToStructure(pointerToResult, result);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T newInstance(Class<?> clas) {
-        try {
-            return (T) clas.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Could not instantiate " + clas,  e);
-        }
-    }
-
-    private Structure copyBufferToStructure(Pointer buffer, Structure structure) {
-        int byteCount = structure.size();
-        memcpy(structure.getPointer(), buffer, byteCount);
-        structure.read();
-        return structure;
-    }
-
-    private void memcpy(Pointer dest, Pointer src, int byteCount) {
-        memcpyViaByteBuffer(dest, src, byteCount);
-    }
-
-    @SuppressWarnings("unused") // kept as naive implementation
-    private void memcpyViaArray(Pointer dest, Pointer src, int byteCount) {
-        byte[] structBytes = new byte[byteCount];
-        src.read(0, structBytes, 0, byteCount);
-        dest.write(0, structBytes, 0, byteCount);
-    }
-
-    private void memcpyViaByteBuffer(Pointer dest, Pointer src, int byteCount) {
-        ByteBuffer destBuffer = dest.getByteBuffer(0, byteCount);
-        ByteBuffer srcBuffer = src.getByteBuffer(0, byteCount);
-        destBuffer.put(srcBuffer);
-    }
-    
     private void putResultIntoInvocation(NSInvocation invocation, String typeToReturnToObjC, Object result) {
         if (typeToReturnToObjC.equals("v")) {
             if (result != null)
@@ -305,72 +201,8 @@ class OCInvocationCallbacks {
     }
 
     private Memory bufferForReturn(String typeToReturnToObjC, Object methodCallResult) {
-    
-        // TODO - more conversions
-        if (typeToReturnToObjC.equals("@")) {
-            Memory buffer = new Memory(4);
-            if (methodCallResult instanceof ID)
-                buffer.setInt(0, ((ID) methodCallResult).intValue());
-            else if (methodCallResult instanceof String)
-                buffer.setInt(0, Foundation.cfString((String) methodCallResult).intValue());
-            return buffer;
-        }
-        if (typeToReturnToObjC.equals("c")) {
-            Memory buffer = new Memory(1);
-            if (methodCallResult instanceof Boolean)
-                buffer.setByte(0, ((Boolean) methodCallResult) ? (byte) 1 : (byte) 0);
-            else if (methodCallResult instanceof Byte)
-                buffer.setByte(0, ((Byte) methodCallResult).byteValue());
-            else 
-                return null;
-            return buffer;
-        }
-        if (typeToReturnToObjC.equals("s")) {
-            Memory buffer = new Memory(2);
-            if (methodCallResult instanceof Number)
-                buffer.setShort(0, ((Number) methodCallResult).shortValue());
-            else 
-                return null;
-            return buffer;
-        }
-        if (typeToReturnToObjC.equals("i")) {
-            Memory buffer = new Memory(4);
-            if (methodCallResult instanceof Number)
-                buffer.setInt(0, ((Number) methodCallResult).intValue());
-            else 
-                return null;
-            return buffer;
-        }
-        if (typeToReturnToObjC.equals("l")) {
-            Memory buffer = new Memory(8);
-            if (methodCallResult instanceof Number)
-                buffer.setLong(0, ((Number) methodCallResult).longValue());
-            else 
-                return null;
-            return buffer;
-        }
-        if (methodCallResult instanceof Structure) {
-            if (methodCallResult instanceof Structure.ByValue)
-                return bufferForStructureByValue((Structure) methodCallResult);
-            else
-                return bufferForStructureByReference((Structure) methodCallResult);
-        }
-        return null;
-    }
-
-    private Memory bufferForStructureByValue(Structure methodCallResult) {
-        methodCallResult.write();
-        int byteCount = methodCallResult.size();
-        Memory buffer = new Memory(byteCount);
-        memcpy(buffer, methodCallResult.getPointer(), byteCount);
-        return buffer;
-    }
-
-    private Memory bufferForStructureByReference(Structure methodCallResult) {
-        methodCallResult.write();
-        Memory buffer = new Memory(Native.POINTER_SIZE);
-        buffer.setPointer(0, methodCallResult.getPointer());
-        return buffer;
+        NSInvocationMapper mapper = NSInvocationMapper.mapperForType(methodCallResult.getClass());
+        return mapper == null ? null : mapper.bufferForResult(methodCallResult);
     }
 
     private int countColons(String selectorName) {
@@ -382,56 +214,11 @@ class OCInvocationCallbacks {
         return result;
     }
     
-    @SuppressWarnings("unchecked")
     private String stringForType(Class<?> clas) {
-        if (clas == void.class)
-            return "v";
-        if (clas == boolean.class)
-            return "c"; // Cocoa BOOL is defined as signed char
-        if (clas == byte.class)
-            return "c";
-        if (clas == short.class)
-            return "s";
-        if (clas == int.class)
-            return "i";
-        if (clas == ID.class)
-            return "@";
-        if (NSObject.class.isAssignableFrom(clas))
-            return "@";
-        if (clas == String.class)
-            return "@";
-        if (clas == float.class)
-            return "f";
-        if (clas == double.class)
-            return "d";
-        if (Structure.class.isAssignableFrom(clas))
-            return encodeStruct((Class<? extends Structure>) clas);
-        if (NativeLong.class.isAssignableFrom(clas))
-            return NATIVE_LONG_ENCODING;
-        logging.error("Unable to give Objective-C type string for {}", clas);
-        return null;
-    }
-
-    private String encodeStruct(Class<? extends Structure> clas) {
-        StringBuilder result = new StringBuilder();
-        if (!(Structure.ByValue.class.isAssignableFrom(clas)))
-            result.append('^'); // pointer to
-            
-        result.append('{').append(clas.getSimpleName()).append('=');
-        for (Field f : collectStructFields(clas, new ArrayList<Field>())) {
-            result.append(stringForType(f.getType()));
-        }
-        return result.append('}').toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Field> collectStructFields(Class<? extends Structure> clas, List<Field> list) {
-        if (clas == Structure.class)
-            return list;
-        for (Field f : clas.getDeclaredFields()) {
-            list.add(f);
-        }
-        return collectStructFields((Class<? extends Structure>) clas.getSuperclass(), list);
+        NSInvocationMapper result = NSInvocationMapper.mapperForType(clas);
+        if (result == null)
+            throw new RuntimeException("Unable to give Objective-C type string for Java type " + clas);
+        return result.typeString(); 
     }
     
     /*

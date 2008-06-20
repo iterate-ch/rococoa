@@ -45,8 +45,9 @@ public class JavaProxyTest extends NSTestCase {
             return Foundation.cfString("Hello");
         }
         
-        public void takesOCObject(NSString s) {
-            arg = s;            
+        public NSObject takesNSObjectReturnsNSObject(NSObject s) {
+            arg = s;
+            return s;
         }
         
         public void takesInt_AndInt(int a, int b) {
@@ -125,11 +126,13 @@ public class JavaProxyTest extends NSTestCase {
         assertEquals(new ID(42), implementor.arg);
     }
     
-    public void testTakesOCObject() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "takesOCObject:", 
+    public void testTakesNSObjectReturnsNSObject() {
+        ID result = Foundation.sendReturnsID(ocProxy, "takesNSObjectReturnsNSObject:", 
                 Foundation.cfString("hello"));
-        assertTrue(result.isNull());
-        assertEquals("hello", ((NSString) implementor.arg).toString());
+        assertEquals("hello", Foundation.toString(result));
+        assertEquals("hello", 
+                Rococoa.cast((NSObject) implementor.arg, NSString.class).toString());
+                // as parameter was NSObject, it lost its string-ness
     }
 
     public void testTakesStringReturnsByte() {
