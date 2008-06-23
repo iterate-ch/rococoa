@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.rococoa.cocoa.NSInteger;
 import org.rococoa.cocoa.NSInvocation;
+import org.rococoa.cocoa.NSUInteger;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -23,9 +25,12 @@ import com.sun.jna.Structure;
  */
 public abstract class NSInvocationMapper {
 
-    private static final String NATIVE_LONG_ENCODING = Native.LONG_SIZE == 4 ? "i" : "l"; 
-    @SuppressWarnings("unused")
-    private static final String NATIVE_ULONG_ENCODING = Native.LONG_SIZE == 4 ? "I" : "L"; 
+    private static final int NATIVE_POINTER_SIZE = Native.POINTER_SIZE;
+    private static final int NATIVE_LONG_SIZE = Native.LONG_SIZE;
+    
+    private static final String NATIVE_LONG_ENCODING = NATIVE_LONG_SIZE == 4 ? "l" : "q";
+    private static final String NSINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "i" : "q";
+    private static final String NSUINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "I" : "Q";
 
     private static final Map<Class<?>, NSInvocationMapper> lookup = new HashMap<Class<?>, NSInvocationMapper>();
     private static final List<NSInvocationMapper> subtypeInstances = new ArrayList<NSInvocationMapper>();
@@ -92,17 +97,15 @@ public abstract class NSInvocationMapper {
             return result;
         }
     };
-    public static final NSInvocationMapper LONG = new NSInvocationMapper("l", long.class) {
+    public static final NSInvocationMapper LONG = new NSInvocationMapper("q", long.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
-            throw new UnsupportedOperationException("Don't yet support long, while I think what to do");
-            // TODO - think what to do
+            return buffer.getLong(0);
         }
-
-        @Override
-        public Memory bufferForResult(Object methodCallResult) {
-            throw new UnsupportedOperationException("Don't yet support long, while I think what to do");
-            // TODO - think what to do
-        }                
+        @Override public Memory bufferForResult(Object methodCallResult) {
+            Memory result = new Memory(8);
+            result.setLong(0, (Long) methodCallResult);
+            return result;
+        };
     };
     public static final NSInvocationMapper FLOAT = new NSInvocationMapper("f", float.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
@@ -129,7 +132,7 @@ public abstract class NSInvocationMapper {
             return new ID(buffer.getNativeLong(0));
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
-            Memory result = new Memory(Native.POINTER_SIZE);
+            Memory result = new Memory(NATIVE_POINTER_SIZE);
             result.setNativeLong(0, ((ID) methodCallResult));
             return result;
         };
@@ -139,7 +142,7 @@ public abstract class NSInvocationMapper {
             return Foundation.toString(new ID(buffer.getNativeLong(0)));
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
-            Memory buffer = new Memory(Native.POINTER_SIZE);
+            Memory buffer = new Memory(NATIVE_POINTER_SIZE);
             buffer.setNativeLong(0, Foundation.cfString((String) methodCallResult));
             return buffer;
         }
@@ -150,18 +153,37 @@ public abstract class NSInvocationMapper {
             return Rococoa.wrap(new ID(buffer.getNativeLong(0)), (Class<? extends NSObject>) type);
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
-            Memory buffer = new Memory(Native.POINTER_SIZE);
+            Memory buffer = new Memory(NATIVE_POINTER_SIZE);
             buffer.setNativeLong(0, ((NSObject) methodCallResult).id());
             return buffer;
         }
-
+    };
+    public static final NSInvocationMapper NSINTEGER = new NSInvocationMapper(NSINTEGER_ENCODING, NSInteger.class) {
+        @Override public Object readFrom(Memory buffer, Class<?> type) {
+            return buffer.getInt(0);
+        }
+        @Override public Memory bufferForResult(Object methodCallResult) {
+            Memory result = new Memory(4);
+            result.setInt(0, ((Integer) methodCallResult));
+            return result;
+        }
+    };
+    public static final NSInvocationMapper NSUINTEGER = new NSInvocationMapper(NSUINTEGER_ENCODING, NSUInteger.class) {
+        @Override public Object readFrom(Memory buffer, Class<?> type) {
+            return buffer.getInt(0);
+        }
+        @Override public Memory bufferForResult(Object methodCallResult) {
+            Memory result = new Memory(4);
+            result.setInt(0, ((Integer) methodCallResult));
+            return result;
+        }
     };
     public static final NSInvocationMapper NATIVELONG = new SubtypeInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
             return buffer.getNativeLong(0);
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
-            Memory result = new Memory(Native.LONG_SIZE);
+            Memory result = new Memory(NATIVE_LONG_SIZE);
             result.setNativeLong(0, ((NativeLong) methodCallResult));
             return result;
         }
@@ -207,7 +229,7 @@ public abstract class NSInvocationMapper {
     }
     
     public Object readArgumentFrom(NSInvocation invocation, int index, Class<?> type) {
-        Memory buffer = new Memory(Native.LONG_SIZE);
+        Memory buffer = new Memory(8); // big enough for long or double
         invocation.getArgument_atIndex(buffer, index);
         return readFrom(buffer, type);
     }
@@ -308,7 +330,7 @@ static class StructureInvocationMapper extends NSInvocationMapper {
     private Structure readStructureByReference(NSInvocation invocation, int index, 
             Class<? extends Structure> type)
     {
-        Memory buffer = new Memory(Native.POINTER_SIZE);
+        Memory buffer = new Memory(NATIVE_POINTER_SIZE);
         invocation.getArgument_atIndex(buffer, index);
         Pointer pointerToResult = buffer.getPointer(0);
         Structure result = newInstance(type);        
@@ -341,7 +363,7 @@ static class StructureInvocationMapper extends NSInvocationMapper {
 
     private Memory bufferForStructureByReference(Structure methodCallResult) {
         methodCallResult.write();
-        Memory buffer = new Memory(Native.POINTER_SIZE);
+        Memory buffer = new Memory(NATIVE_POINTER_SIZE);
         buffer.setPointer(0, methodCallResult.getPointer());
         return buffer;
     }
