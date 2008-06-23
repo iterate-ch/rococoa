@@ -26,7 +26,7 @@ import com.sun.jna.ToNativeConverter;
 import com.sun.jna.TypeMapper;
 
 @SuppressWarnings("nls")
-public class RococoaTypeMapperTest extends NSTestCase {
+public class RococoaTypeMapperTest extends RococoaTestCase {
     
     private TypeMapper typeMapper = new RococoaTypeMapper();
     

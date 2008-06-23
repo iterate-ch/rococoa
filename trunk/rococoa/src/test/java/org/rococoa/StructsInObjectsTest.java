@@ -23,8 +23,7 @@ import org.rococoa.cocoa.NSSize;
 import org.rococoa.cocoa.NSValue;
 
 
-public class StructsInObjectsTest extends NSTestCase {
-    
+public class StructsInObjectsTest extends RococoaTestCase {
     public void test() throws Exception {
                 
         NSValue value = NSValue.CLASS.valueWithSize(new NSSize(1, 3));

@@ -22,8 +22,7 @@ package org.rococoa;
 
 
 @SuppressWarnings("nls")
-public class RococoaMainThreadTest extends NSTestCase {
-    
+public class RococoaMainThreadTest extends RococoaTestCase {
     private interface TestShunt extends NSObject {
         boolean isMainThread();
     };

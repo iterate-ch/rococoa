@@ -21,7 +21,7 @@ package org.rococoa.quicktime;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSTestCase;
+import org.rococoa.RococoaTestCase;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -33,7 +33,7 @@ import com.sun.jna.Native;
  *
  */
 @SuppressWarnings("nls")
-public class QTTimeRangeTest extends NSTestCase {
+public class QTTimeRangeTest extends RococoaTestCase {
 
     private interface StructLibrary extends Library {
         int passQTTimeRangeByValue(QTTimeRange r);

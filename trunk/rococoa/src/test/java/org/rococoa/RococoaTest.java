@@ -26,7 +26,7 @@ import org.rococoa.cocoa.NSString;
 
 
 @SuppressWarnings("nls")
-public class RococoaTest extends NSTestCase {
+public class RococoaTest extends RococoaTestCase {
         
     public void testCreate() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);

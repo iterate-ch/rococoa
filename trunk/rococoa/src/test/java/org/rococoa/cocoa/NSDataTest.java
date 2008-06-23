@@ -19,10 +19,8 @@
  
 package org.rococoa.cocoa;
 
-import org.rococoa.NSTestCase;
-
-@SuppressWarnings("nls")
-public class NSDataTest extends NSTestCase {
+import org.rococoa.RococoaTestCase;
+public class NSDataTest extends RococoaTestCase {
 
     public void testInitWithBytes() throws Exception {
        byte[] bytes = "Hello".getBytes();

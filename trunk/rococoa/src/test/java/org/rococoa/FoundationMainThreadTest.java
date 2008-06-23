@@ -25,7 +25,7 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 
 @SuppressWarnings("nls")
-public class FoundationMainThreadTest extends NSTestCase {
+public class FoundationMainThreadTest extends RococoaTestCase {
 
     public void testCallOnMainThread() {
         final Thread testThread = Thread.currentThread();

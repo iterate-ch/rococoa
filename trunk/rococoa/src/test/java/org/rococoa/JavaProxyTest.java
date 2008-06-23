@@ -27,7 +27,7 @@ import org.rococoa.cocoa.NSString;
 import com.sun.jna.NativeLong;
 
 @SuppressWarnings("nls")
-public class JavaProxyTest extends NSTestCase {
+public class JavaProxyTest extends RococoaTestCase {
     
     public static class JavaImplementor {
         public Object arg;
@@ -249,6 +249,19 @@ public class JavaProxyTest extends NSTestCase {
         notificationCentre.postNotification(notification);             
         assertEquals(notification, implementor.arg);
     }
-
+    
+//    public void testMemoryManagement() {
+//        NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
+//        
+//        notificationCentre.addObserver_selector_name_object(
+//                ocProxy, 
+//                Foundation.selector("notify:"),
+//                "MyNotification",
+//                null);
+//
+//        NSNotification notification = NSNotification.CLASS.notificationWithName_object("MyNotification", null);        
+//        notificationCentre.postNotification(notification);             
+//        notificationCentre.postNotification(notification);             
+//    }
     
 }

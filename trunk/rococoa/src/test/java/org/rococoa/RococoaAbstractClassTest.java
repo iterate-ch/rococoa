@@ -21,8 +21,7 @@ package org.rococoa;
 
 
 
-public class RococoaAbstractClassTest extends NSTestCase {
-    
+public class RococoaAbstractClassTest extends RococoaTestCase { 
 public static abstract class NSNumberAsClass implements NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSNumber", _Class.class); //$NON-NLS-1$

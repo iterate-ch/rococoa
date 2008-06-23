@@ -22,8 +22,7 @@ package org.rococoa;
 import org.rococoa.cocoa.NSNumber;
 
 @SuppressWarnings("nls")
-public class RococoaNSObjectByReferenceTest extends NSTestCase {
-    
+public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
     private interface TestShunt extends NSObject {
         void testNSNumberByReference_with(NSObjectByReference reference, int value);
     };
