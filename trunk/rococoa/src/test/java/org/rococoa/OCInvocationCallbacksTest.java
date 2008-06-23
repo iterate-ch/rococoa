@@ -92,9 +92,9 @@ public class OCInvocationCallbacksTest extends TestCase {
         assertEquals("v@:@", callbacks.methodSignatureForSelector("returnsVoidTakesOCObject:"));
         assertEquals("c@:@", callbacks.methodSignatureForSelector("returnsByteTakesOCObject:"));
         if (Native.LONG_SIZE == 4)
-            assertEquals("i@:i", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
-        else 
             assertEquals("l@:l", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
+        else 
+            assertEquals("q@:q", callbacks.methodSignatureForSelector("returnsNativeLongTakesNativeLong:"));
         assertEquals("@@:@", callbacks.methodSignatureForSelector("returnsStringTakesString:"));
         assertEquals("@@:@", callbacks.methodSignatureForSelector("returnsNSStringTakesNSString:"));
     }

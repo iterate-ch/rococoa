@@ -84,6 +84,16 @@ public class JavaProxyTest extends NSTestCase {
             return l;
         }
 
+        public long takesLongReturnsLong(long l) {
+            arg = l;
+            return l;
+        }
+        
+        public double takesDoubleReturnsDouble(double d) {
+            arg = d;
+            return d;
+        }
+
         public void notify(NSNotification notification) {
             this.arg = notification;
         }
@@ -188,6 +198,26 @@ public class JavaProxyTest extends NSTestCase {
         NativeLong result = Foundation.send(ocProxy, "takesNativeLongReturnsNativeLong:", 
                 NativeLong.class, new NativeLong(42));
         assertEquals(42, result.longValue());
+    }
+    
+    public void testSendAndReceiveLong() {
+        long result = Foundation.send(ocProxy, "takesLongReturnsLong:", 
+                long.class, 42);
+        assertEquals(42, result);
+
+        result = Foundation.send(ocProxy, "takesLongReturnsLong:", 
+                long.class, Long.MAX_VALUE);
+        assertEquals(Long.MAX_VALUE, result);
+    }
+    
+    public void testSendAndReceiveDouble() {
+        double result = Foundation.send(ocProxy, "takesDoubleReturnsDouble:", 
+                double.class, Math.PI);
+        assertEquals(0.0, result - Math.PI);
+        
+        result = Foundation.send(ocProxy, "takesDoubleReturnsDouble:", 
+                double.class, Double.MAX_VALUE);
+        assertEquals(0.0, result - Double.MAX_VALUE);
     }
     
     public void testMultipleCallbacks() {
