@@ -24,8 +24,8 @@ import java.io.File;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
-import org.rococoa.NSTestCase;
 import org.rococoa.Rococoa;
+import org.rococoa.RococoaTestCase;
 import org.rococoa.cocoa.NSArray;
 import org.rococoa.cocoa.NSError;
 import org.rococoa.cocoa.NSMutableDictionary;
@@ -34,7 +34,7 @@ import org.rococoa.cocoa.NSString;
 
 
 @SuppressWarnings("nls")
-public class QTMovieTest extends NSTestCase {
+public class QTMovieTest extends RococoaTestCase {
 
     private QTMovie movie;
 

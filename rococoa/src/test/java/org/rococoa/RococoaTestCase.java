@@ -58,12 +58,20 @@ public abstract class RococoaTestCase extends TestCase {
     
     @Override
     public void runBare() throws Throwable {
+        logging.info("Starting test {}.{}", new Object[] {getClass().getName(), getName()});
         pool = Foundation.createPool();
         try {
             super.runBare();
         } finally {
+            maybeGC();
             Foundation.releasePool(pool);
         }
+    }
+
+    private void maybeGC() {
+        System.gc();
+        System.gc();
+        System.runFinalization();
     }
 
 }

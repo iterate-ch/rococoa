@@ -19,10 +19,10 @@
  
 package org.rococoa.cocoa;
 
-import org.rococoa.NSTestCase;
+import org.rococoa.RococoaTestCase;
 import org.rococoa.Rococoa;
 
-public class NSArrayTest extends NSTestCase {
+public class NSArrayTest extends RococoaTestCase {
 
     public void test() {
         NSArray array = NSArray.CLASS.arrayWithObjects(

@@ -22,8 +22,7 @@ package org.rococoa;
 import org.rococoa.cocoa.NSNumber;
 
 @SuppressWarnings("nls")
-public class NSClassTest extends NSTestCase {
-    
+public class NSClassTest extends RococoaTestCase {
     public void test() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         ID idOfNSNumber = Foundation.nsClass("NSNumber");

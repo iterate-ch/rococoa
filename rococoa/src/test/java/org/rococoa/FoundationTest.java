@@ -24,8 +24,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
 @SuppressWarnings({"nls", "unused"})
-public class FoundationTest extends NSTestCase {
-             
+public class FoundationTest extends RococoaTestCase {         
     public void testString() {
         ID string = Foundation.cfString("Hello World");
         assertNotNull(string);

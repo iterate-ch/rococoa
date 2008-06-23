@@ -24,8 +24,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Structure;
 
 @SuppressWarnings("nls")
-public class FoundationStructureReturnTest extends NSTestCase {
-       
+public class FoundationStructureReturnTest extends RococoaTestCase {     
     private interface StructLibrary extends Library {
         MyStruct.MyStructByValue  returnStructByValue(int a, double b);
         double addFieldsOfStructByValue(MyStruct.MyStructByValue s);
