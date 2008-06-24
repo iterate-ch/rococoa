@@ -24,6 +24,6 @@ interface RococoaLibrary extends Library {
     
     public void callOnMainThread(RococoaLibrary.VoidCallback callback);
     
-    public ID createProxyForJavaObject(SelectorInvokedCallback selectorInvokedCallback, 
+    public ID proxyForJavaObject(SelectorInvokedCallback selectorInvokedCallback, 
             MethodSignatureCallback methodSignatureCallback);
 }

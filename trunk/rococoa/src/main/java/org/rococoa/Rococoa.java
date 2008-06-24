@@ -117,18 +117,39 @@ public abstract class Rococoa  {
     }
     
     /**
-     * Return the ID of a new Objective-C object which will forward messages to
+     * Return the ID of a new Objective-C object that will forward messages to
      * javaObject.
      * 
      * Keep hold of the ID all the time that methods may be invoked on the Obj-C
      * object, otherwise the callbacks may be GC'd, with amusing consequences.
+     * 
+     * @deprecated because the OC proxy object is never released. 
+     *  Use {@link Rococoa#proxy} instead.
      */
+    @Deprecated
     public static ID wrap(Object javaObject) {
-        // TODO - could we set up some interesting weak-reference to javaObject, allowing the
-        // callbacks to be GC'd once it has been let go?
         OCInvocationCallbacks callbacks = new OCInvocationCallbacks(javaObject);
-        ID idOfOCProxy = Foundation.createOCProxy(callbacks.selectorInvokedCallback, callbacks.methodSignatureCallback);
-        return new WrapperID(idOfOCProxy, callbacks);
+        ID idOfOCProxy = Foundation.newOCProxy(callbacks);
+            // idOfOCProxy is owned by us, and we have to release it at some stage 
+        return new ProxyID(idOfOCProxy, callbacks);
+    }
+    
+    /**
+     * Return a new Objective-C object that will forward messages to javaObject, 
+     * for use in delegates, notifications etc.
+     * 
+     * You need to keep a reference to the returned value for as long as it is
+     * active. When it is GC'd, it will release the Objective-C proxy.
+     */
+    public static NSObject proxy(Object javaObject) {
+        return proxy(javaObject, NSObject.class);
+    }
+    
+    public static <T extends NSObject> T proxy(Object javaObject, Class<T> javaType) {
+        ID proxyID = wrap(javaObject);
+        // we own the proxyID, so by wrapping it as NSObject, we can arrange for
+        // it to be release'd when the NSObject is finalized
+        return wrap(proxyID, javaType, false);
     }
     
     /**
@@ -158,16 +179,16 @@ public abstract class Rococoa  {
     }
     
     // Public only because JNA doesn't call setAccessible to access ctor.
-    public static class WrapperID extends ID {
+    public static class ProxyID extends ID {
         // used to prevent callbacks being GC'd as long as we hang onto this ID
         @SuppressWarnings("unused")
         private OCInvocationCallbacks callbacks;
         
-        public WrapperID() {
+        public ProxyID() {
             // required by jna
         }
         
-        public WrapperID(ID anotherID, OCInvocationCallbacks callbacks) {
+        public ProxyID(ID anotherID, OCInvocationCallbacks callbacks) {
             super(anotherID.intValue());
             this.callbacks = callbacks;
         }
@@ -183,7 +204,6 @@ public abstract class Rococoa  {
      * Enforce static factory-ness.
      */
     private Rococoa() {
-        
     }
 
 }

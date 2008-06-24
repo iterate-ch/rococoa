@@ -244,9 +244,16 @@ public abstract class Foundation {
             throw new RuntimeException(thrown[0]);
     }
 
-    public static ID createOCProxy(RococoaLibrary.SelectorInvokedCallback selectorInvokedCallback, 
-            RococoaLibrary.MethodSignatureCallback methodSignatureCallback) {
-        return rococoaLibrary.createProxyForJavaObject(selectorInvokedCallback, methodSignatureCallback);
+    /**
+     * Create an Objective-C object which delegates to callbacks when methods
+     * are invoked on it.
+     * 
+     * Object is created with alloc, so is owned by the caller.
+     */
+    public static ID newOCProxy(OCInvocationCallbacks callbacks) {
+        return rococoaLibrary.proxyForJavaObject(
+                callbacks.selectorInvokedCallback, 
+                callbacks.methodSignatureCallback);
     }
 
 }
