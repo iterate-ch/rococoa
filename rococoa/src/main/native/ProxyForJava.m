@@ -2,17 +2,13 @@
 #import "ProxyForJava.h"
 
 
-id createProxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback) {
-	return [ProxyForJava createWithCallback: methodInvokedCallback methodSignatureCallback: methodSignatureCallback]; 
+id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback) {
+	return [[ProxyForJava alloc] initWithMethodInvokedCallback: methodInvokedCallback methodSignatureCallback: methodSignatureCallback];
 }
 
 @implementation ProxyForJava
 
-+ (ProxyForJava*) createWithCallback: (void*) methodInvokedCallback methodSignatureCallback: (void*) methodSignatureCallback {
-	return [[[ProxyForJava alloc] initWithCallback: methodInvokedCallback methodSignatureCallback: methodSignatureCallback] autorelease];
-} 
-
-- (id) initWithCallback: (void*) theMethodInvokedCallback methodSignatureCallback: (void*) theMethodSignatureCallback {
+- (id) initWithMethodInvokedCallback: (void*) theMethodInvokedCallback methodSignatureCallback: (void*) theMethodSignatureCallback {
 	self = [super init];
 	if (self != nil) {
 		methodInvokedCallback = theMethodInvokedCallback;		

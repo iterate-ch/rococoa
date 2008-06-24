@@ -32,7 +32,13 @@ public interface NSNotificationCenter extends NSObject {
         public NSNotificationCenter defaultCenter();
     }
     
+    @Deprecated
     void addObserver_selector_name_object(ID notificationObserver,
+            Selector notificationSelector,
+            String notificationName,
+            NSObject notificationSender);
+
+    void addObserver_selector_name_object(NSObject notificationObserver,
             Selector notificationSelector,
             String notificationName,
             NSObject notificationSender);

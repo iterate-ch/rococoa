@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-id createProxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback);
+id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback);
 
 
 @interface ProxyForJava : NSObject {
@@ -10,8 +10,7 @@ char* (*methodSignatureCallback)(const char*);
 
 }
 
-+ (ProxyForJava*) createWithCallback: (void*) methodInvokedCallback methodSignatureCallback: (void*) methodSignatureCallback;
-- (id) initWithCallback: (void*) theMethodInvokedCallback methodSignatureCallback: (void*) theMethodSignatureCallback;
+- (id) initWithMethodInvokedCallback: (void*) theMethodInvokedCallback methodSignatureCallback: (void*) theMethodSignatureCallback;
 
 - (void)forwardInvocation:(NSInvocation *) anInvocation;
 

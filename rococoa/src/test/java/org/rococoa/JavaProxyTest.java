@@ -20,6 +20,7 @@
 package org.rococoa;
 
 import org.rococoa.MyStruct.MyStructByValue;
+import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNotification;
 import org.rococoa.cocoa.NSNotificationCenter;
 import org.rococoa.cocoa.NSString;
@@ -100,44 +101,44 @@ public class JavaProxyTest extends RococoaTestCase {
      }
 
     private JavaImplementor implementor;
-    private ID ocProxy;
+    private NSObject proxy;
     
     @Override
     protected void setUp() throws Exception {
         implementor = new JavaImplementor();
-        ocProxy = Rococoa.wrap(implementor); // hang onto this to prevent GC issues
+        proxy = Rococoa.proxy(implementor, NSObject.class); // hang onto this to prevent GC issues
     }
     
     public void testRepondsToSelector() {
         // respond to selector is required for delegates
-        assertEquals(0, (byte) Foundation.send(ocProxy, "respondsToSelector:", 
+        assertEquals(0, (byte) Foundation.send(proxy.id(), "respondsToSelector:", 
                 byte.class, Foundation.selector("Bo")));
-        assertEquals(1, (byte) Foundation.send(ocProxy, "respondsToSelector:", 
+        assertEquals(1, (byte) Foundation.send(proxy.id(), "respondsToSelector:", 
                 byte.class, Foundation.selector("sayHello")));
     }
     
     public void testNoArgsReturnsVoid() {
         implementor.arg = "something";
-        ID result = Foundation.sendReturnsID(ocProxy, "nothing");
+        ID result = Foundation.sendReturnsID(proxy.id(), "nothing");
         assertTrue(result.isNull());
         assertNull(implementor.arg);
     }
 
     public void testNoArgsReturnsID() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "sayHello");
+        ID result = Foundation.sendReturnsID(proxy.id(), "sayHello");
         assertEquals("Hello", Foundation.toString(result));        
         assertNull(implementor.arg);
     }
 
     public void testTakesIDReturnsID() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "testTakesIDReturnsID:", 
+        ID result = Foundation.sendReturnsID(proxy.id(), "testTakesIDReturnsID:", 
                 new ID(42));
         assertEquals("Hello", Foundation.toString(result));        
         assertEquals(new ID(42), implementor.arg);
     }
     
     public void testTakesNSObjectReturnsNSObject() {
-        ID result = Foundation.sendReturnsID(ocProxy, "takesNSObjectReturnsNSObject:", 
+        ID result = Foundation.sendReturnsID(proxy.id(), "takesNSObjectReturnsNSObject:", 
                 Foundation.cfString("hello"));
         assertEquals("hello", Foundation.toString(result));
         assertEquals("hello", 
@@ -146,21 +147,21 @@ public class JavaProxyTest extends RococoaTestCase {
     }
 
     public void testTakesStringReturnsByte() {
-        byte result = Foundation.send(ocProxy, "takesStringReturnsByte:", 
+        byte result = Foundation.send(proxy.id(), "takesStringReturnsByte:", 
                 byte.class, Foundation.cfString("hello"));
         assertEquals(42, result);
         assertEquals("hello", ((NSString) implementor.arg).toString());
     }
     
     public void testTakesBooleanReturnsBoolean() {
-        assertTrue(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", 
+        assertTrue(Foundation.send(proxy.id(), "takesBooleanReturnsBoolean:", 
                 boolean.class, false));
-        assertFalse(Foundation.send(ocProxy, "takesBooleanReturnsBoolean:", 
+        assertFalse(Foundation.send(proxy.id(), "takesBooleanReturnsBoolean:", 
                 boolean.class, true));
     }
     
     public void testTakesIntAndInt() {
-        ID result =  Foundation.sendReturnsID(ocProxy, "takesInt:AndInt:", 
+        ID result =  Foundation.sendReturnsID(proxy.id(), "takesInt:AndInt:", 
                 42, -1);
         assertTrue(result.isNull());
         Object[] arg = (Object[]) implementor.arg;
@@ -169,13 +170,13 @@ public class JavaProxyTest extends RococoaTestCase {
     }
     
     public void testTakesJavaStringReturnsJavaString() {
-        assertEquals("lower", Foundation.send(ocProxy, "takesJavaStringReturnsJavaString:", 
+        assertEquals("lower", Foundation.send(proxy.id(), "takesJavaStringReturnsJavaString:", 
                 String.class, "LoWeR"));
     }
     
     public void testSendAndReceiveStructByReference() {
         MyStruct struct = new MyStruct(42, Math.PI);
-        MyStruct result = Foundation.send(ocProxy, "takesStructureReturnsStructure:", 
+        MyStruct result = Foundation.send(proxy.id(), "takesStructureReturnsStructure:", 
                 MyStruct.class, struct);
         assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
@@ -186,7 +187,7 @@ public class JavaProxyTest extends RococoaTestCase {
     public void testSendAndReceiveStructByValue() {
         // Hmmm, difficult to prove this is passed by value
         MyStructByValue struct = new MyStructByValue(42, Math.PI);
-        MyStruct result = Foundation.send(ocProxy, "takesStructureByValueReturnsStructureByValue:", 
+        MyStruct result = Foundation.send(proxy.id(), "takesStructureByValueReturnsStructureByValue:", 
                 MyStructByValue.class, struct);
         assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
@@ -195,27 +196,27 @@ public class JavaProxyTest extends RococoaTestCase {
     }
     
     public void testSendAndReceiveNativeLong() {
-        NativeLong result = Foundation.send(ocProxy, "takesNativeLongReturnsNativeLong:", 
+        NativeLong result = Foundation.send(proxy.id(), "takesNativeLongReturnsNativeLong:", 
                 NativeLong.class, new NativeLong(42));
         assertEquals(42, result.longValue());
     }
     
     public void testSendAndReceiveLong() {
-        long result = Foundation.send(ocProxy, "takesLongReturnsLong:", 
+        long result = Foundation.send(proxy.id(), "takesLongReturnsLong:", 
                 long.class, 42);
         assertEquals(42, result);
 
-        result = Foundation.send(ocProxy, "takesLongReturnsLong:", 
+        result = Foundation.send(proxy.id(), "takesLongReturnsLong:", 
                 long.class, Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, result);
     }
     
     public void testSendAndReceiveDouble() {
-        double result = Foundation.send(ocProxy, "takesDoubleReturnsDouble:", 
+        double result = Foundation.send(proxy.id(), "takesDoubleReturnsDouble:", 
                 double.class, Math.PI);
         assertEquals(0.0, result - Math.PI);
         
-        result = Foundation.send(ocProxy, "takesDoubleReturnsDouble:", 
+        result = Foundation.send(proxy.id(), "takesDoubleReturnsDouble:", 
                 double.class, Double.MAX_VALUE);
         assertEquals(0.0, result - Double.MAX_VALUE);
     }
@@ -225,20 +226,19 @@ public class JavaProxyTest extends RococoaTestCase {
         // registered was always the one called!
         // @see https://rococoa.dev.java.net/issues/show_bug.cgi?id=9
         JavaImplementor implementor2 = new JavaImplementor();
-        ID ocProxy2 = Rococoa.wrap(implementor2); // hang onto this to prevent GC issues
+        NSObject proxy2 = Rococoa.proxy(implementor2);
         
-        Foundation.sendReturnsVoid(ocProxy, "testTakesIDReturnsID:", new ID(42));
+        Foundation.sendReturnsVoid(proxy.id(), "testTakesIDReturnsID:", new ID(42));
         assertEquals(new ID(42), implementor.arg);        
 
-        Foundation.sendReturnsVoid(ocProxy2, "testTakesIDReturnsID:", new ID(43));
+        Foundation.sendReturnsVoid(proxy2.id(), "testTakesIDReturnsID:", new ID(43));
         assertEquals(new ID(43), implementor2.arg);        
     }    
     
     public void testNotifications() {
         NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
-        
         notificationCentre.addObserver_selector_name_object(
-                ocProxy, 
+                proxy, 
                 Foundation.selector("notify:"),
                 "MyNotification",
                 null);
@@ -250,18 +250,19 @@ public class JavaProxyTest extends RococoaTestCase {
         assertEquals(notification, implementor.arg);
     }
     
-//    public void testMemoryManagement() {
-//        NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
-//        
-//        notificationCentre.addObserver_selector_name_object(
-//                ocProxy, 
-//                Foundation.selector("notify:"),
-//                "MyNotification",
-//                null);
-//
-//        NSNotification notification = NSNotification.CLASS.notificationWithName_object("MyNotification", null);        
-//        notificationCentre.postNotification(notification);             
-//        notificationCentre.postNotification(notification);             
-//    }
+    public void testMemoryManagement() {
+        // we were autorelease'ing the proxy - so that this failed
+        NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
+        notificationCentre.addObserver_selector_name_object(
+                proxy, 
+                Foundation.selector("notify:"),
+                "MyNotification",
+                null);
+        pool.release();
+        pool = NSAutoreleasePool.new_();
+
+        NSNotification notification = NSNotification.CLASS.notificationWithName_object("MyNotification", null);        
+        notificationCentre.postNotification(notification);             
+    }
     
 }
