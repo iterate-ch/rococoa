@@ -33,27 +33,6 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(42, fortyTwo.intValue());        
     }
     
-    public void testRetain() {
-        ID localPool = Foundation.createPool();
-        NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
-        assertEquals(2, fortyTwo.retainCount()); // autorelease has one, OCObject has one
-        NSNumber fortyTwoAlias = Rococoa.wrap(fortyTwo.id(), NSNumber.class);
-        assertEquals(3, fortyTwo.retainCount()); // second OCObject now has one
-        Foundation.releasePool(localPool);
-        assertEquals(2, fortyTwo.retainCount()); // just our two references
-        assertEquals(2, fortyTwoAlias.retainCount()); // which point to the same thing
-        
-        // now let one reference go and wait for finalization to reduce the retain count
-        fortyTwo = null;
-        
-        while (fortyTwoAlias.retainCount() == 2)  {
-            System.gc();
-            System.gc();
-            System.runFinalization();
-        }
-        assertEquals(1, fortyTwoAlias.retainCount());        
-    }
-    
     public void testEqualsWithAliases() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         NSNumber fortyTwoAlias = Rococoa.wrap(fortyTwo.id(), NSNumber.class);
@@ -116,7 +95,7 @@ public class RococoaTest extends RococoaTestCase {
     
     public void testFactory() {
         NSNumber._Class nsNumberClass = Rococoa.createClass("NSNumber",  NSNumber._Class.class); //$NON-NLS-1$
-        assertEquals(nsNumberClass.id(), Foundation.nsClass("NSNumber"));
+        assertEquals(nsNumberClass.id(), Foundation.getClass("NSNumber"));
     }
     
     public interface OddClass extends NSClass {

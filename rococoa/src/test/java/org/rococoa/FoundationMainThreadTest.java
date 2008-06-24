@@ -32,7 +32,7 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         Callable<Double> callable = new Callable<Double>() {
             public Double call() throws Exception {
                 assertNotSame(testThread, Thread.currentThread());
-                ID clas = Foundation.nsClass("NSNumber");
+                ID clas = Foundation.getClass("NSNumber");
                 ID aDouble = Foundation.sendReturnsID(clas, "numberWithDouble:", Math.E);
                 Object[] args = {};
                 return Foundation.send(aDouble, Foundation.selector("doubleValue"), double.class, args);
@@ -61,7 +61,7 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         Runnable runnable = new Runnable() {
             public void run() {
                 assertNotSame(testThread, Thread.currentThread());
-                ID clas = Foundation.nsClass("NSNumber");
+                ID clas = Foundation.getClass("NSNumber");
                 ID aDouble = Foundation.sendReturnsID(clas, "numberWithDouble:", Math.E);
                 Object[] args = {};
                 result[0] =  Foundation.send(aDouble, Foundation.selector("doubleValue"), double.class, args);

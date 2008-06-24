@@ -19,6 +19,7 @@
  
 package org.rococoa;
 
+import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNumber;
 
 @SuppressWarnings("nls")
@@ -28,6 +29,7 @@ public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
     };
     
     public void test() {
+        NSAutoreleasePool pool = NSAutoreleasePool.new_();
         TestShunt shunt = Rococoa.create("TestShunt", TestShunt.class);
         NSObjectByReference reference = new NSObjectByReference();
         shunt.testNSNumberByReference_with(reference, 42);
@@ -36,7 +38,7 @@ public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
                 
         // we better have retained the result by the time it gets back
         assertEquals(3, value.retainCount());
-        Foundation.releasePool(pool);
+        pool.release();
         assertEquals(2, value.retainCount());
     }
 

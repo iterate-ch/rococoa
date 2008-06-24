@@ -19,6 +19,8 @@
  
 package org.rococoa;
 
+import org.rococoa.cocoa.NSAutoreleasePool;
+
 
 @SuppressWarnings("nls")
 public class FoundationRetainReleaseTest extends RococoaTestCase {
@@ -36,5 +38,38 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         Foundation.cfRelease(string);
         // causes count to go to 0 and dispose will happen
     }    
+    
+    public void testAutorelease() {
+        NSAutoreleasePool pool = NSAutoreleasePool.new_();
+        
+        ID string = Foundation.cfString("Hello world");
+        assertEquals(1, Foundation.cfGetRetainCount(string));
+        
+        Foundation.sendReturnsVoid(string, "autorelease");
+        assertEquals(1, Foundation.cfGetRetainCount(string));
+        
+        Foundation.sendReturnsVoid(string, "retain");
+        assertEquals(2, Foundation.cfGetRetainCount(string));
+        
+        pool.release();
+        assertEquals(1, Foundation.cfGetRetainCount(string));
 
+        Foundation.cfRelease(string);
+        // causes count to go to 0 and dispose will happen
+    }
+    
+    public void testInitedObject() {
+        NSAutoreleasePool pool = NSAutoreleasePool.new_();
+
+        ID clas = Foundation.getClass("NSString");
+        ID string = Foundation.sendReturnsID(clas, "alloc");
+        string = Foundation.sendReturnsID(string, "initWithCString:", "Hello world");
+        assertEquals(1, Foundation.cfGetRetainCount(string));
+
+        // show that it wasn't in the pool
+        pool.release();
+        assertEquals(1, Foundation.cfGetRetainCount(string));
+        Foundation.cfRelease(string);
+    }
+    
 }

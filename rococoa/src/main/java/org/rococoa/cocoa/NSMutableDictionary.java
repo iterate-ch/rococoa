@@ -32,7 +32,7 @@ public interface NSMutableDictionary extends NSDictionary {
     public static final _Class CLASS = Rococoa.wrap(
             Foundation.callOnMainThread(new Callable<ID>() {
                 public ID call() throws Exception {
-                    return Foundation.nsClass("NSMutableDictionary"); //$NON-NLS-1$
+                    return Foundation.getClass("NSMutableDictionary"); //$NON-NLS-1$
                 }}),  _Class.class); 
     public interface _Class extends NSClass {
         NSMutableDictionary dictionaryWithCapacity(int numitems);

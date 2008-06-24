@@ -69,20 +69,22 @@ class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor 
     private final String javaClassName;
     private final boolean invokeOnMainThread;
 
-    public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass) {
+    public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass, boolean retain) {
         this.ocInstance = ocInstance;
         this.javaClassName = javaClass.getSimpleName();
         invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
         if (ocInstance.isNull())
             return;
-        if (invokeOnMainThread) {
-            Foundation.runOnMainThread(new Runnable() {
-                public void run() {
-                    Foundation.sendReturnsID(ocInstance, "retain");                    
-                }}); 
-        } else {
-            Foundation.sendReturnsID(ocInstance, "retain");                                
-        }        
+        if (retain) {
+            if (invokeOnMainThread) {
+                Foundation.runOnMainThread(new Runnable() {
+                    public void run() {
+                        Foundation.cfRetain(ocInstance);                    
+                    }}); 
+            } else {
+                Foundation.cfRetain(ocInstance);                                
+            }
+        }
     }
     
     private boolean shouldInvokeOnMainThread(Class<? extends NSObject> javaClass) {
@@ -91,8 +93,27 @@ class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor 
 
     @Override
     protected void finalize() throws Throwable {
-        Foundation.sendReturnsID(ocInstance, "release");
+        if (invokeOnMainThread) {
+            Foundation.runOnMainThread(new Runnable() {
+                public void run() {
+                    release();                   
+                }}); 
+        } else {
+            release();                    
+        }
         super.finalize();
+    }
+
+    // must be run on appropriate thread
+    private void release() {
+        if (ocInstance.isNull())
+            return;
+        if (logging.isTraceEnabled()) {
+            int retainCount = Foundation.cfGetRetainCount(ocInstance);
+            logging.trace("finalizing {}, releasing with retain count = {}", 
+                    new Object[] {ocInstance, retainCount});
+        }
+        Foundation.cfRelease(ocInstance);                    
     }
     
     /**

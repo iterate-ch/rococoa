@@ -21,8 +21,11 @@ package org.rococoa;
 
 public interface NSObject {
     
+    // synthetic
     ID id();
     
+    void retain();
+    void release();
     int retainCount();
     
     boolean isKindOfClass(NSClass nsClass);

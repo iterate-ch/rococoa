@@ -51,7 +51,7 @@ public @RunOnMainThread abstract class QTMovie implements NSObject {
     private static final _Class CLASS = 
         Foundation.callOnMainThread(new Callable<_Class>() {
             public _Class call() throws Exception {
-                return Rococoa.wrap(Foundation.nsClass("QTMovie"), _Class.class); //$NON-NLS-1$
+                return Rococoa.wrap(Foundation.getClass("QTMovie"), _Class.class); //$NON-NLS-1$
             }});
     
     // Creating instances has to happen on the main thread

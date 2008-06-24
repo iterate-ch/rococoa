@@ -66,7 +66,8 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
     }
     
     public void testCallMethod() {
-        ID testID = Foundation.createInstance(Foundation.nsClass("TestShunt"));
+        ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
+        Foundation.sendReturnsID(testID, "autorelease");
         Object[] args = { 42, Math.E };
         MyStruct result = Foundation.send(testID, 
                 Foundation.selector("testReturnStructByValue:and:"), 
@@ -76,7 +77,8 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
     }
     
     public void testAsPassStructAsArgument() {
-        ID testID = Foundation.createInstance(Foundation.nsClass("TestShunt"));
+        ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
+        Foundation.sendReturnsID(testID, "autorelease");
         MyStruct.MyStructByValue arg = new MyStruct.MyStructByValue(42, Math.PI);
         Object[] args = { arg };
         double result = Foundation.send(testID, 
@@ -86,7 +88,8 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
     }
     
     public void testStructOfStruct() {
-        ID testID = Foundation.createInstance(Foundation.nsClass("TestShunt"));
+        ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
+        Foundation.sendReturnsID(testID, "autorelease");
         Object[] args1 = { 42, Math.E };
         MyStructOfStruct result = Foundation.send(testID, 
                 Foundation.selector("testReturnStructOfStructByValue:and:"), 
