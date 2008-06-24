@@ -227,10 +227,10 @@ public class JavaProxyTest extends RococoaTestCase {
         JavaImplementor implementor2 = new JavaImplementor();
         ID ocProxy2 = Rococoa.wrap(implementor2); // hang onto this to prevent GC issues
         
-        Foundation.sendReturnsID(ocProxy, "testTakesIDReturnsID:", new ID(42));
+        Foundation.sendReturnsVoid(ocProxy, "testTakesIDReturnsID:", new ID(42));
         assertEquals(new ID(42), implementor.arg);        
 
-        Foundation.sendReturnsID(ocProxy2, "testTakesIDReturnsID:", new ID(43));
+        Foundation.sendReturnsVoid(ocProxy2, "testTakesIDReturnsID:", new ID(43));
         assertEquals(new ID(43), implementor2.arg);        
     }    
     

@@ -25,8 +25,8 @@ import org.rococoa.cocoa.NSNumber;
 public class NSClassTest extends RococoaTestCase {
     public void test() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
-        ID idOfNSNumber = Foundation.nsClass("NSNumber");
-        ID idOfNSString = Foundation.nsClass("NSString");
+        ID idOfNSNumber = Foundation.getClass("NSNumber");
+        ID idOfNSString = Foundation.getClass("NSString");
         assertTrue(fortyTwo.isKindOfClass(idOfNSNumber));
         assertFalse(fortyTwo.isKindOfClass(idOfNSString));
         

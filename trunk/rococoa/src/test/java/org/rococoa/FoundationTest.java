@@ -52,14 +52,14 @@ public class FoundationTest extends RococoaTestCase {
     }
     
     public void testInt() {
-        ID clas = Foundation.nsClass("NSNumber");
+        ID clas = Foundation.getClass("NSNumber");
         ID anInt = Foundation.sendReturnsID(clas, "numberWithInt:", 42);
         int anIntValue = Foundation.send(anInt, "intValue", int.class);
         assertEquals(42, anIntValue);
     }
     
     public void testDouble() {
-        ID clas = Foundation.nsClass("NSNumber");
+        ID clas = Foundation.getClass("NSNumber");
         ID aDouble = Foundation.sendReturnsID(clas, "numberWithDouble:", Math.E);
         Object[] args = {};
         double aDoubleValue = Foundation.send(aDouble, Foundation.selector("doubleValue"), double.class, args);
@@ -67,7 +67,7 @@ public class FoundationTest extends RococoaTestCase {
     }
 
     public void testFloat() {
-        ID clas = Foundation.nsClass("NSNumber");
+        ID clas = Foundation.getClass("NSNumber");
         ID aFloat = Foundation.sendReturnsID(clas, "numberWithFloat:", 3.142f);
         Object[] args = {};
         float aFloatValue = Foundation.send(aFloat, Foundation.selector("floatValue"), float.class, args);
@@ -75,7 +75,7 @@ public class FoundationTest extends RococoaTestCase {
     }
 
     public void testSendNoArgs() {
-        ID clas = Foundation.nsClass("NSDate");
+        ID clas = Foundation.getClass("NSDate");
         ID instance = Foundation.sendReturnsID(clas, "date");
         ID result = Foundation.sendReturnsID(instance, "description");
         assertTrue(Foundation.toString(result).startsWith("20")); // 2007-11-15 16:01:50 +0000
@@ -95,7 +95,7 @@ public class FoundationTest extends RococoaTestCase {
     public void xtestInvokeUnknownSelector() {
         Selector noSuchSelector = Foundation.selector("noSelector:NamedThis:OrribleThing:");
         assertTrue(noSuchSelector.intValue() != 0); 
-        ID clas = Foundation.nsClass("NSNumber");
+        ID clas = Foundation.getClass("NSNumber");
         try {
             Foundation.send(clas, noSuchSelector, int.class);
             fail();

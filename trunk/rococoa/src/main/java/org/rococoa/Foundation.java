@@ -47,6 +47,8 @@ public abstract class Foundation {
     private static final MsgSendLibrary messageSendLibrary;
     private static final RococoaLibrary rococoaLibrary;
     
+    private static final Map<String, Selector> selectorCache = new HashMap<String, Selector>();
+    
     static {
         logging.trace("Initializing Foundation");
         
@@ -65,7 +67,12 @@ public abstract class Foundation {
     }
 
     public static void nsLog(String format, Object thing) {
-        foundationLibrary.NSLog(cfString(format), thing);
+        ID formatAsCFString = cfString(format);
+        try {
+            foundationLibrary.NSLog(formatAsCFString, thing);
+        } finally {
+            cfRelease(formatAsCFString);
+        }
     }    
     
     /**
@@ -86,14 +93,20 @@ public abstract class Foundation {
         }
     }
     
-    public static void cfRetain(ID cfTypeRef) {
-        logging.trace("calling cfRetain({})", cfTypeRef);
-        foundationLibrary.CFRetain(cfTypeRef);        
+    /**
+     * Retain the NSObject with id
+     */
+    public static void cfRetain(ID id) {
+        logging.trace("calling cfRetain({})", id);
+        foundationLibrary.CFRetain(id);        
     }
     
-    public static void cfRelease(ID cfTypeRef) {
-        logging.trace("calling cfRelease({})", cfTypeRef);
-        foundationLibrary.CFRelease(cfTypeRef);
+    /**
+     * Release the NSObject with id
+     */
+    public static void cfRelease(ID id) {
+        logging.trace("calling cfRelease({})", id);
+        foundationLibrary.CFRelease(id);
     }
 
     public static int cfGetRetainCount(ID cfTypeRef) {
@@ -131,24 +144,37 @@ public abstract class Foundation {
         return Native.toString(buffer);
     }
     
-    public static ID nsClass(String className) {
+    /**
+     * Get the ID of the NSClass with className
+     */
+    public static ID getClass(String className) {
         logging.trace("calling objc_getClass({})", className);
         return foundationLibrary.objc_getClass(className);
     }
-    
-    public static ID createInstance(ID pClass) {
-        logging.trace("calling class_createInstance({})", pClass);
-        return foundationLibrary.class_createInstance(pClass, 0);
-    }
-    
+        
     public static Selector selector(String selectorName) {
-        return foundationLibrary.sel_registerName(selectorName).initName(selectorName);
+        Selector cached = selectorCache.get(selectorName);
+        if (cached != null)
+            return cached;
+        Selector result = foundationLibrary.sel_registerName(selectorName).initName(selectorName);
+        selectorCache.put(selectorName, result);
+        return result;
     }
 
+    /**
+     * Send message with selectorName to receiver, passing args, expecting returnType.
+     * 
+     * Note that you are responsible for memory management if returnType is ID.
+     */
     public static <T> T send(ID receiver, String selectorName, Class<T> returnType, Object... args) {
         return send(receiver, selector(selectorName), returnType, args);
     }
 
+    /**
+     * Send message with selector to receiver, passing args, expecting returnType.
+     * 
+     * Note that you are responsible for memory management if returnType is ID.
+     */
     @SuppressWarnings("unchecked")
     public static <T> T send(ID receiver, Selector selector, Class<T> returnType, Object... args) {
         if (logging.isTraceEnabled())
@@ -159,20 +185,23 @@ public abstract class Foundation {
         
     /**
      * Convenience as this happens a lot in tests.
+     * 
+     * Note that you are responsible for memory management for the returned ID
      */
     public static ID sendReturnsID(ID receiver, String selectorName, Object... args) {
         return send(receiver, selector(selectorName), ID.class, args);
     }
-        
-    public static ID createPool() {
-        ID ncClass = nsClass("NSAutoreleasePool");
-        return sendReturnsID(sendReturnsID(ncClass, "alloc"), "init");
+
+    /**
+     * Convenience as this happens a lot in tests.
+     */
+    public static void sendReturnsVoid(ID receiver, String selectorName, Object... args) {
+        send(receiver, selector(selectorName), void.class, args);
     }
-    
-    public static void releasePool(ID pool) {
-        sendReturnsID( pool, "release");
-    }
-    
+
+    /**
+     * Return the result of calling callable on the main Cococoa thread.
+     */
     @SuppressWarnings("unchecked")
     public static <T> T callOnMainThread(final Callable<T> callable) {
         final Object[] result = new Object[1];
@@ -194,6 +223,9 @@ public abstract class Foundation {
         return (T) result[0];        
     }
     
+    /**
+     * Run runnable on the main Cococoa thread.
+     */
     public static void runOnMainThread(final Runnable runnable) {
         final Throwable[] thrown = new Throwable[1];
         RococoaLibrary.VoidCallback callback = new RococoaLibrary.VoidCallback() {
@@ -216,6 +248,5 @@ public abstract class Foundation {
             RococoaLibrary.MethodSignatureCallback methodSignatureCallback) {
         return rococoaLibrary.createProxyForJavaObject(selectorInvokedCallback, methodSignatureCallback);
     }
-
 
 }

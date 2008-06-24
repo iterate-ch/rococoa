@@ -38,7 +38,7 @@ public abstract class Rococoa  {
      * Create a Java NSClass representing the Objective-C class with ocClassName
      */
     public static <T extends NSClass> T createClass(String ocClassName, Class<T> type) {
-        return wrap(Foundation.nsClass(ocClassName), type);
+        return wrap(Foundation.getClass(ocClassName), type, false);
     }
     
     /**
@@ -47,11 +47,17 @@ public abstract class Rococoa  {
      * factory ocFactoryName, passing args.
      */
     public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass, String ocFactoryName, Object... args) {
-        ID ocClass = Foundation.nsClass(ocClassName);
-        ID ocInstance = Foundation.sendReturnsID(ocClass, ocFactoryName, args);
-        return wrap(ocInstance, javaClass);
+        boolean weOwnObject = weOwnObjectGivenFactoryName(ocFactoryName);
+        
+        // If we don't own the object we know that it has been autorelease'd
+        // But we need to own these objects, so that they are not dealloc'd when
+        // the pool is release'd. So we retain them.
+        // Objects that we own (because they were created with 'alloc' or 'new')
+        // have not been autorelease'd, so we don't retain them.
+        boolean retain = !weOwnObject;
+        return create(ocClassName, javaClass, ocFactoryName, retain, args);
     }
-
+    
     /**
      * Create a Java NSObject representing an instance of the Objective-C class
      * ocClassName, created with the class method <code>+new</code>.
@@ -59,14 +65,39 @@ public abstract class Rococoa  {
     public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass) {
         return create(ocClassName, javaClass, "new");
     }
-        
+
+    private static boolean weOwnObjectGivenFactoryName(String ocFactoryName) {
+        // From Memory Management Programming Guide for Cocoa
+        // This is the fundamental rule:
+        // You take ownership of an object if you create it using a method whose
+        // name begins with “alloc” or “new” or contains “copy” (for example,
+        // alloc, newObject, or mutableCopy), or if you send it a retain
+        // message. You are responsible for relinquishing ownership of objects
+        // you own using release or autorelease. Any other time you receive an
+        // object, you must not release it.
+        return ocFactoryName.startsWith("alloc") || ocFactoryName.startsWith("new");
+    }
+    
+    private static <T extends NSObject> T create(String ocClassName, Class<T> javaClass,
+            String ocFactoryName, 
+            boolean retain,
+            Object... args) {
+        ID ocClass = Foundation.getClass(ocClassName);
+        ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);
+        checkRetainCount(ocInstance, 1);
+        T result = wrap(ocInstance, javaClass, retain);
+        checkRetainCount(ocInstance, retain ? 2 : 1);
+        return result;
+    }
+    
     /**
      * Create a Java NSObject wrapping an existing Objective-C instance, represented
      * by id.
+     * 
+     * The NSObject is retained, and released when the object is GC'd.
      */
     public static <T extends NSObject> T wrap(ID id, Class<T> javaClass) {
-        NSObjectInvocationHandler invocationHandler = new NSObjectInvocationHandler(id, javaClass);
-        return createProxy(javaClass, invocationHandler);
+        return wrap(id, javaClass, true);
     }
 
     /**
@@ -74,9 +105,17 @@ public abstract class Rococoa  {
      * type.
      */
     public static <T extends NSObject> T cast(NSObject object, Class<T> desiredType) {
-        return wrap(object.id(), desiredType);
+        return wrap(object.id(), desiredType, true);
     }
 
+    protected static <T extends NSObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
+        // Why would we not want to retain? Well if we are wrapping a Core Foundation
+        // created object, or one created with new (allow init), it will not
+        // have been autorelease'd. 
+        NSObjectInvocationHandler invocationHandler = new NSObjectInvocationHandler(id, javaClass, retain);
+        return createProxy(javaClass, invocationHandler);        
+    }
+    
     /**
      * Return the ID of a new Objective-C object which will forward messages to
      * javaObject.
@@ -132,6 +171,12 @@ public abstract class Rococoa  {
             super(anotherID.intValue());
             this.callbacks = callbacks;
         }
+    }
+    
+    private static void checkRetainCount(ID ocInstance, int expected) {
+        int retainCount = Foundation.cfGetRetainCount(ocInstance);
+        if (retainCount != expected)
+            throw new IllegalStateException("Created an object which had a retain count of " + retainCount + " not " + expected);
     }
     
     /**

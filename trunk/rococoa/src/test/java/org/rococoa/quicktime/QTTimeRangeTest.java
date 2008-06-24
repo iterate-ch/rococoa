@@ -42,7 +42,8 @@ public class QTTimeRangeTest extends RococoaTestCase {
     private StructLibrary instance = (StructLibrary) Native.loadLibrary("rococoa", StructLibrary.class);    
     
     public void testPassByValueAsMethodCall() {
-        ID testID = Foundation.createInstance(Foundation.nsClass("TestShunt"));        
+        ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
+        Foundation.sendReturnsID(testID, "autorelease");
         QTTimeRange range = new QTTimeRange(new QTTime(25, 1000, 0), new QTTime(50, 1000,10));
         int result = Foundation.send(testID, "testPassQTTimeRangeByValue:", int.class, 
                 range);

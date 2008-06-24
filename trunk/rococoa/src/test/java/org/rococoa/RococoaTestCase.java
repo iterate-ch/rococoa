@@ -24,15 +24,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
+import org.rococoa.cocoa.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
+/**
+ * A TestCase which runs tests with an autorelease pool in place.
+ * 
+ * @author duncan
+ */
 @SuppressWarnings("nls")
 public abstract class RococoaTestCase extends TestCase {
     
-    static {initializeLogging();};
+    // stress our memory management
+    public static boolean gcAfterTest = true;
+
+    static {
+    	initializeLogging();
+    };
 
     protected static Logger logging = LoggerFactory.getLogger("org.rococoa.RococoaTestCase");
 
@@ -54,21 +65,32 @@ public abstract class RococoaTestCase extends TestCase {
         }
     }
     
-    protected ID pool;
+    protected NSAutoreleasePool pool;
     
     @Override
     public void runBare() throws Throwable {
-        logging.info("Starting test {}.{}", new Object[] {getClass().getName(), getName()});
-        pool = Foundation.createPool();
+        preSetup();
         try {
             super.runBare();
         } finally {
-            maybeGC();
-            Foundation.releasePool(pool);
+            postTeardown();
         }
     }
 
-    private void maybeGC() {
+    protected void preSetup() {
+        logging.info("Starting test {}.{}", new Object[] {getClass().getName(), getName()});
+        pool = NSAutoreleasePool.new_();
+    }
+
+    protected void postTeardown() {
+        logging.info("Ending test {}", getName());
+        if (gcAfterTest)
+            gc();
+        pool.release();
+        logging.info("Ended test {}", getName());
+    }
+
+    private void gc() {
         System.gc();
         System.gc();
         System.runFinalization();

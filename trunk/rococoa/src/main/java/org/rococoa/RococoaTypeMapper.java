@@ -41,13 +41,15 @@ class RococoaTypeMapper extends DefaultTypeMapper {
             this.javaType = javaType;
         }
 
-        @SuppressWarnings("unchecked")
-        public Object fromNative(Object nativeValue, FromNativeContext context) {
-            if (nativeValue == null)
-                return null;            
-            Integer nativeAsInteger = (Integer) nativeValue;
-            return Rococoa.wrap(new ID(nativeAsInteger.intValue()), (Class<? extends NSObject>) javaType);
-        }
+
+@SuppressWarnings("unchecked")
+public Object fromNative(Object nativeValue, FromNativeContext context) {
+    if (nativeValue == null)
+        return null;            
+    // TODO - NativeLong surely?
+    Integer nativeAsInteger = (Integer) nativeValue;
+    return Rococoa.wrap(new ID(nativeAsInteger.intValue()), (Class<? extends NSObject>) javaType);
+}
 
         public Class<?> nativeType() {
             return Integer.class;
