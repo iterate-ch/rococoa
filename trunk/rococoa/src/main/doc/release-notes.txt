@@ -1,4 +1,18 @@
 Rococoa Release Notes
+
+
+0.2.0
+	Much more rigorous memory management.
+	Selectors are now cached on the Java side.
+	Fixed problem #9 where we could only have one delegate or notification 
+		thanks to Adrian Ross for diagnosis and fix.
+	Much expanded set of parameter and return types for delegates and notifications
+		thanks to Andy Thompson for suggestions and help.
+	Fix defect #10 where delegates and notifications failed after the autorelease 
+		pool is released. Now use Rococoa.proxy rather than wrap.
+	Now use JNA-3.0.3 (NB slightly patched, please make sure that Rococoa precedes
+		JNA in the classpath 
+
 0.1.4
 	Reworked CFString handling to use UTF-8 and hence support extended characters.
 	Now support delegates and notifications, using Rococoa.wrap(Object)
