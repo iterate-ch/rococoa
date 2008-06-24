@@ -372,16 +372,28 @@ public class Function extends Pointer {
             Structure struct = (Structure)arg;
             struct.write();
             if (struct instanceof Structure.ByValue) {
-            	// Double-check against the method signature
-            	if (invokingMethod != null) {
-            		Class ptype = invokingMethod.getParameterTypes()[index];
-            		if (Structure.ByValue.class.isAssignableFrom(ptype)) {
-                                return struct;
+                // Double-check against the method signature, if available
+                Class ptype = struct.getClass();
+                if (invokingMethod != null) {
+                    Class[] ptypes = invokingMethod.getParameterTypes();
+                    if (isVarArgs(invokingMethod)) {
+                        if (index < ptypes.length-1) {
+                            ptype = ptypes[index];
                         }
-            		if (ptype.isArray()) { // may be varargs
-            		        return struct;
-            		}
-            	}
+                        else {
+                            Class etype = ptypes[ptypes.length-1].getComponentType();
+                            if (etype != Object.class) {
+                                ptype = etype;
+                            }
+                        }
+                    }
+                    else {
+                        ptype = ptypes[index];
+                    }
+                }
+                if (Structure.ByValue.class.isAssignableFrom(ptype)) {
+                    return struct;
+                }
             }
             return struct.getPointer();
         }
@@ -421,7 +433,7 @@ public class Function extends Pointer {
             if (byRef) {
                 Pointer[] pointers = new Pointer[ss.length + 1];
                 for (int i=0;i < ss.length;i++) {
-                	pointers[i] = ss[i] != null ? ss[i].getPointer() : null;
+                        pointers[i] = ss[i] != null ? ss[i].getPointer() : null;
                 }
                 return new PointerArray(pointers);
             }
@@ -478,9 +490,9 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
-     * @return	The value returned by the target native function
+     * @param   args
+     *                  Arguments to pass to the native function
+     * @return  The value returned by the target native function
      */
     private  native int invokeInt(int callingConvention, Object[] args);
 
@@ -488,17 +500,17 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
-     * @return	The value returned by the target native function
+     * @param   args
+     *                  Arguments to pass to the native function
+     * @return  The value returned by the target native function
      */
     private native long invokeLong(int callingConvention, Object[] args);
 
     /**
      * Call the native function being represented by this object
      *
-     * @param	args
-     *			Arguments to pass to the native function
+     * @param   args
+     *                  Arguments to pass to the native function
      */
     public void invoke(Object[] args) {
         invoke(Void.class, args);
@@ -509,8 +521,8 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
+     * @param   args
+     *                  Arguments to pass to the native function
      */
     private native void invokeVoid(int callingConvention, Object[] args);
 
@@ -518,9 +530,9 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
-     * @return	The value returned by the target native function
+     * @param   args
+     *                  Arguments to pass to the native function
+     * @return  The value returned by the target native function
      */
     private native float invokeFloat(int callingConvention, Object[] args);
 
@@ -528,9 +540,9 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
-     * @return	The value returned by the target native function
+     * @param   args
+     *                  Arguments to pass to the native function
+     * @return  The value returned by the target native function
      */
     private native double invokeDouble(int callingConvention, Object[] args);
 
@@ -538,11 +550,11 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
+     * @param   args
+     *                  Arguments to pass to the native function
      * @param   wide whether the native string uses <code>wchar_t</code>;
      * if false, <code>char</code> is assumed
-     * @return	The value returned by the target native function, as a String
+     * @return  The value returned by the target native function, as a String
      */
     private String invokeString(int callingConvention, Object[] args, boolean wide) {
         Pointer ptr = invokePointer(callingConvention, args);
@@ -560,9 +572,9 @@ public class Function extends Pointer {
      * Call the native function being represented by this object
      *
      * @param   callingConvention calling convention to be used
-     * @param	args
-     *			Arguments to pass to the native function
-     * @return	The native pointer returned by the target native function
+     * @param   args
+     *                  Arguments to pass to the native function
+     * @return  The native pointer returned by the target native function
      */
     private native Pointer invokePointer(int callingConvention, Object[] args);
     
@@ -586,7 +598,7 @@ public class Function extends Pointer {
         }
         return "native function@0x" + Long.toHexString(peer);
     }
-    
+
     /** Convenience method for 
      * {@link #invoke(Class,Object[]) invoke(Pointer.class, args)}.
      */
