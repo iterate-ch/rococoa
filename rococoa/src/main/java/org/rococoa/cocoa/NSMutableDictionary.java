@@ -19,24 +19,25 @@
  
 package org.rococoa.cocoa;
 
-import java.util.concurrent.Callable;
-
-import org.rococoa.Foundation;
-import org.rococoa.ID;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 
 
-public interface NSMutableDictionary extends NSDictionary {
-    public static final _Class CLASS = Rococoa.wrap(
-            Foundation.callOnMainThread(new Callable<ID>() {
-                public ID call() throws Exception {
-                    return Foundation.getClass("NSMutableDictionary"); //$NON-NLS-1$
-                }}),  _Class.class); 
+public abstract class NSMutableDictionary extends NSDictionary {
+    
+    public static final _Class CLASS = Rococoa.createClass("NSMutableDictionary", _Class.class); //$NON-NLS-1$
+
     public interface _Class extends NSClass {
-        NSMutableDictionary dictionaryWithCapacity(int numitems);
+        NSMutableDictionary dictionaryWithCapacity(int numItems);
     }
-    void setValue_forKey(NSObject object, String key);
+    
+    public static NSMutableDictionary dictionaryWithCapacity(int numItems) {
+        return CLASS.dictionaryWithCapacity(numItems);
+    }
+
+    public abstract void setValue_forKey(NSObject object, NSObject key);
+
+    public abstract void setValue_forKey(NSObject object, String key);
     
 }
