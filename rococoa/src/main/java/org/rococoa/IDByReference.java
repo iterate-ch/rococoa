@@ -26,7 +26,7 @@ import com.sun.jna.ptr.ByReference;
 public class IDByReference extends ByReference {
 
     public IDByReference() {
-        this(new ID(0));
+        this(ID.fromLong(0));
     }
     
     public IDByReference(ID value) {
@@ -39,7 +39,7 @@ public class IDByReference extends ByReference {
     }
     
     public ID getValue() {
-        return new ID(getPointer().getInt(0));
+        return ID.fromLong(getPointer().getInt(0));
     }
     
     public Object fromNative(Object nativeValue, FromNativeContext context) {
