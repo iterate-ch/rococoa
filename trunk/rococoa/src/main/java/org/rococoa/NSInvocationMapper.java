@@ -127,9 +127,9 @@ public abstract class NSInvocationMapper {
             return result;
         }
     };
-    public static final NSInvocationMapper ID = new NSInvocationMapper("@", ID.class) {
+    public static final NSInvocationMapper ID_MAPPER = new NSInvocationMapper("@", ID.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
-            return new ID(buffer.getNativeLong(0));
+            return ID.fromLong(buffer.getNativeLong(0).longValue());
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
             Memory result = new Memory(NATIVE_POINTER_SIZE);
@@ -139,7 +139,7 @@ public abstract class NSInvocationMapper {
     };
     public static final NSInvocationMapper STRING = new NSInvocationMapper("@", String.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
-            return Foundation.toString(new ID(buffer.getNativeLong(0)));
+            return Foundation.toString(ID.fromLong(buffer.getNativeLong(0).longValue()));
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
             Memory buffer = new Memory(NATIVE_POINTER_SIZE);
@@ -150,7 +150,7 @@ public abstract class NSInvocationMapper {
     public static final NSInvocationMapper NSOBJECT = new SubtypeInvocationMapper("@", NSObject.class) {
         @SuppressWarnings("unchecked")
         @Override public Object readFrom(Memory buffer, Class<?> type) {
-            return Rococoa.wrap(new ID(buffer.getNativeLong(0)), (Class<? extends NSObject>) type);
+            return Rococoa.wrap(ID.fromLong(buffer.getNativeLong(0).longValue()), (Class<? extends NSObject>) type);
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
             Memory buffer = new Memory(NATIVE_POINTER_SIZE);

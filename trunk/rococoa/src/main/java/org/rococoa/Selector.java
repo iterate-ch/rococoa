@@ -19,10 +19,10 @@
  
 package org.rococoa;
 
-import com.sun.jna.IntegerType;
+import com.sun.jna.NativeLong;
 
 @SuppressWarnings("nls")
-public class Selector extends IntegerType {
+public class Selector extends NativeLong {
     
     private  String name;
 
@@ -31,7 +31,7 @@ public class Selector extends IntegerType {
     };
     
     public Selector(String name, long value) {
-        super(4, value);
+        super(value);
         this.name = name;
     }
     

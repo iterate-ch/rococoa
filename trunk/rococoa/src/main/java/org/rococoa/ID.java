@@ -30,21 +30,24 @@ import com.sun.jna.NativeLong;
  * as opaque.
  * 
  * Technically, this should be {@link Native#POINTER_SIZE} not {@link Native#LONG_SIZE},
- * but as they are both 32 on 32-bit and 64 on 64-bit we'll gloss over that.
+ * but as they are both 32 on 32-bit and 64 on 64-bit we'll gloss over that. Ideally
+ * it would be Pointer, but they have no protected constructors.
  *
  */
 public class ID extends NativeLong {
 
-    public ID() {
-        this(0);
-    };
-    
-    public ID(long value) {
-        super(value);
+    static ID fromLong(long value) {
+        return new ID(value);
     }
+
+    // Public for JNA
+    public ID() {
+        super();
+    };
+
     
-    public ID(NativeLong value) {
-        super(value.longValue());
+    protected ID(long value) {
+        super(value);
     }
     
     @Override

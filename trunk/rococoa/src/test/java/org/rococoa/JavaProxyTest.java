@@ -132,9 +132,9 @@ public class JavaProxyTest extends RococoaTestCase {
 
     public void testTakesIDReturnsID() {
         ID result = Foundation.sendReturnsID(proxy.id(), "testTakesIDReturnsID:", 
-                new ID(42));
+               ID.fromLong(42));
         assertEquals("Hello", Foundation.toString(result));        
-        assertEquals(new ID(42), implementor.arg);
+        assertEquals(ID.fromLong(42), implementor.arg);
     }
     
     public void testTakesNSObjectReturnsNSObject() {
@@ -228,11 +228,11 @@ public class JavaProxyTest extends RococoaTestCase {
         JavaImplementor implementor2 = new JavaImplementor();
         NSObject proxy2 = Rococoa.proxy(implementor2);
         
-        Foundation.sendReturnsVoid(proxy.id(), "testTakesIDReturnsID:", new ID(42));
-        assertEquals(new ID(42), implementor.arg);        
+        Foundation.sendReturnsVoid(proxy.id(), "testTakesIDReturnsID:", ID.fromLong(42));
+        assertEquals(ID.fromLong(42), implementor.arg);        
 
-        Foundation.sendReturnsVoid(proxy2.id(), "testTakesIDReturnsID:", new ID(43));
-        assertEquals(new ID(43), implementor2.arg);        
+        Foundation.sendReturnsVoid(proxy2.id(), "testTakesIDReturnsID:", ID.fromLong(43));
+        assertEquals(ID.fromLong(43), implementor2.arg);        
     }    
     
     public void testNotifications() {
