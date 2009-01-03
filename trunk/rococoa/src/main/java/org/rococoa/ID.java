@@ -44,12 +44,15 @@ public class ID extends NativeLong {
     public ID() {
         super();
     };
-
     
     protected ID(long value) {
         super(value);
     }
     
+    protected ID(ID anotherID) {
+        this(anotherID.longValue());
+    }
+
     @Override
     public String toString() {
         return String.format("[ID 0x%x]", longValue()); //$NON-NLS-1$

@@ -189,7 +189,7 @@ public abstract class Rococoa  {
         }
         
         public ProxyID(ID anotherID, OCInvocationCallbacks callbacks) {
-            super(anotherID.intValue());
+            super(anotherID);
             this.callbacks = callbacks;
         }
     }
