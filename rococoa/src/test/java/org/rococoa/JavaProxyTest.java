@@ -106,7 +106,7 @@ public class JavaProxyTest extends RococoaTestCase {
     private NSObject proxy;
     
     public static Test suite() {
-        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+        return skipOnJava6Suite(JavaProxyTest.class);
     }
     
     @Override
