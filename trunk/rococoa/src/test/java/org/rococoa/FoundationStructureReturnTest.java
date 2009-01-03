@@ -19,6 +19,8 @@
  
 package org.rococoa;
 
+import junit.framework.Test;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
@@ -45,7 +47,11 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
             this.aStruct = new MyStruct.MyStructByValue(anInt, aDouble);
         }        
     }
-
+    
+    public static Test suite() {
+        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+    }
+    
     public void testStaticReceiveStructure() {
         MyStruct result = instance.returnStructByValue(42, Math.E);
         assertEquals(42, result.anInt);

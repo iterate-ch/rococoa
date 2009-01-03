@@ -22,12 +22,16 @@ package org.rococoa;
 import org.rococoa.cocoa.NSSize;
 import org.rococoa.cocoa.NSValue;
 
-
+/**
+ * Checks that we can embed a struct by value in a object.
+ * 
+ */
 public class StructsInObjectsTest extends RococoaTestCase {
+    
     public void test() throws Exception {
-                
-        NSValue value = NSValue.CLASS.valueWithSize(new NSSize(1, 3));
-        NSSize size = value.sizeValue();
+        NSSize aSize = new NSSize(1, 3);
+        NSValue value = NSValue.CLASS.valueWithSize(aSize);
+        NSSize size = value.sizeValue(); // fails here with jna 3.0.9
 
         assertEquals(1.0, size.width, 0.0001);
         assertEquals(3.0, size.height, 0.0001);        

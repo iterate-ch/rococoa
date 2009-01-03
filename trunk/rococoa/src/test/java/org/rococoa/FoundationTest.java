@@ -18,13 +18,9 @@
  */
  
 package org.rococoa;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 
-@SuppressWarnings({"nls", "unused"})
-public class FoundationTest extends RococoaTestCase {         
+public class FoundationTest extends RococoaTestCase {  
+    
     public void testString() {
         ID string = Foundation.cfString("Hello World");
         assertNotNull(string);
@@ -37,6 +33,7 @@ public class FoundationTest extends RococoaTestCase {
     	assertEquals(stringWithOddChar, Foundation.toString(string));
     }
     
+    @SuppressWarnings("unused")
     public void xtestStringPerformance() {
         String stringWithOddChar = "Hello \u2648";
         StringBuilder longStringBuilder = new StringBuilder();
@@ -78,7 +75,7 @@ public class FoundationTest extends RococoaTestCase {
         ID clas = Foundation.getClass("NSDate");
         ID instance = Foundation.sendReturnsID(clas, "date");
         ID result = Foundation.sendReturnsID(instance, "description");
-        assertTrue(Foundation.toString(result).startsWith("20")); // 2007-11-15 16:01:50 +0000
+        assertTrue(Foundation.toString(result).startsWith("2")); // 2007-11-15 16:01:50 +0000
     }
     
     public void testSelector() {
