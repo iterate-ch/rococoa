@@ -19,6 +19,8 @@
  
 package org.rococoa;
 
+import junit.framework.Test;
+
 import org.rococoa.MyStruct.MyStructByValue;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNotification;
@@ -103,11 +105,15 @@ public class JavaProxyTest extends RococoaTestCase {
     private JavaImplementor implementor;
     private NSObject proxy;
     
+    public static Test suite() {
+        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+    }
+    
     @Override
     protected void setUp() throws Exception {
         implementor = new JavaImplementor();
         proxy = Rococoa.proxy(implementor, NSObject.class); // hang onto this to prevent GC issues
-    }
+    }   
     
     public void testRepondsToSelector() {
         // respond to selector is required for delegates

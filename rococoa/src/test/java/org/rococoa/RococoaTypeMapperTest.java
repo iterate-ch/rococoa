@@ -19,6 +19,8 @@
  
 package org.rococoa;
 
+import junit.framework.Test;
+
 import org.rococoa.cocoa.NSNumber;
 
 import com.sun.jna.FromNativeConverter;
@@ -33,6 +35,10 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         (Class<? extends Number>) new NativeLong().nativeType();
     
     private TypeMapper typeMapper = new RococoaTypeMapper();
+    
+    public static Test suite() {
+        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+    }
     
     @Override
     protected void setUp() throws Exception {

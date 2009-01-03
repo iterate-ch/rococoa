@@ -24,11 +24,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
+import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
+
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import junit.framework.TestCase;
 
 /**
  * A TestCase which runs tests with an autorelease pool in place.
@@ -61,7 +65,6 @@ public abstract class RococoaTestCase extends TestCase {
             }
         } catch (IOException x) {
             throw new RuntimeException("Could not initialize logging", x);
-            
         }
     }
     
@@ -94,6 +97,18 @@ public abstract class RococoaTestCase extends TestCase {
         System.gc();
         System.gc();
         System.runFinalization();
+    }
+    
+    public static Test skipOnJava6Suite(Class<? extends TestCase> testClass) {
+        if (System.getProperty("java.version").startsWith("1.6")) {
+            return new TestSuite(testClass) {
+                @Override
+                public void run(TestResult result) {
+                    result.addFailure(this, new AssertionFailedError("Tests skipped"));
+                }
+            };
+        }
+        return new TestSuite(testClass);
     }
 
 }
