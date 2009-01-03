@@ -24,8 +24,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.rococoa.cocoa.NSSize;
-
 import com.sun.jna.Function;
 import com.sun.jna.Library;
 import com.sun.jna.Structure;
@@ -41,10 +39,16 @@ import com.sun.jna.Structure;
  * depending on its type. Luckily jna and libffi take care of the details -
  * provided they know what the return type is.
  * 
- * Here we pass the return type in as the first arg to the method call that this
- * intercepts, and remove it before calling the appropriate fn.
+ * This InvocationHandler is passed the return type as the first arg to the method call that it
+ * intercepts, it uses it to determine which function to call, and removes it before
+ * calling invoking.
  * 
  * @see http://www.cocoabuilder.com/archive/message/cocoa/2006/6/25/166236
+ * and
+ * @see http://developer.apple.com/documentation/developertools/Conceptual/LowLevelABI/LowLevelABI.pdf
+ * 
+ * Note also that there is a objc_msgSend_fret that is used supposed to be for 
+ * floating point return types, but that I haven't (yet) had to use. 
  * 
  * @author duncan
  * 
@@ -53,12 +57,11 @@ class MsgSendHandler implements InvocationHandler {
 
     private final String OPTION_INVOKING_METHOD = "invoking-method";
     	// TODO - use JNA string when made public
+    
+    private final static int stretCutoff = 9;
+    
     private final static Method OBJC_MSGSEND;
-    private final static Method OBJC_MSGSEND_STRET;
-    
-    private final Function objc_msgSend_stret_Function;
-    private final Function objc_msgSend_Function;
-    
+    private final static Method OBJC_MSGSEND_STRET;        
     static {
         try {
             OBJC_MSGSEND = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend", 
@@ -70,9 +73,12 @@ class MsgSendHandler implements InvocationHandler {
         }
     }
 
+    private final Pair<Method, Function> objc_msgSend_stret_Pair;
+    private final Pair<Method, Function> objc_msgSend_Pair;
+
     public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_stret_Function) {
-        this.objc_msgSend_Function = objc_msgSend_Function;
-        this.objc_msgSend_stret_Function = objc_msgSend_stret_Function;
+        this.objc_msgSend_Pair = new Pair<Method, Function>(OBJC_MSGSEND, objc_msgSend_Function);
+        this.objc_msgSend_stret_Pair = new Pair<Method, Function>(OBJC_MSGSEND_STRET, objc_msgSend_stret_Function);
     }
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -82,13 +88,9 @@ class MsgSendHandler implements InvocationHandler {
         Map<String, Object> options = new HashMap<String, Object>(1);    
         options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
         
-        if (shouldCallStretFor(returnTypeForThisCall)) {
-            options.put(OPTION_INVOKING_METHOD, OBJC_MSGSEND_STRET);
-            return objc_msgSend_stret_Function.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
-        } else {
-            options.put(OPTION_INVOKING_METHOD, OBJC_MSGSEND);
-            return objc_msgSend_Function.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
-        }
+        Pair<Method, Function> invocation = invocationFor(returnTypeForThisCall); 
+        options.put(OPTION_INVOKING_METHOD, invocation.first);
+        return invocation.second.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
     }
     
     private Object[] removeReturnTypeFrom(Object[] args) {
@@ -96,12 +98,18 @@ class MsgSendHandler implements InvocationHandler {
         System.arraycopy(args, 1, result, 0, args.length - 2);
         return result;
     }
-
-    private boolean shouldCallStretFor(Class<?> returnTypeForThisCall) {
-        boolean isStructByValue = Structure.class.isAssignableFrom(returnTypeForThisCall) &&
-            Structure.ByValue.class.isAssignableFrom(returnTypeForThisCall);
+    
+    private Pair<Method, Function> invocationFor(Class<?> returnTypeForThisCall) {
+        boolean isStruct = Structure.class.isAssignableFrom(returnTypeForThisCall);
+        boolean isStructByValue = isStruct && Structure.ByValue.class.isAssignableFrom(returnTypeForThisCall);
         if (!isStructByValue)
-            return false;
-        return returnTypeForThisCall != NSSize.class; // TODO - better strategy than this!
+            return objc_msgSend_Pair;
+        try {
+            Structure prototype = (Structure) returnTypeForThisCall.newInstance();
+            return prototype.size() < stretCutoff ?
+                    objc_msgSend_Pair : objc_msgSend_stret_Pair;
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        }
     }
 }
