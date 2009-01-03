@@ -23,7 +23,6 @@ import java.io.File;
 
 import junit.framework.Test;
 
-import org.rococoa.FoundationStructureReturnTest;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
@@ -47,7 +46,7 @@ public class QTMovieTest extends RococoaTestCase {
     }
     
     public static Test suite() {
-        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+        return skipOnJava6Suite(QTMovieTest.class);
     }
     
     public void test() {

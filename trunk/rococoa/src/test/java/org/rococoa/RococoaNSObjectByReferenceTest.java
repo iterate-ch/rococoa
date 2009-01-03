@@ -31,7 +31,7 @@ public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
     };
     
     public static Test suite() {
-        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+        return skipOnJava6Suite(RococoaNSObjectByReferenceTest.class);
     }
     
     public void test() {

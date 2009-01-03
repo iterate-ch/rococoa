@@ -37,7 +37,7 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
     private TypeMapper typeMapper = new RococoaTypeMapper();
     
     public static Test suite() {
-        return skipOnJava6Suite(FoundationStructureReturnTest.class);
+        return skipOnJava6Suite(RococoaTypeMapperTest.class);
     }
     
     @Override
