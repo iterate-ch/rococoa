@@ -1,5 +1,19 @@
 Rococoa Release Notes
 
+Known issues
+
+64-bit support is not field tested - please let me know your experiences.
+Not all test cases pass in 64-bits.
+JNA-3.0.9 (current latest) is not supported in 32-bit.
+
+Change History
+
+0.3.0
+	Functioning 64-bit (and hence Java 6) support
+		thanks to Paul Loy for fixes and discussions, and Andy Thompson for NSInteger et al
+	We should now correctly l small structs as return values, not just NSSize!
+	Improved NSDictionary
+	Support for JNA-3.0.4		
 
 0.2.0
 	Much more rigorous memory management.
