@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.sun.jna.Function;
 import com.sun.jna.Library;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 
 /**
@@ -58,7 +59,10 @@ class MsgSendHandler implements InvocationHandler {
     private final String OPTION_INVOKING_METHOD = "invoking-method";
     	// TODO - use JNA string when made public
     
-    private final static int stretCutoff = 9;
+    private final static int I386_STRET_CUTOFF = 9;
+    private final static int IA64_STRET_CUTOFF = 17;
+    
+    private final static int stretCutoff = NativeLong.SIZE == 8 ? IA64_STRET_CUTOFF : I386_STRET_CUTOFF;
     
     private final static Method OBJC_MSGSEND;
     private final static Method OBJC_MSGSEND_STRET;        
