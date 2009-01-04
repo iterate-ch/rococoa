@@ -19,8 +19,6 @@
  
 package org.rococoa;
 
-import junit.framework.Test;
-
 import org.rococoa.cocoa.NSNumber;
 
 import com.sun.jna.FromNativeConverter;
@@ -35,10 +33,6 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         (Class<? extends Number>) new NativeLong().nativeType();
     
     private TypeMapper typeMapper = new RococoaTypeMapper();
-    
-    public static Test suite() {
-        return skipOnJava6Suite(RococoaTypeMapperTest.class);
-    }
     
     @Override
     protected void setUp() throws Exception {
@@ -67,21 +61,27 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         
         assertEquals(primitiveTypeOfNativeLong, fromNative.nativeType());
 
-        assertEquals(2, fortyTwo.retainCount()); // one for the pool, one for java
+        int expectedRetainCount = 2; // one for the pool, one for java
+        assertEquals(expectedRetainCount, fortyTwo.retainCount()); 
 
         Number nativeValue;
+        NSNumber converted;
         
-        // We should cope with Integer
-        nativeValue = new Integer(fortyTwo.id().intValue());
-        NSNumber converted = (NSNumber) fromNative.fromNative(nativeValue, null);
-        assertEquals(45, converted.intValue());        
-        assertEquals(3, fortyTwo.retainCount()); // one more now we have another java
+        // We should cope with Integer on 32-bit
+        if (NativeLong.SIZE == 4) {
+            nativeValue = new Integer(fortyTwo.id().intValue());
+            converted = (NSNumber) fromNative.fromNative(nativeValue, null);
+            expectedRetainCount++; // one more now we have another java
+            assertEquals(45, converted.intValue());        
+            assertEquals(expectedRetainCount, fortyTwo.retainCount()); 
+        }
 
-        // and should cope with Long
-        nativeValue = new Long(fortyTwo.id().intValue());
+        // and should cope with Long on 64 and 32
+        nativeValue = new Long(fortyTwo.id().longValue());
         converted = (NSNumber) fromNative.fromNative(nativeValue, null);
+        expectedRetainCount++; // one more now we have another java
         assertEquals(45, converted.intValue());        
-        assertEquals(4, fortyTwo.retainCount()); // one more now we have another java
+        assertEquals(expectedRetainCount, fortyTwo.retainCount());
 
         assertEquals(null, fromNative.fromNative(null, null));
     }
@@ -108,14 +108,17 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         assertEquals(primitiveTypeOfNativeLong, fromNative.nativeType());
         
         Number nativeValue;
+        String converted;
         
-        // We should cope with Integer
-        nativeValue = new Integer(helloID.intValue());
-        String converted = (String) fromNative.fromNative(nativeValue, null);
-        assertEquals("Hello", converted);
+        // We should cope with Integer on 32-bit
+        if (NativeLong.SIZE == 4) {
+            nativeValue = new Integer(helloID.intValue());
+            converted = (String) fromNative.fromNative(nativeValue, null);
+            assertEquals("Hello", converted);
+        }
 
         // and we should cope with Long
-        nativeValue = new Long(helloID.intValue());
+        nativeValue = new Long(helloID.longValue());
         converted = (String) fromNative.fromNative(nativeValue, null);
         assertEquals("Hello", converted);
 
