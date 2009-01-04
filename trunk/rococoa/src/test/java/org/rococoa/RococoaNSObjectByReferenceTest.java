@@ -19,8 +19,6 @@
  
 package org.rococoa;
 
-import junit.framework.Test;
-
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNumber;
 
@@ -29,10 +27,6 @@ public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
     private interface TestShunt extends NSObject {
         void testNSNumberByReference_with(NSObjectByReference reference, int value);
     };
-    
-    public static Test suite() {
-        return skipOnJava6Suite(RococoaNSObjectByReferenceTest.class);
-    }
     
     public void test() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();

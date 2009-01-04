@@ -20,9 +20,16 @@
 package org.rococoa;
 
 import com.sun.jna.FromNativeContext;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByReference;
 
+/**
+ * Used when we need to pass an ID to be filled in by called code.
+ * 
+ * @author duncan
+ *
+ */
 public class IDByReference extends ByReference {
 
     public IDByReference() {
@@ -30,16 +37,16 @@ public class IDByReference extends ByReference {
     }
     
     public IDByReference(ID value) {
-        super(4);
+        super(NativeLong.SIZE);
         setValue(value);
     }
     
     public void setValue(ID value) {
-        getPointer().setInt(0, value.intValue());
+        getPointer().setNativeLong(0, value);
     }
     
     public ID getValue() {
-        return ID.fromLong(getPointer().getInt(0));
+        return ID.fromLong(getPointer().getNativeLong(0).longValue());
     }
     
     public Object fromNative(Object nativeValue, FromNativeContext context) {

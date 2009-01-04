@@ -38,6 +38,7 @@ public class MovieComponent extends CocoaComponent {
         this.movieView =  movieView;
     }
 
+    // TODO - this int suspect in 64-bit
     @Override
     public int createNSView() {
         return movieView.id().intValue();

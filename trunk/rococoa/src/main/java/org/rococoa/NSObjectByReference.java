@@ -19,12 +19,12 @@
  
 package org.rococoa;
 
+import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.ByReference;
 
 /**
  * Used to retrieve an NSObject as an out param.
  * 
- * TODO - recast as extends ByReference
  * @author duncan
  *
  */
@@ -33,7 +33,7 @@ public class NSObjectByReference extends ByReference {
     private NSObject object;
 
     public NSObjectByReference() {
-        super(4);
+        super(NativeLong.SIZE);
     }
     
     public <T extends NSObject> T getValueAs(Class<T> javaClass) {
@@ -43,7 +43,4 @@ public class NSObjectByReference extends ByReference {
     public void setObject(NSObject object) {
         this.object = object;
     }
-    
-    
-
 }
