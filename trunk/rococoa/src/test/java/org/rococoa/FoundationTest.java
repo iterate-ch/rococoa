@@ -80,18 +80,18 @@ public class FoundationTest extends RococoaTestCase {
     
     public void testSelector() {
         Selector selector = Foundation.selector("selectorName:");
-        assertTrue(selector.intValue() != 0); // selectors always exist
+        assertTrue(selector.longValue() != 0); // selectors always exist
         assertSame("selectorName:", selector.getName());
         
         Selector noSuchSelector = Foundation.selector("noSelector:NamedThis:OrribleThing:");
-        assertTrue(noSuchSelector.intValue() != 0);
+        assertTrue(noSuchSelector.longValue() != 0);
         assertSame("noSelector:NamedThis:OrribleThing:", noSuchSelector.getName());
     }
     
     // TODO - make work by wrapping call with native try- catch
     public void xtestInvokeUnknownSelector() {
         Selector noSuchSelector = Foundation.selector("noSelector:NamedThis:OrribleThing:");
-        assertTrue(noSuchSelector.intValue() != 0); 
+        assertTrue(noSuchSelector.longValue() != 0); 
         ID clas = Foundation.getClass("NSNumber");
         try {
             Foundation.send(clas, noSuchSelector, int.class);
