@@ -31,7 +31,7 @@ public class StructsInObjectsTest extends RococoaTestCase {
     public void test() throws Exception {
         NSSize aSize = new NSSize(1, 3);
         NSValue value = NSValue.CLASS.valueWithSize(aSize);
-        NSSize size = value.sizeValue(); // fails here with jna 3.0.9
+        NSSize size = value.sizeValue(); // fails here with jna 3.0.9 in Java 1.5
 
         assertEquals(1.0, size.width, 0.0001);
         assertEquals(3.0, size.height, 0.0001);        
