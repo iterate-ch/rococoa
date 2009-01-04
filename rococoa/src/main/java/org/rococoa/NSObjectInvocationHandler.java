@@ -273,7 +273,8 @@ class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor 
         if (arg == null)
             return null;
         if (arg instanceof NSObjectByReference)
-            return new IDByReference();
+            return new IDByReference(); // this will be filled in with an id by
+                // the called code, and then marshalled to an NSObject by fillInReferences
             // TODO - passing existing inout, not just out
         return arg;
     }

@@ -21,8 +21,6 @@ package org.rococoa.quicktime;
 
 import java.io.File;
 
-import junit.framework.Test;
-
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
@@ -43,10 +41,6 @@ public class QTMovieTest extends RococoaTestCase {
     static {
         @SuppressWarnings("unused")
         QTKit instance = QTKit.instance;
-    }
-    
-    public static Test suite() {
-        return skipOnJava6Suite(QTMovieTest.class);
     }
     
     public void test() {
