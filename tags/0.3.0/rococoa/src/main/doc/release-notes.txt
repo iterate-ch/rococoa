@@ -1,0 +1,45 @@
+Rococoa Release Notes
+
+Known issues
+
+64-bit support is not field tested - please let me know your experiences.
+Not all test cases pass in 64-bits.
+JNA-3.0.9 (current latest) is not supported in 32-bit.
+
+Change History
+
+0.3.0
+	Functioning 64-bit (and hence Java 6) support
+		thanks to Paul Loy for fixes and discussions, and Andy Thompson for NSInteger et al
+	We should now correctly l small structs as return values, not just NSSize!
+	Improved NSDictionary
+	Support for JNA-3.0.4		
+
+0.2.0
+	Much more rigorous memory management.
+	Selectors are now cached on the Java side.
+	Fixed problem #9 where we could only have one delegate or notification 
+		thanks to Adrian Ross for diagnosis and fix.
+	Much expanded set of parameter and return types for delegates and notifications
+		thanks to Andy Thompson for suggestions and help.
+	Fix defect #10 where delegates and notifications failed after the autorelease 
+		pool is released. Now use Rococoa.proxy rather than wrap.
+	Now use JNA-3.0.3 (NB slightly patched, please make sure that Rococoa precedes
+		JNA in the classpath 
+
+0.1.4
+	Reworked CFString handling to use UTF-8 and hence support extended characters.
+	Now support delegates and notifications, using Rococoa.wrap(Object)
+
+0.1.3
+	Now ship a Universal Binary dylib
+	
+0.1.2
+    Added LGPL licence files and these release notes.
+
+0.1.1
+    Changes to allow the checked-out code to build.
+
+0.1.0
+    First published to dev.java.net.
+

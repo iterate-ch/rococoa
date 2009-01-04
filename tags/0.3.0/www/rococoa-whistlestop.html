@@ -1,0 +1,288 @@
+<html>
+<head>
+<title>Rococoa Whistlestop Tour</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />           
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="rococoa.css" title="Default" />
+</head>
+<body>
+<h1>Rococoa Whistlestop Tour</h1>
+
+<p>First download and unzip the latest release. Add
+<code>dist/rococoa-n.n.n.jar</code> and the jars in <code>lib</code> to
+your classpath. Add <code>bin/librococoa.dylib</code> to your
+<code>java.library.path</code> (the easiest way to do this is to drop it into
+the directory from which you run code).</p>
+
+<p><strong>I'm about to gloss over some memory management issues. Please don't
+ship code based on Rococoa without getting at least as far as
+<a href="rococoa-memory.html">that section</a>.</strong></p>
+
+<p>Now choose a Cocoa class you'd like to represent in Java. Let's say
+NSMutableArray. Create a Java interface called NSMutableArray, extending
+<code>org.rococoa.NSObject</code>.</p>
+
+<pre class="block"><span class="new">
+public interface NSMutableArray extends NSObject {
+}
+</span></pre>
+
+<p>To create an NSMutableArray in Objective-C we would call the class (static)
+method <code>+ (id)arrayWithCapacity:(NSUInteger) numItems</code>. We don't have
+any way to add static methods to a Java interface, so add a nested class and add
+the desired method to that.</p>
+
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    <span class="new">public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }</span>    
+}
+</pre>
+
+<p>The nested class name <code>_Class</code> is just a convention. The method
+name should be the same as the Objective-C name, and primitive arguments just
+map to their obvious Java equivalents. The <code>id</code> returned we know
+represents an instance of NSMutableArray, so we may as well say so.</p>
+
+<p>Now we need an instance of this inner class to call our method. Rococoa will
+create this for us, if we tell it the name of the Objective-C class that we are
+wrapping, and the type of the wrapper. I call these statics
+<code>CLASS</code>.</p>
+ 
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    <span class="new">public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);</span>
+    
+    public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }
+}
+</pre>
+
+<p>Now everything is in place to create an instance, let's do that and call the
+NSObject method <code>- (NSString *)description</code>, mapped in NSObject.java
+as <code>String description()</code>.</p>
+
+<pre class="block"><span class="new">
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals("(\n)", array.description());
+    }   
+}
+</span></pre>
+
+<p>OK, so it's not much of a description, but if it works, you've created an
+Objective-C object and called a method on it. Let's add some more interesting
+operations.</p>
+
+<p>Provided that it is implemented in Objective-C, adding an operation is simply
+a question of adding to our Java interface. So in the parent of NSMutableArray,
+NSArray, we find <code>- (NSUInteger)count</code>. We can add that to our
+interface and then call it.</p>
+
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", Class.class);
+    public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }
+    
+    <span class="new">int count();</span>
+}
+
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals("(\n)", array.description());
+        <span class="new">
+        assertEquals(0, array.count());</span>
+    }   
+}
+</pre>
+
+<p>Hmmm, pretty boring, but necessary if we're going to test <code>-
+(void)addObject:(id)anObject</code>.</p>
+
+<p>That <code>(id)</code> parameter is Objective-C's way of saying any NSObject,
+so the corresponding Java code is:</p>
+
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);
+    public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }
+    
+    int count();
+    <span class="new">
+    void addObject(NSObject anObject);</span>
+}.
+</pre>
+
+<p>The only NSObject subclass that we've seen so far is our NSMutableArray (OK,
+_Class is as well, smarty-pants), and adding an array to an array is too
+hardcore, so for our test be glad that Rococoa has already implemented some of
+NSString, and a factory method <code>NSString stringWithString(java.lang.String
+string)</code>.</p>
+
+<pre class="block">
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals(0, array.count());
+        <span class="new">
+        NSString aString = NSString.stringWithString("Hello"));
+        array.addObject(aString);
+        assertEquals(1, array.count());
+        assertEquals("(\n    Hello\n)", array.description());</span>
+    }   
+}
+</pre>
+
+<p>As passing strings around is pretty fundamental, Rococoa marsalls them
+specially. If you declare a parameter as java.lang.String, Rococoa will create
+the NSString for you.</p>
+
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);
+    public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }
+    
+    int count();
+    void addObject(NSObject anObject);
+    <span class="new">
+    void addObject(String string);</span>
+
+}
+
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals(0, array.count());
+        array.addObject(NSString.stringWithString("Hello"));
+        <span class="new">
+        array.addObject("Goodbye");
+        assertEquals(2, array.count());
+        assertEquals("(\n    Hello,\n    Goodbye\n)",
+                array.description());</span>
+    }   
+}
+</pre>
+
+<p>The same is true for returning strings.</p>
+
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);
+    public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }
+    
+    int count();
+    void addObject(NSObject anObject);
+    void addObject(String string);
+    <span class="new">
+    String objectAtIndex(int index);</span>
+
+}
+
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals(0, array.count());
+        array.addObject(NSString.stringWithString("Hello"));
+        array.addObject("Goodbye");
+        assertEquals(2, array.count());
+        <span class="new">
+        String first = array.objectAtIndex(0);
+        assertEquals("Hello", first);
+        assertEquals("Goodbye", array.objectAtIndex(1));</span>
+    }   
+}
+</pre>
+
+<p>Of course we can't overload <code>String objectAtIndex(int index)</code> and
+add the more generic <code>NSObject objectAtIndex(int index)</code>. Let's go
+back to returning NSObject.</p>
+
+<pre class="block">
+public interface NSMutableArray extends NSObject {
+
+    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);
+    public interface _Class extends NSClass {
+        NSMutableArray arrayWithCapacity(int numItems);
+    }
+    
+    int count();
+    void addObject(NSObject anObject);
+    void addObject(String string);
+    
+    NSObject objectAtIndex(int index);
+}
+</pre>
+
+<p>Now we can compare with an NSString.</p>
+
+<pre class="block">
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals(0, array.count());
+        array.addObject(NSString.stringWithString("Hello"));
+        array.addObject("Goodbye");
+        assertEquals(2, array.count());
+        <span class="new">
+        NSObject first = array.objectAtIndex(0);
+        assertEquals(NSString.stringWithString("Hello"), first);</span>
+    }   
+}
+</pre>
+
+<p>Alternatively we can downcast to NSString using <code>Rococoa.cast(NSObject
+object, Class<T> desiredType)</code>.</p>
+
+<pre class="block">
+public class NSMutableArrayTest extends RococoaTestCase {
+
+    public void test() {
+        NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
+        assertEquals(0, array.count());
+        array.addObject(NSString.stringWithString("Hello"));
+        array.addObject("Goodbye");
+        assertEquals(2, array.count());
+
+        NSObject first = array.objectAtIndex(0);
+        assertEquals(NSString.stringWithString("Hello"), first);</span>
+        <span class="new">
+        NSString firstAsString = Rococoa.cast(first, NSString.class);
+        assertEquals("Hello", firstAsString.toString());
+        assertEquals("Goodbye", 
+                Rococoa.cast(array.objectAtIndex(1), NSString.class).toString());</span>
+
+    }   
+}
+</pre>
+
+<p>That's the end of our quick tour. I thought there were too many apostrophes,
+but if that hasn't put you off, please see the <a href="rococoa-howto.html">How
+To</a> for more information.</p>
+</body>
+</html>
+
+

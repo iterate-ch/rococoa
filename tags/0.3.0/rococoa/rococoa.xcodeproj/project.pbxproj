@@ -1,0 +1,375 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		AE1460240D1AD7F6009A6A03 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED078F00CEC608C00542DAC /* QTKit.framework */; };
+		AE1E31B10CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
+		AE1E31B20CFB1D1900508B04 /* ProxyForJava.h in Headers */ = {isa = PBXBuildFile; fileRef = AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */; };
+		AE1E31B30CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
+		AEA3577B0CECA01400AE7D09 /* scratch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357770CECA01400AE7D09 /* scratch.m */; };
+		AEA3577D0CECA01400AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
+		AEA357FC0CEDFBDF00AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
+		AEAEF7770D0EAEE700DA270B /* librococoa.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AED079210CEC69DC00542DAC /* librococoa.dylib */; };
+		AECF4DCB0D042C5F00B44D6E /* test.h in Headers */ = {isa = PBXBuildFile; fileRef = AECF4DC90D042C5F00B44D6E /* test.h */; };
+		AECF4DCC0D042C5F00B44D6E /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = AECF4DCA0D042C5F00B44D6E /* test.m */; };
+		AECF4DCE0D042C5F00B44D6E /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = AECF4DCA0D042C5F00B44D6E /* test.m */; };
+		AED078F10CEC608C00542DAC /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED078F00CEC608C00542DAC /* QTKit.framework */; };
+		AED079230CEC6A0A00542DAC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AEAEF7750D0EAED000DA270B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ../..;
+			dstSubfolderSpec = 16;
+			files = (
+				AEAEF7770D0EAEE700DA270B /* librococoa.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		8DD76FA10486AA7600D96B5E /* rococoa */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = rococoa; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProxyForJava.h; sourceTree = "<group>"; };
+		AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProxyForJava.m; sourceTree = "<group>"; };
+		AEA357770CECA01400AE7D09 /* scratch.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = scratch.m; sourceTree = "<group>"; };
+		AEA357780CECA01400AE7D09 /* Rococoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Rococoa.h; sourceTree = "<group>"; };
+		AEA357790CECA01400AE7D09 /* Rococoa.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Rococoa.m; sourceTree = "<group>"; };
+		AECF4DC90D042C5F00B44D6E /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
+		AECF4DCA0D042C5F00B44D6E /* test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
+		AED078F00CEC608C00542DAC /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
+		AED079210CEC69DC00542DAC /* librococoa.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = librococoa.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6859EA3029092ED04C91782 /* rococoa.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = rococoa.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				AED078F10CEC608C00542DAC /* QTKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AED0791F0CEC69DC00542DAC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE1460240D1AD7F6009A6A03 /* QTKit.framework in Frameworks */,
+				AED079230CEC6A0A00542DAC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* rococoa */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859EA2029092E104C91782 /* Documentation */,
+				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = rococoa;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				AEA357760CECA01400AE7D09 /* native */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				AED078F00CEC608C00542DAC /* QTKit.framework */,
+				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FA10486AA7600D96B5E /* rococoa */,
+				AED079210CEC69DC00542DAC /* librococoa.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AEA357760CECA01400AE7D09 /* native */ = {
+			isa = PBXGroup;
+			children = (
+				AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */,
+				AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */,
+				AECF4DC90D042C5F00B44D6E /* test.h */,
+				AECF4DCA0D042C5F00B44D6E /* test.m */,
+				AEA357770CECA01400AE7D09 /* scratch.m */,
+				AEA357780CECA01400AE7D09 /* Rococoa.h */,
+				AEA357790CECA01400AE7D09 /* Rococoa.m */,
+			);
+			name = native;
+			path = src/main/native;
+			sourceTree = "<group>";
+		};
+		C6859EA2029092E104C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859EA3029092ED04C91782 /* rococoa.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		AED0791D0CEC69DC00542DAC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE1E31B20CFB1D1900508B04 /* ProxyForJava.h in Headers */,
+				AECF4DCB0D042C5F00B44D6E /* test.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F960486AA7600D96B5E /* scratch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "scratch" */;
+			buildPhases = (
+				8DD76F990486AA7600D96B5E /* Sources */,
+				8DD76F9B0486AA7600D96B5E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = scratch;
+			productInstallPath = "$(HOME)/bin";
+			productName = rococoa;
+			productReference = 8DD76FA10486AA7600D96B5E /* rococoa */;
+			productType = "com.apple.product-type.tool";
+		};
+		AED079200CEC69DC00542DAC /* librococoa */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AED079A10CEC6A3800542DAC /* Build configuration list for PBXNativeTarget "librococoa" */;
+			buildPhases = (
+				AED0791D0CEC69DC00542DAC /* Headers */,
+				AED0791E0CEC69DC00542DAC /* Sources */,
+				AED0791F0CEC69DC00542DAC /* Frameworks */,
+				AEAEF7750D0EAED000DA270B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = librococoa;
+			productName = rococoalib;
+			productReference = AED079210CEC69DC00542DAC /* librococoa.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "rococoa" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* rococoa */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AED079200CEC69DC00542DAC /* librococoa */,
+				8DD76F960486AA7600D96B5E /* scratch */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F990486AA7600D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEA3577B0CECA01400AE7D09 /* scratch.m in Sources */,
+				AEA3577D0CECA01400AE7D09 /* Rococoa.m in Sources */,
+				AE1E31B10CFB1D1900508B04 /* ProxyForJava.m in Sources */,
+				AECF4DCE0D042C5F00B44D6E /* test.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AED0791E0CEC69DC00542DAC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEA357FC0CEDFBDF00AE7D09 /* Rococoa.m in Sources */,
+				AE1E31B30CFB1D1900508B04 /* ProxyForJava.m in Sources */,
+				AECF4DCC0D042C5F00B44D6E /* test.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB927508733DD40010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = rococoa;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB927608733DD40010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = rococoa;
+			};
+			name = Release;
+		};
+		1DEB927908733DD40010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB927A08733DD40010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		AED079A20CEC6A3800542DAC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = librococoa;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		AED079A30CEC6A3800542DAC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = librococoa;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "scratch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB927508733DD40010E9CD /* Debug */,
+				1DEB927608733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "rococoa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB927908733DD40010E9CD /* Debug */,
+				1DEB927A08733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AED079A10CEC6A3800542DAC /* Build configuration list for PBXNativeTarget "librococoa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AED079A20CEC6A3800542DAC /* Debug */,
+				AED079A30CEC6A3800542DAC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
