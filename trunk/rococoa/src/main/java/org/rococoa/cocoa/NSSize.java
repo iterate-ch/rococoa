@@ -21,14 +21,20 @@ package org.rococoa.cocoa;
 
 import com.sun.jna.Structure;
 
+import java.awt.geom.Dimension2D;
+
 public class NSSize extends Structure implements Structure.ByValue {
-    public float width;
-    public float height;
-    
+    public CGFloat width;
+    public CGFloat height;
+
     public NSSize() {}
     
-    public NSSize(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public NSSize(double width, double height) {
+        this.width = new CGFloat(width);
+        this.height = new CGFloat(height);
+    }
+
+    public NSSize(Dimension2D pSize) {
+        this(pSize.getWidth(), pSize.getHeight());
     }
 }

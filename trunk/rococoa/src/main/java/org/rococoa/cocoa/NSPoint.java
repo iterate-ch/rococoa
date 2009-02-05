@@ -16,24 +16,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package org.rococoa;
 
-import org.rococoa.cocoa.NSSize;
-import org.rococoa.cocoa.NSValue;
+package org.rococoa.cocoa;
+
+import com.sun.jna.Structure;
+import org.rococoa.cocoa.CGFloat;
+
+import java.awt.geom.Point2D;
 
 /**
- * Checks that we can embed a struct by value in a object.
- * 
+ * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>
  */
-public class StructsInObjectsTest extends RococoaTestCase {
-    
-    public void test() throws Exception {
-        NSSize aSize = new NSSize(1, 3);
-        NSValue value = NSValue.CLASS.valueWithSize(aSize);
-        NSSize size = value.sizeValue(); // fails here with jna 3.0.9 in Java 1.5
+public class NSPoint extends Structure implements Structure.ByValue {
+    public final CGFloat x;
+    public final CGFloat y;
 
-        assertEquals(1.0, size.width.doubleValue(), 0.0001);
-        assertEquals(3.0, size.height.doubleValue(), 0.0001);        
+    public NSPoint() {
+        this(0, 0);
+    }
+    
+    public NSPoint(double x, double y) {
+        this.x = new CGFloat(x);
+        this.y = new CGFloat(y);
+    }
+
+    public NSPoint(Point2D point) {
+        this(point.getX(), point.getY());
+    }
+
+    public Point2D getPoint() {
+        return new Point2D.Double(x.doubleValue(), y.doubleValue());
     }
 }
