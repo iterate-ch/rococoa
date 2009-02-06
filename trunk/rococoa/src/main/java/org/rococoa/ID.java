@@ -36,7 +36,7 @@ import com.sun.jna.NativeLong;
  */
 public class ID extends NativeLong {
 
-    static ID fromLong(long value) {
+    public static ID fromLong(long value) {
         return new ID(value);
     }
 

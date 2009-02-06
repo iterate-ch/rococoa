@@ -23,6 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.rococoa.internal.FoundationLibrary;
+import org.rococoa.internal.MsgSendInvocationMapper;
+import org.rococoa.internal.MsgSendLibrary;
+import org.rococoa.internal.OCInvocationCallbacks;
+import org.rococoa.internal.RococoaLibrary;
+import org.rococoa.internal.VarArgsUnpacker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +36,12 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 
+
 /**
- * The core of Rococoa - handles the selectors and messaging at a function call level.
+ * The core of Rococoa - statics to handle selectors and messaging at a function call level.
  * 
- * Marshalling of Java types to C and Objective-C types is handled by JNA and 
- * RococoaTypeMapper respectively.
+ * Marshalling of Java types to C types is handled by JNA. Marshalling of Java
+ * type to Objective-C types is handled by RococoaTypeMapper.
  * 
  * @author duncan
  */
@@ -96,9 +103,9 @@ public abstract class Foundation {
     /**
      * Retain the NSObject with id
      */
-    public static void cfRetain(ID id) {
+    public static ID cfRetain(ID id) {
         logging.trace("calling cfRetain({})", id);
-        foundationLibrary.CFRetain(id);        
+        return foundationLibrary.CFRetain(id);        
     }
     
     /**

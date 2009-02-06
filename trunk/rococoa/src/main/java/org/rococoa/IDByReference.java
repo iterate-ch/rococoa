@@ -27,8 +27,6 @@ import com.sun.jna.ptr.ByReference;
 /**
  * Used when we need to pass an ID to be filled in by called code.
  * 
- * @author duncan
- *
  */
 public class IDByReference extends ByReference {
 

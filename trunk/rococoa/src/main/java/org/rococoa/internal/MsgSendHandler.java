@@ -17,12 +17,16 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.rococoa.ID;
+import org.rococoa.Selector;
+
 
 import com.sun.jna.Function;
 import com.sun.jna.Library;

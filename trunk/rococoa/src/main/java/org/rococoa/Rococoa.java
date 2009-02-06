@@ -21,6 +21,10 @@ package org.rococoa;
 
 import java.lang.reflect.Proxy;
 
+import org.rococoa.internal.NSObjectInvocationHandler;
+import org.rococoa.internal.OCInvocationCallbacks;
+
+
 import net.sf.cglib.core.DefaultNamingPolicy;
 import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
@@ -47,7 +51,7 @@ public abstract class Rococoa  {
      * factory ocFactoryName, passing args.
      */
     public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass, String ocFactoryName, Object... args) {
-        boolean weOwnObject = weOwnObjectGivenFactoryName(ocFactoryName);
+        boolean weOwnObject = factoryNameMeansWeOwnObject(ocFactoryName);
         
         // If we don't own the object we know that it has been autorelease'd
         // But we need to own these objects, so that they are not dealloc'd when
@@ -66,7 +70,7 @@ public abstract class Rococoa  {
         return create(ocClassName, javaClass, "new");
     }
 
-    private static boolean weOwnObjectGivenFactoryName(String ocFactoryName) {
+    private static boolean factoryNameMeansWeOwnObject(String ocFactoryName) {
         // From Memory Management Programming Guide for Cocoa
         // This is the fundamental rule:
         // You take ownership of an object if you create it using a method whose

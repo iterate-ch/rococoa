@@ -21,10 +21,10 @@ package org.rococoa;
 
 public interface NSObject {
     
-    // synthetic
+    // synthesised by tic
     ID id();
     
-    void retain();
+    NSObject retain();
     void release();
     int retainCount();
     

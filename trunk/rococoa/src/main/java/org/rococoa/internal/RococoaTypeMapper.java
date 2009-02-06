@@ -17,7 +17,13 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
+
+
+import org.rococoa.Foundation;
+import org.rococoa.ID;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
 
 import com.sun.jna.DefaultTypeMapper;
 import com.sun.jna.FromNativeContext;
@@ -36,7 +42,7 @@ import com.sun.jna.TypeConverter;
  * @author duncan
  *
  */
-class RococoaTypeMapper extends DefaultTypeMapper {
+public class RococoaTypeMapper extends DefaultTypeMapper {
     
     private static final NativeMapped nativeLongConverter = new ID();
     

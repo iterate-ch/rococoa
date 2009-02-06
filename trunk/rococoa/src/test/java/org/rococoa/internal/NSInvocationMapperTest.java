@@ -1,9 +1,10 @@
-package org.rococoa;
+package org.rococoa.internal;
 
 import junit.framework.TestCase;
 
 import org.rococoa.cocoa.NSInteger;
 import org.rococoa.cocoa.NSUInteger;
+import org.rococoa.internal.NSInvocationMapper;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;

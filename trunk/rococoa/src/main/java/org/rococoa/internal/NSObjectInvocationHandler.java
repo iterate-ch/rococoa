@@ -17,7 +17,7 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -30,6 +30,14 @@ import java.util.concurrent.Callable;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.rococoa.Foundation;
+import org.rococoa.ID;
+import org.rococoa.IDByReference;
+import org.rococoa.NSObject;
+import org.rococoa.NSObjectByReference;
+import org.rococoa.ReturnType;
+import org.rococoa.Rococoa;
+import org.rococoa.RunOnMainThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +51,7 @@ import com.sun.jna.Pointer;
  *
  */
 @SuppressWarnings("nls")
-class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
+public class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
     
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
     
@@ -55,7 +63,7 @@ class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor 
     static {
         try {
             OBJECT_TOSTRING = Object.class.getMethod("toString");
-            OBJECT_HASHCODE= Object.class.getMethod("hashCode");
+            OBJECT_HASHCODE = Object.class.getMethod("hashCode");
             OBJECT_EQUALS = Object.class.getMethod("equals", Object.class);
             OCOBJECT_ID = NSObject.class.getMethod("id");
         }

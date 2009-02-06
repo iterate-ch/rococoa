@@ -17,10 +17,13 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
 
 import junit.framework.TestCase;
 
+import org.rococoa.ID;
+import org.rococoa.MyStruct;
+import org.rococoa.NSObject;
 import org.rococoa.cocoa.NSString;
 
 import com.sun.jna.Native;
