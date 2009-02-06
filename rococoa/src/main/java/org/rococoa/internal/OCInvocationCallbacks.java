@@ -17,10 +17,12 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
 
 import java.lang.reflect.Method;
 
+import org.rococoa.ID;
+import org.rococoa.Rococoa;
 import org.rococoa.cocoa.NSInvocation;
 import org.rococoa.cocoa.NSMethodSignature;
 import org.slf4j.Logger;
@@ -45,7 +47,7 @@ import com.sun.jna.Memory;
  * 
  */
 @SuppressWarnings("nls")
-class OCInvocationCallbacks {
+public class OCInvocationCallbacks {
 
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
         

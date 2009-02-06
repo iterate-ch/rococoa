@@ -17,13 +17,14 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
 
 @SuppressWarnings("nls")
-class VarArgsUnpacker {
+public class VarArgsUnpacker {
 
     private static final String SEPERATOR = ", ";
     private static final Object[] NULLARGS = new Object[0];
+    
     private final Object[] args;
 
     public VarArgsUnpacker(Object... args) {

@@ -1,4 +1,4 @@
-package org.rococoa;
+package org.rococoa.internal;
 
 public class Pair<T1, T2> {
     

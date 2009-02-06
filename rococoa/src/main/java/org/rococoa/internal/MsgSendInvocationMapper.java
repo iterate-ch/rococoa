@@ -1,10 +1,14 @@
 /**
  * 
  */
-package org.rococoa;
+package org.rococoa.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
+import org.rococoa.ID;
+import org.rococoa.Selector;
+
 
 import com.sun.jna.InvocationMapper;
 import com.sun.jna.NativeLibrary;
@@ -18,7 +22,7 @@ import com.sun.jna.NativeLibrary;
  * 
  * @author duncan
  */
-class MsgSendInvocationMapper implements InvocationMapper {
+public class MsgSendInvocationMapper implements InvocationMapper {
 
     private final static Method SYNTHETIC_SEND_MSG;
 

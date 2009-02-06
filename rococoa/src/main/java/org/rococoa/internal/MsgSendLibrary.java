@@ -1,4 +1,8 @@
-package org.rococoa;
+package org.rococoa.internal;
+
+
+import org.rococoa.ID;
+import org.rococoa.Selector;
 
 import com.sun.jna.Library;
 import com.sun.jna.Structure;
@@ -6,7 +10,7 @@ import com.sun.jna.Structure;
 /**
  * JNA Library for special message send calls, called and marshalled specially.
  */
-interface MsgSendLibrary extends Library {                
+public interface MsgSendLibrary extends Library {                
     // This doesn't exist in the library, but is synthesised by msgSendHandler
     Object syntheticSendMessage(Class<?> returnType, ID receiver, Selector selector,  Object... args);
     

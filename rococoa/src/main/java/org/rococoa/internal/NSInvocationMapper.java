@@ -1,4 +1,4 @@
-package org.rococoa;
+package org.rococoa.internal;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.rococoa.Foundation;
+import org.rococoa.ID;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
 import org.rococoa.cocoa.NSInteger;
 import org.rococoa.cocoa.NSInvocation;
 import org.rococoa.cocoa.NSUInteger;
@@ -18,7 +22,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
 /**
- * Maps to and from values in an NSInvocation.
+ * Maps to and from bytes in an NSInvocation to Java types.
  * 
  * @author duncan
  *
@@ -32,10 +36,14 @@ public abstract class NSInvocationMapper {
     private static final String NSINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "i" : "q";
     private static final String NSUINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "I" : "Q";
 
-    private static final Map<Class<?>, NSInvocationMapper> lookup = new HashMap<Class<?>, NSInvocationMapper>();
+    private static final Map<Class<?>, NSInvocationMapper> classToMapperLookup = new HashMap<Class<?>, NSInvocationMapper>();
     private static final List<NSInvocationMapper> subtypeInstances = new ArrayList<NSInvocationMapper>();
 
-    // ORDER OF THESE FIELDS IS IMPORTANT!
+    /* 
+     * THE ORDER OF THESE FIELDS IS IMPORTANT!
+     * 
+     * NSInvocationMapper instances add themselves to classToMapperLookup, and 
+     */
     public static final NSInvocationMapper VOID = new NSInvocationMapper("v", void.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
             throw new IllegalStateException("Should not have to read void");
@@ -193,18 +201,22 @@ public abstract class NSInvocationMapper {
     protected final String typeString;
 
     public static NSInvocationMapper mapperForType(Class<?> type) {
-        // lookup by type
-        NSInvocationMapper directMatch = lookup.get(type);
+        // first check if we have a direct hit in the classToMapperLookup
+        NSInvocationMapper directMatch = classToMapperLookup.get(type);
         if (directMatch != null)
             return directMatch;
-        // lookup by subtype in order
+        
+        // then check if we have a mapper for any of its supertypes
         for (NSInvocationMapper each : subtypeInstances) {
             if (each.type.isAssignableFrom(type))
                 return each;
         }
+        
+        // finally if it's a structure create a mapper for the actual type - 
+        // this will add itself to classToMapperLookup and be available next time
         if (Structure.class.isAssignableFrom(type))
             return new StructureInvocationMapper(type);
-                // this will add itself to lookup and be available next time
+        
         return null;
     }
     
@@ -215,9 +227,9 @@ public abstract class NSInvocationMapper {
     }
 
     protected void addToCache() {
-        lookup.put(type, this);
+        classToMapperLookup.put(type, this);
         if (type.isPrimitive())
-            lookup.put(nonPrimitiveFor(type), this);
+            classToMapperLookup.put(boxTypeFor(type), this);
     }
     
     public static String stringForType(Class<?> type) {
@@ -240,7 +252,7 @@ public abstract class NSInvocationMapper {
     
     public abstract Memory bufferForResult(Object methodCallResult);
     
-    private static Class<?> nonPrimitiveFor(Class<?> type) {
+    private static Class<?> boxTypeFor(Class<?> type) {
         if (type == void.class)
             return null;
         if (type == boolean.class)

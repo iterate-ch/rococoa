@@ -26,50 +26,50 @@ import org.rococoa.cocoa.NSAutoreleasePool;
 public class FoundationRetainReleaseTest extends RococoaTestCase {
     
     public void test() {
-        ID string = Foundation.cfString("Hello world");
-        assertEquals(1, Foundation.cfGetRetainCount(string));
+        ID idOfString = Foundation.cfString("Hello world");
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
 
-        Foundation.cfRetain(string);
-        assertEquals(2, Foundation.cfGetRetainCount(string));
+        assertEquals(idOfString, Foundation.cfRetain(idOfString));
+        assertEquals(2, Foundation.cfGetRetainCount(idOfString));
 
-        Foundation.cfRelease(string);
-        assertEquals(1, Foundation.cfGetRetainCount(string));
+        Foundation.cfRelease(idOfString);
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
 
-        Foundation.cfRelease(string);
+        Foundation.cfRelease(idOfString);
         // causes count to go to 0 and dispose will happen
     }    
     
     public void testAutorelease() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
         
-        ID string = Foundation.cfString("Hello world");
-        assertEquals(1, Foundation.cfGetRetainCount(string));
+        ID idOfString = Foundation.cfString("Hello world");
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
         
-        Foundation.sendReturnsVoid(string, "autorelease");
-        assertEquals(1, Foundation.cfGetRetainCount(string));
+        Foundation.sendReturnsVoid(idOfString, "autorelease");
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
         
-        Foundation.sendReturnsVoid(string, "retain");
-        assertEquals(2, Foundation.cfGetRetainCount(string));
+        Foundation.sendReturnsVoid(idOfString, "retain");
+        assertEquals(2, Foundation.cfGetRetainCount(idOfString));
         
         pool.release();
-        assertEquals(1, Foundation.cfGetRetainCount(string));
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
 
-        Foundation.cfRelease(string);
+        Foundation.cfRelease(idOfString);
         // causes count to go to 0 and dispose will happen
     }
     
     public void testInitedObject() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
 
-        ID clas = Foundation.getClass("NSString");
-        ID string = Foundation.sendReturnsID(clas, "alloc");
-        string = Foundation.sendReturnsID(string, "initWithCString:", "Hello world");
-        assertEquals(1, Foundation.cfGetRetainCount(string));
+        ID idOfClass = Foundation.getClass("NSString");
+        ID idOfString = Foundation.sendReturnsID(idOfClass, "alloc");
+        idOfString = Foundation.sendReturnsID(idOfString, "initWithCString:", "Hello world");
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
 
         // show that it wasn't in the pool
         pool.release();
-        assertEquals(1, Foundation.cfGetRetainCount(string));
-        Foundation.cfRelease(string);
+        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        Foundation.cfRelease(idOfString);
     }
     
 }

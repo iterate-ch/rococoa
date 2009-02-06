@@ -1,11 +1,15 @@
-package org.rococoa;
+package org.rococoa.internal;
+
+
+import org.rococoa.ID;
+import org.rococoa.Selector;
 
 import com.sun.jna.Library;
 
 /**
  * JNA Library for plain C calls, standard JNA marshalling applies to these
  */
-interface FoundationLibrary extends Library {
+public interface FoundationLibrary extends Library {
     
     void NSLog(ID pString, Object thing);
     
@@ -15,7 +19,7 @@ interface FoundationLibrary extends Library {
     byte CFStringGetCString(ID theString, byte[] buffer, int bufferSize, int encoding);
     int CFStringGetLength(ID theString);
     
-    void CFRetain(ID cfTypeRef);
+    ID CFRetain(ID cfTypeRef);
     void CFRelease(ID cfTypeRef);
     int CFGetRetainCount (ID cfTypeRef);
         

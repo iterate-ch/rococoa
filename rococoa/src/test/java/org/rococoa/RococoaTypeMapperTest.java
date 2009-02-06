@@ -19,7 +19,12 @@
  
 package org.rococoa;
 
+import org.rococoa.Foundation;
+import org.rococoa.ID;
+import org.rococoa.IDByReference;
+import org.rococoa.NSObjectByReference;
 import org.rococoa.cocoa.NSNumber;
+import org.rococoa.internal.RococoaTypeMapper;
 
 import com.sun.jna.FromNativeConverter;
 import com.sun.jna.NativeLong;
