@@ -33,8 +33,11 @@ import com.sun.jna.ToNativeContext;
 import com.sun.jna.TypeConverter;
 
 /**
- * A TypeMapper that knows how to convert NSObject to and from an integer type
- * with the right size to be id.
+ * A TypeMapper that knows how to convert :
+ * <ul>
+ *   <li>{@link NSObject} to and from an integer type with the right size to be an id.</li>
+ *   <li>{@link String} to and from an integer type with the right size to be an id.</li>
+ * </ul>
  * 
  * Note that nativeType is never NativeLong, but the appropriate Java primitive
  * with the right size of NativeLong. 
