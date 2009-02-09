@@ -19,7 +19,6 @@
  
 package org.rococoa;
 
-import org.rococoa.MyStruct.MyStructByValue;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNotification;
 import org.rococoa.cocoa.NSNotificationCenter;
@@ -70,14 +69,14 @@ public class JavaProxyTest extends RococoaTestCase {
             return s.toLowerCase();
         }
         
-        public MyStruct takesStructureReturnsStructure(MyStruct s) {
+        public TestStruct takesStructureReturnsStructure(TestStruct s) {
             arg = s;
-            return new MyStruct(s.anInt, s.aDouble);
+            return new TestStruct(s.anInt, s.aDouble);
         }
 
-        public MyStruct.MyStructByValue takesStructureByValueReturnsStructureByValue(MyStruct.MyStructByValue s) {
+        public TestStruct.ByValue takesStructureByValueReturnsStructureByValue(TestStruct.ByValue s) {
             arg = s;
-            return new MyStruct.MyStructByValue(s.anInt, s.aDouble);
+            return new TestStruct.ByValue(s.anInt, s.aDouble);
         }
         
         public NativeLong takesNativeLongReturnsNativeLong(NativeLong l) {
@@ -175,22 +174,22 @@ public class JavaProxyTest extends RococoaTestCase {
     }
     
     public void testSendAndReceiveStructByReference() {
-        MyStruct struct = new MyStruct(42, Math.PI);
-        MyStruct result = Foundation.send(proxy.id(), "takesStructureReturnsStructure:", 
-                MyStruct.class, struct);
-        assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
-        assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
+        TestStruct struct = new TestStruct(42, Math.PI);
+        TestStruct result = Foundation.send(proxy.id(), "takesStructureReturnsStructure:", 
+                TestStruct.class, struct);
+        assertEquals("passing to java", 42, ((TestStruct) implementor.arg).anInt);
+        assertEquals("passing to java", Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001);
         assertEquals("returning to OC", 42, result.anInt);
         assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
     }
 
     public void testSendAndReceiveStructByValue() {
         // Hmmm, difficult to prove this is passed by value
-        MyStructByValue struct = new MyStructByValue(42, Math.PI);
-        MyStruct result = Foundation.send(proxy.id(), "takesStructureByValueReturnsStructureByValue:", 
-                MyStructByValue.class, struct);
-        assertEquals("passing to java", 42, ((MyStruct) implementor.arg).anInt);
-        assertEquals("passing to java", Math.PI, ((MyStruct) implementor.arg).aDouble, 0.00001);
+        TestStruct.ByValue struct = new TestStruct.ByValue(42, Math.PI);
+        TestStruct result = Foundation.send(proxy.id(), "takesStructureByValueReturnsStructureByValue:", 
+                TestStruct.ByValue.class, struct);
+        assertEquals("passing to java", 42, ((TestStruct) implementor.arg).anInt);
+        assertEquals("passing to java", Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001);
         assertEquals("returning to OC", 42, result.anInt);
         assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
     }
