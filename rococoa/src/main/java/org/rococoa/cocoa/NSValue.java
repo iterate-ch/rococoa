@@ -25,14 +25,18 @@ import org.rococoa.Rococoa;
 
 import com.sun.jna.Structure;
 
-public interface NSValue extends NSObject {
+public abstract class NSValue implements NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSValue", _Class.class);  //$NON-NLS-1$
     public interface _Class extends NSClass {        
         NSValue valueWithSize(NSSize size);    
     }
     
-    NSSize sizeValue();
-    void getValue(Structure p);
+    public static NSValue valueWithSize(NSSize size) {
+        return CLASS.valueWithSize(size);
+    }
+    
+    public abstract NSSize sizeValue();
+    public abstract void getValue(Structure p);
     
 }
