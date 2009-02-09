@@ -23,6 +23,9 @@ import java.lang.reflect.Proxy;
 
 import org.rococoa.internal.NSObjectInvocationHandler;
 import org.rococoa.internal.OCInvocationCallbacks;
+import org.rococoa.internal.VarArgsUnpacker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import net.sf.cglib.core.DefaultNamingPolicy;
@@ -37,6 +40,8 @@ import net.sf.cglib.proxy.Enhancer;
  *
  */
 public abstract class Rococoa  {
+
+    private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
 
     /**
      * Create a Java NSClass representing the Objective-C class with ocClassName
@@ -86,6 +91,11 @@ public abstract class Rococoa  {
             String ocFactoryName, 
             boolean retain,
             Object... args) {
+        if (logging.isTraceEnabled()) {
+            logging.trace("creating [{} ({})].{}({})", 
+                    new Object[] {ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)});
+        }
+
         ID ocClass = Foundation.getClass(ocClassName);
         ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);
         checkRetainCount(ocInstance, 1);
