@@ -9,33 +9,29 @@
 #import <Cocoa/Cocoa.h>
 #import <QTKit/QTKit.h>
 
-typedef struct MyStruct {
+typedef struct TestStruct {
 	int anInt;
 	double aDouble;
-} MyStruct;
+} TestStruct;
 
-typedef struct MyStructOfStruct {
+typedef struct TestStructOfStruct {
 	double aDouble;
-	MyStruct aStruct;
-} MyStructOfStruct;
+	TestStruct aStruct;
+} TestStructOfStruct;
 
-MyStruct returnStructByValue(int a, double b);
+TestStruct returnStructByValue(int a, double b);
 
-double addFieldsOfStructByValue(MyStruct s);
-
-int passQTTimeRangeByValue(QTTimeRange r);
+double addFieldsOfStructByValue(TestStruct s);
 
 @interface TestShunt : NSObject
 
-- (MyStruct) testReturnStructByValue: (int) a and: (double) b;
+- (TestStruct) testReturnStructByValue: (int) a and: (double) b;
 
-- (double) testAddFieldsOfStructByValue: (MyStruct) s;
+- (double) testAddFieldsOfStructByValue: (TestStruct) s;
 
-- (MyStructOfStruct) testReturnStructOfStructByValue: (int) a and: (double) b;
+- (TestStructOfStruct) testReturnStructOfStructByValue: (int) a and: (double) b;
 
-- (double) testPassStructOfStructByValue: (MyStructOfStruct) s;
-
-- (int) testPassQTTimeRangeByValue: (QTTimeRange) r;
+- (double) testPassStructOfStructByValue: (TestStructOfStruct) s;
 
 - (void) testNSNumberByReference: (NSNumber**) fillMeIn with: (int) aValue;
 

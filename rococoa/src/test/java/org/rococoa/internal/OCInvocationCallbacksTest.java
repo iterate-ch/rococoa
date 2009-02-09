@@ -22,7 +22,7 @@ package org.rococoa.internal;
 import junit.framework.TestCase;
 
 import org.rococoa.ID;
-import org.rococoa.MyStruct;
+import org.rococoa.TestStruct;
 import org.rococoa.NSObject;
 import org.rococoa.cocoa.NSString;
 
@@ -43,12 +43,12 @@ public class OCInvocationCallbacksTest extends TestCase {
         public byte returnsByteTakesOCObject(NSObject o) {
             return -1;
         }
-        public void returnsVoidTakesMyStruct(MyStruct s) {}
-        public void returnsVoidTakesMyStructByValue(MyStruct.MyStructByValue s) {}
-        public MyStruct returnsMyStructTakesVoid() {
+        public void returnsVoidTakesStruct(TestStruct s) {}
+        public void returnsVoidTakesStructByValue(TestStruct.ByValue s) {}
+        public TestStruct returnsStructTakesVoid() {
             return null;
         }
-        public MyStruct.MyStructByValue returnsMyStructByValueTakesVoid() {
+        public TestStruct.ByValue returnsStructByValueTakesVoid() {
             return null;
         }
         public NativeLong returnsNativeLongTakesNativeLong(NativeLong l) {
@@ -104,9 +104,11 @@ public class OCInvocationCallbacksTest extends TestCase {
     
     
     public void testMethodSignatureForSelectorForStructures() {
-        assertEquals("v@:^{MyStruct=id}", callbacks.methodSignatureForSelector("returnsVoidTakesMyStruct:"));
-        assertEquals("v@:{MyStructByValue=id}", callbacks.methodSignatureForSelector("returnsVoidTakesMyStructByValue:"));
-        assertEquals("^{MyStruct=id}@:", callbacks.methodSignatureForSelector("returnsMyStructTakesVoid"));
-        assertEquals("{MyStructByValue=id}@:", callbacks.methodSignatureForSelector("returnsMyStructByValueTakesVoid"));
+        assertEquals("v@:^{TestStruct=id}", callbacks.methodSignatureForSelector("returnsVoidTakesStruct:"));
+        assertEquals("v@:{ByValue=id}", callbacks.methodSignatureForSelector("returnsVoidTakesStructByValue:"));
+        // TODO - better would be
+            // assertEquals("v@:{TestStruct_ByValue=id}", callbacks.methodSignatureForSelector("returnsVoidTakesStructByValue:"));
+        assertEquals("^{TestStruct=id}@:", callbacks.methodSignatureForSelector("returnsStructTakesVoid"));
+        assertEquals("{ByValue=id}@:", callbacks.methodSignatureForSelector("returnsStructByValueTakesVoid"));
     }
 }
