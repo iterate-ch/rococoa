@@ -19,6 +19,9 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.rococoa.cocoa.NSSize;
 import org.rococoa.cocoa.NSValue;
 
@@ -34,7 +37,7 @@ public class StructsInObjectsTest extends RococoaTestCase {
         NSSize objc_msgSend(ID receiver, Selector selector, Object... args);
     }
 
-    public void test() throws Exception {
+    @Test public void test() throws Exception {
         NSSize aSize = new NSSize(1f, 3f);
         NSValue value = NSValue.CLASS.valueWithSize(aSize);
         

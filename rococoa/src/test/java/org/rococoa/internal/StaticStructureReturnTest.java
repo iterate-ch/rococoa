@@ -19,7 +19,9 @@
  
 package org.rococoa.internal;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -29,7 +31,7 @@ import com.sun.jna.Structure;
  * Diagnosing a JNA bug (introduced in JNA 3.0.6) when returning small structures.
  * 
  */
-public class StaticStructureReturnTest extends TestCase {
+public class StaticStructureReturnTest {
       
     public static class IntIntStruct extends Structure implements Structure.ByValue {
         public int a;
@@ -99,35 +101,35 @@ public class StaticStructureReturnTest extends TestCase {
         IntDoubleStruct createIntDoubleStruct(int a, double b);
     }
 
-    public void testIntInt() {
+    @Test public void testIntInt() {
         TestLibrary library3 = (TestLibrary) Native.loadLibrary("Rococoa", TestLibrary.class);
         IntIntStruct struct = library3.createIntIntStruct(42, -99);
         assertEquals(-99, struct.b);
         assertEquals(42, struct.a);
     }
 
-    public void testFloatFloat() {
+    @Test public void testFloatFloat() {
         TestLibrary library3 = (TestLibrary) Native.loadLibrary("Rococoa", TestLibrary.class);
         FloatFloatStruct struct = library3.createFloatFloatStruct((float) Math.E, (float) Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(Math.E, struct.a, 0.001);
     }
 
-    public void testIntFloat() {
+    @Test public void testIntFloat() {
         TestLibrary library3 = (TestLibrary) Native.loadLibrary("Rococoa", TestLibrary.class);
         IntFloatStruct struct = library3.createIntFloatStruct(42, (float) Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(42, struct.a);
     }
     
-    public void testIntLong() {
+    @Test public void testIntLong() {
         TestLibrary library3 = (TestLibrary) Native.loadLibrary("Rococoa", TestLibrary.class);
         IntLongStruct struct = library3.createIntLongStruct(42, -99);
         assertEquals(-99, struct.b);
         assertEquals(42, struct.a);
     }
 
-    public void testIntDouble() {
+    @Test public void testIntDouble() {
         TestLibrary library3 = (TestLibrary) Native.loadLibrary("Rococoa", TestLibrary.class);
         IntDoubleStruct struct = library3.createIntDoubleStruct(42, Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);

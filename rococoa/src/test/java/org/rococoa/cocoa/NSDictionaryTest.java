@@ -1,11 +1,14 @@
 package org.rococoa.cocoa;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.rococoa.Rococoa;
 import org.rococoa.RococoaTestCase;
 
 public class NSDictionaryTest extends RococoaTestCase {
     
-    public void testDictionaryWithObjects_forKeys() {
+    @Test public void testDictionaryWithObjects_forKeys() {
         NSArray objects = NSArray.CLASS.arrayWithObjects(
                 NSString.stringWithString("string value"),
                 NSNumber.CLASS.numberWithInt(42));
@@ -17,7 +20,7 @@ public class NSDictionaryTest extends RococoaTestCase {
         check(dictionary);
     }
     
-    public void testDictionaryWithObjectsAndKeys() {
+    @Test public void testDictionaryWithObjectsAndKeys() {
         NSDictionary dictionary = NSDictionary.dictionaryWithObjectsAndKeys(
                 NSString.stringWithString("string value"), NSString.stringWithString("string key"),
                 NSNumber.CLASS.numberWithInt(42), NSString.stringWithString("int key"));
@@ -25,7 +28,7 @@ public class NSDictionaryTest extends RococoaTestCase {
         check(dictionary);
     }
 
-    public void testMutableDictionary() {
+    @Test public void testMutableDictionary() {
         NSMutableDictionary dictionary = NSMutableDictionary.dictionaryWithCapacity(5);
         assertEquals(0, dictionary.count());
         

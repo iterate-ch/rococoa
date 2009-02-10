@@ -19,13 +19,16 @@
  
 package org.rococoa.cocoa;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 import org.rococoa.RococoaTestCase;
 
 public class NSMutableArrayTest extends RococoaTestCase {
 
-    public void test() {
+    @Test public void test() {
         NSMutableArray array = NSMutableArray.CLASS.arrayWithCapacity(3);
         assertEquals(0, array.count());
         array.addObject(NSString.stringWithString("Hello"));

@@ -19,22 +19,32 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 public class FoundationTest extends RococoaTestCase {  
     
-    public void testString() {
+    @Test public void testCFString() {
         ID string = Foundation.cfString("Hello World");
         assertNotNull(string);
         assertEquals("Hello World", Foundation.toString(string));
     }
     
-    public void testStringWithDifferentEncoding() throws Exception {
+    @Test public void testCFStringWithDifferentEncoding() throws Exception {
         String stringWithOddChar = "Hello \u2648"; // Aries
-    	ID string = Foundation.cfString(stringWithOddChar); 
-    	assertEquals(stringWithOddChar, Foundation.toString(string));
+        ID string = Foundation.cfString(stringWithOddChar); 
+        assertEquals(stringWithOddChar, Foundation.toString(string));
     }
     
     @SuppressWarnings("unused")
-    public void xtestStringPerformance() {
+    @Ignore("slow") 
+    @Test public void testStringPerformance() {
         String stringWithOddChar = "Hello \u2648";
         StringBuilder longStringBuilder = new StringBuilder();
         for (int i = 0; i < 1000; i++) {
@@ -48,14 +58,14 @@ public class FoundationTest extends RococoaTestCase {
         }
     }
     
-    public void testInt() {
+    @Test public void testInt() {
         ID clas = Foundation.getClass("NSNumber");
         ID anInt = Foundation.sendReturnsID(clas, "numberWithInt:", 42);
         int anIntValue = Foundation.send(anInt, "intValue", int.class);
         assertEquals(42, anIntValue);
     }
     
-    public void testDouble() {
+    @Test public void testDouble() {
         ID clas = Foundation.getClass("NSNumber");
         ID aDouble = Foundation.sendReturnsID(clas, "numberWithDouble:", Math.E);
         Object[] args = {};
@@ -63,7 +73,7 @@ public class FoundationTest extends RococoaTestCase {
         assertEquals(Math.E, aDoubleValue, 0.001);
     }
 
-    public void testFloat() {
+    @Test public void testFloat() {
         ID clas = Foundation.getClass("NSNumber");
         ID aFloat = Foundation.sendReturnsID(clas, "numberWithFloat:", 3.142f);
         Object[] args = {};
@@ -71,14 +81,14 @@ public class FoundationTest extends RococoaTestCase {
         assertEquals(3.142f, aFloatValue, 0.001);
     }
 
-    public void testSendNoArgs() {
+    @Test public void testSendNoArgs() {
         ID clas = Foundation.getClass("NSDate");
         ID instance = Foundation.sendReturnsID(clas, "date");
         ID result = Foundation.sendReturnsID(instance, "description");
         assertTrue(Foundation.toString(result).startsWith("2")); // 2007-11-15 16:01:50 +0000
     }
     
-    public void testSelector() {
+    @Test public void testSelector() {
         Selector selector = Foundation.selector("selectorName:");
         assertTrue(selector.longValue() != 0); // selectors always exist
         assertSame("selectorName:", selector.getName());
@@ -89,7 +99,8 @@ public class FoundationTest extends RococoaTestCase {
     }
     
     // TODO - make work by wrapping call with native try- catch
-    public void xtestInvokeUnknownSelector() {
+    @Ignore("to make work") 
+    @Test public void testInvokeUnknownSelector() {
         Selector noSuchSelector = Foundation.selector("noSelector:NamedThis:OrribleThing:");
         assertTrue(noSuchSelector.longValue() != 0); 
         ID clas = Foundation.getClass("NSNumber");
@@ -98,6 +109,4 @@ public class FoundationTest extends RococoaTestCase {
             fail();
         } catch (NoSuchMethodError xpected) {}
     }
-    
-
 }

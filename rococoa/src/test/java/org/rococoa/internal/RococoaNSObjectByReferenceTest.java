@@ -19,6 +19,9 @@
  
 package org.rococoa.internal;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
 import org.rococoa.Rococoa;
@@ -32,7 +35,7 @@ public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
         void testNSNumberByReference_with(NSObjectByReference reference, int value);
     };
     
-    public void test() {
+    @Test public void test() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
         TestShunt shunt = Rococoa.create("TestShunt", TestShunt.class);
         NSObjectByReference reference = new NSObjectByReference();

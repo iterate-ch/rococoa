@@ -2,16 +2,16 @@ package org.rococoa.internal;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.rococoa.cocoa.NSInteger;
 import org.rococoa.cocoa.NSUInteger;
-import org.rococoa.internal.NSInvocationMapper;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 
 public class NSInvocationMapperTest extends TestCase {
 
-    public void testEncoding32() throws Exception {
+    @Test public void testEncoding32() throws Exception {
         if (Native.LONG_SIZE != 4)
             return;
         
@@ -48,7 +48,7 @@ public class NSInvocationMapperTest extends TestCase {
         check("d", double.class);        
     }
 
-    public void testEncoding64() throws Exception {
+    @Test public void testEncoding64() throws Exception {
         if (Native.LONG_SIZE == 4)
             return;
         

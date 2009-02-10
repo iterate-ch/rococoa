@@ -19,9 +19,14 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
 
 
-public class RococoaAbstractClassTest extends RococoaTestCase { 
+public class RococoaAbstractClassTest extends RococoaTestCase {
+    
 public static abstract class NSNumberAsClass implements NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSNumber", _Class.class); //$NON-NLS-1$
@@ -40,13 +45,13 @@ public static abstract class NSNumberAsClass implements NSObject {
     }
 
 }
-    public void test() {
+    @Test public void test() {
         NSNumberAsClass number = NSNumberAsClass.numberWithInt(42);        
         assertEquals(42, number.intValue());
         assertEquals(84, number.twice());
     }
     
-    public void testCGLibResusesClasses() {
+    @Test public void testCGLibResusesClasses() {
         NSNumberAsClass number = NSNumberAsClass.numberWithInt(42);        
         NSNumberAsClass number2 = NSNumberAsClass.numberWithInt(42);
         assertSame(number.getClass(), number2.getClass());

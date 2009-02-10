@@ -34,7 +34,7 @@ public class LogFormatter extends Formatter
 {
 
     Date dat = new Date();
-    private final static String format = "{0,time} "; //$NON-NLS-1$
+    private final static String format = "{0,time} ";
     private MessageFormat formatter;
 
     private Object args[] = new Object[1];
@@ -43,7 +43,7 @@ public class LogFormatter extends Formatter
     // property at the moment that the SimpleFormatter was created.
     @SuppressWarnings("unchecked") // looks like Sun class GetPropertyAction uses raw PrivilegedAction
     private String lineSeparator = (String) java.security.AccessController
-            .doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));//$NON-NLS-1$
+            .doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
 
     /**
      * Format the given LogRecord.
@@ -74,20 +74,14 @@ public class LogFormatter extends Formatter
 
         if (record.getSourceMethodName() != null)
         {
-            sb.append("."); //$NON-NLS-1$
+            sb.append("."); 
             sb.append(record.getSourceMethodName());
         }
 
-        sb.append(" - "); //$NON-NLS-1$
+        sb.append(" - "); 
         sb.append(formatMessage(record));
         
-        sb.append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t["); //$NON-NLS-1$
-        sb.append(record.getLevel().getLocalizedName());
-        sb.append("] "); //$NON-NLS-1$
-
-        sb.append("{"); //$NON-NLS-1$
-        sb.append(Thread.currentThread());
-        sb.append("} "); //$NON-NLS-1$
+        appendExtras(record, sb);
         sb.append(lineSeparator);
         if (record.getThrown() != null)
         {
@@ -104,5 +98,8 @@ public class LogFormatter extends Formatter
             }
         }
         return sb.toString();
+    }
+
+    protected void appendExtras(LogRecord record, StringBuffer sb) {
     }
 }

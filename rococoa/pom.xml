@@ -27,7 +27,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.2</version>
+      <version>4.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -93,6 +93,17 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+    
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <excludes>
+            <exclude>**/TestStruct*.java</exclude>
+          </excludes>
+        </configuration>
+        
       </plugin>
     
       <plugin>

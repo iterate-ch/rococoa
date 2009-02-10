@@ -1,14 +1,17 @@
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import java.lang.ref.WeakReference;
 
+import org.junit.Test;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSDate;
 
-
 public class RococoaMemoryManagementTest extends RococoaTestCase {
     
-    public void testClassFactoryMethod() {
+    @Test public void testClassFactoryMethod() {
         // calling a factory method directly results in an autorelease'd object
         check(true, 
             new Factory() {
@@ -17,7 +20,7 @@ public class RococoaMemoryManagementTest extends RococoaTestCase {
                 }});
     }
     
-    public void testMethodOnClassObject() {
+    @Test public void testMethodOnClassObject() {
         // calling a factory method on an NSClass results in an autorelease'd object
         check(true, 
             new Factory() {
@@ -26,7 +29,7 @@ public class RococoaMemoryManagementTest extends RococoaTestCase {
                 }});
     }
     
-    public void testSpecialCaseForNew() {
+    @Test public void testSpecialCaseForNew() {
         // calling new on an NSClass results in a NOT autorelease'd object
         check(false, 
             new Factory() {
@@ -35,7 +38,7 @@ public class RococoaMemoryManagementTest extends RococoaTestCase {
                 }});
     }
     
-    public void testSpecialCaseForNewByName() {
+    @Test public void testSpecialCaseForNewByName() {
         // calling new on an NSClass results in a NOT autorelease'd object
         check(false, 
             new Factory() {
@@ -44,7 +47,7 @@ public class RococoaMemoryManagementTest extends RococoaTestCase {
                 }});
     }
     
-    public void testSpecialCaseForAlloc() {
+    @Test public void testSpecialCaseForAlloc() {
         // calling alloc on an NSClass results in a NOT autorelease'd object
         check(false, 
             new Factory() {
