@@ -17,8 +17,12 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.internal;
 
+import org.rococoa.NSObject;
+import org.rococoa.NSObjectByReference;
+import org.rococoa.Rococoa;
+import org.rococoa.RococoaTestCase;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNumber;
 
