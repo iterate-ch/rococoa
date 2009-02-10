@@ -52,7 +52,7 @@ public class QTMovieTest extends RococoaTestCase {
         assertTrue(errorReference.getValueAs(NSError.class).id().isNull());
         
         QTTime time3 =  movie.currentTime();
-        assertEquals(1000, time3.timeScale);     
+        assertEquals(1000, time3.timeScale.intValue());     
         
         movie.setSelection(new QTTimeRange(new QTTime(50, 1000), new QTTime(750, 1000)));
         assertEquals(new QTTime(50, 1000), movie.selectionStart());
