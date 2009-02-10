@@ -19,13 +19,14 @@
  
 package org.rococoa.quicktime;
 
+import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 
 public class QTTimeByReference extends Structure {
 
     public long timeValue;
-    public int timeScale;
-    public int flags;
+    public NativeLong timeScale;
+    public NativeLong flags;
 
     public QTTimeByReference() {
     }
@@ -36,16 +37,16 @@ public class QTTimeByReference extends Structure {
 
     public QTTimeByReference(long timeValue, int timeScale, int flags) {
         this.timeValue = timeValue;
-        this.timeScale = timeScale;
-        this.flags = flags;
+        this.timeScale = new NativeLong(timeScale);
+        this.flags = new NativeLong();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + flags;
-        result = prime * result + timeScale;
+        result = prime * result + flags.intValue();
+        result = prime * result + timeScale.intValue();
         result = prime * result + (int) (timeValue ^ (timeValue >>> 32));
         return result;
     }
@@ -59,9 +60,9 @@ public class QTTimeByReference extends Structure {
         if (getClass() != obj.getClass())
             return false;
         final QTTime other = (QTTime) obj;
-        if (flags != other.flags)
+        if (!flags.equals(other.flags))
             return false;
-        if (timeScale != other.timeScale)
+        if (!timeScale.equals(other.timeScale))
             return false;
         if (timeValue != other.timeValue)
             return false;
