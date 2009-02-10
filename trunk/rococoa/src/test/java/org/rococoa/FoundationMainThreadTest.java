@@ -19,15 +19,18 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.Callable;
 
-import org.rococoa.Foundation;
-import org.rococoa.ID;
+import org.junit.Test;
 
 @SuppressWarnings("nls")
 public class FoundationMainThreadTest extends RococoaTestCase {
 
-    public void testCallOnMainThread() {
+    @Test public void testCallOnMainThread() {
         final Thread testThread = Thread.currentThread();
         Callable<Double> callable = new Callable<Double>() {
             public Double call() throws Exception {
@@ -41,7 +44,7 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         assertEquals(Math.E, Foundation.callOnMainThread(callable), 0.001);        
     }
 
-    public void testCallOnMainThreadThrows() {
+    @Test public void testCallOnMainThreadThrows() {
         Callable<Double> callable = new Callable<Double>() {
             public Double call() throws Exception {
                 throw new Error("deliberate");
@@ -55,7 +58,7 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         }
     }
     
-    public void testRunOnMainThread() {
+    @Test public void testRunOnMainThread() {
         final Thread testThread = Thread.currentThread();
         final double[] result = new double[1];
         Runnable runnable = new Runnable() {
@@ -69,6 +72,4 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         Foundation.runOnMainThread(runnable);    
         assertEquals(Math.E, result[0], 0.001);        
     }
-    
-
 }

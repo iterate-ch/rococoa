@@ -21,9 +21,10 @@ package org.rococoa.internal;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.rococoa.ID;
-import org.rococoa.TestStruct;
 import org.rococoa.NSObject;
+import org.rococoa.TestStruct;
 import org.rococoa.cocoa.NSString;
 
 import com.sun.jna.Native;
@@ -69,7 +70,7 @@ public class OCInvocationCallbacksTest extends TestCase {
         callbacks = new OCInvocationCallbacks(new JavaImplementor());
     }
     
-    public void testMethodForSelector() throws SecurityException, NoSuchMethodException {
+    @Test public void testMethodForSelector() throws SecurityException, NoSuchMethodException {
         assertNull(callbacks.methodForSelector("nosuch"));
         assertEquals(
             JavaImplementor.class.getDeclaredMethod("returnsIDTakesVoid"),                
@@ -85,7 +86,7 @@ public class OCInvocationCallbacksTest extends TestCase {
         assertNull(callbacks.methodForSelector("returnsVoidTakesInt"));
     }
     
-    public void testMethodSignatureForSelector() {
+    @Test public void testMethodSignatureForSelector() {
         assertNull(callbacks.methodSignatureForSelector("nosuch"));
 
         assertEquals("v@:", callbacks.methodSignatureForSelector("returnsVoidTakesVoid"));
@@ -103,7 +104,7 @@ public class OCInvocationCallbacksTest extends TestCase {
     }
     
     
-    public void testMethodSignatureForSelectorForStructures() {
+    @Test public void testMethodSignatureForSelectorForStructures() {
         assertEquals("v@:^{TestStruct=id}", callbacks.methodSignatureForSelector("returnsVoidTakesStruct:"));
         assertEquals("v@:{ByValue=id}", callbacks.methodSignatureForSelector("returnsVoidTakesStructByValue:"));
         // TODO - better would be

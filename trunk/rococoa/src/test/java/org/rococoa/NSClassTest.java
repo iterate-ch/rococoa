@@ -19,11 +19,15 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.rococoa.cocoa.NSNumber;
 
 @SuppressWarnings("nls")
 public class NSClassTest extends RococoaTestCase {
-    public void test() {
+    @Test public void test() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         ID idOfNSNumber = Foundation.getClass("NSNumber");
         ID idOfNSString = Foundation.getClass("NSString");

@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
+import org.junit.After;
+import org.junit.Before;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author duncan
  */
 @SuppressWarnings("nls")
-public abstract class RococoaTestCase extends TestCase {
+public abstract class RococoaTestCase {
     
     // stress our memory management
     public static boolean gcAfterTest = true;
@@ -70,27 +72,19 @@ public abstract class RococoaTestCase extends TestCase {
     
     protected NSAutoreleasePool pool;
     
-    @Override
-    public void runBare() throws Throwable {
-        preSetup();
-        try {
-            super.runBare();
-        } finally {
-            postTeardown();
-        }
-    }
-
-    protected void preSetup() {
-        logging.info("Starting test {}.{}", new Object[] {getClass().getName(), getName()});
+    @Before
+    public void preSetup() {
+//        logging.info("Starting test {}.{}", new Object[] {getClass().getName(), getName()});
         pool = NSAutoreleasePool.new_();
     }
 
-    protected void postTeardown() {
-        logging.info("Ending test {}", getName());
+    @After
+    public void postTeardown() {
+//        logging.info("Ending test {}", getName());
         if (gcAfterTest)
             gc();
         pool.release();
-        logging.info("Ended test {}", getName());
+//        logging.info("Ended test {}", getName());
     }
 
     private void gc() {

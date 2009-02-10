@@ -19,6 +19,10 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
@@ -32,26 +36,26 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
     
     private StructLibrary library = (StructLibrary) Native.loadLibrary("rococoa", StructLibrary.class);    
     
-    public void testStaticReceiveStructure() {
+    @Test public void testStaticReceiveStructure() {
         TestStruct.ByValue result = library.createIntDoubleStruct(42, Math.E);
         assertEquals(42, result.anInt);
-        assertEquals(Math.E, result.aDouble);        
+        assertEquals(Math.E, result.aDouble, 0);        
     }
     
-    public void testStaticPassStructure() {
+    @Test public void testStaticPassStructure() {
         TestStruct.ByValue arg = new TestStruct.ByValue(42, Math.PI);
         double result = library.addFieldsOfStructByValue(arg);
-        assertEquals(42 + Math.PI, result);
+        assertEquals(42 + Math.PI, result, 0);
     }
 
-    public void testStaticPassStructureVARARGS() {
+    @Test public void testStaticPassStructureVARARGS() {
         // demonstrate bug in JNA 3.0.3
         TestStruct.ByValue arg = new TestStruct.ByValue(42, Math.PI);
         double result = library.addFieldsOfStructByValueVARARGS(1, arg);
-        assertEquals(42 + Math.PI, result);
+        assertEquals(42 + Math.PI, result, 0);
     }
     
-    public void testCallMethod() {
+    @Test public void testCallMethod() {
         ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
         Foundation.sendReturnsID(testID, "autorelease");
         Object[] args = { 42, Math.E };
@@ -59,10 +63,10 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
                 Foundation.selector("testReturnStructByValue:and:"), 
                 TestStruct.ByValue.class, args);
         assertEquals(42, result.anInt);
-        assertEquals(Math.E, result.aDouble);        
+        assertEquals(Math.E, result.aDouble, 0);        
     }
     
-    public void testAsPassStructAsArgument() {
+    @Test public void testAsPassStructAsArgument() {
         ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
         Foundation.sendReturnsID(testID, "autorelease");
         TestStruct.ByValue arg = new TestStruct.ByValue(42, Math.PI);
@@ -70,24 +74,24 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
         double result = Foundation.send(testID, 
                 Foundation.selector("testAddFieldsOfStructByValue:"), 
                 double.class, args);
-        assertEquals(42 + Math.PI, result);        
+        assertEquals(42 + Math.PI, result, 0);        
     }
     
-    public void testStructOfStruct() {
+    @Test public void testStructOfStruct() {
         ID testID = Foundation.sendReturnsID(Foundation.getClass("TestShunt"), "new");
         Foundation.sendReturnsID(testID, "autorelease");
         Object[] args1 = { 42, Math.E };
         TestStructOfStruct result = Foundation.send(testID, 
                 Foundation.selector("testReturnStructOfStructByValue:and:"), 
                 TestStructOfStruct.ByValue.class, args1);
-        assertEquals(Math.E, result.aDouble);
+        assertEquals(Math.E, result.aDouble, 0);
         assertEquals(42, result.aStruct.anInt);        
-        assertEquals(Math.E, result.aStruct.aDouble);
+        assertEquals(Math.E, result.aStruct.aDouble, 0);
         Object[] args = { result };
         
         double result2 = Foundation.send(testID, 
                 Foundation.selector("testPassStructOfStructByValue:"), 
                 double.class, args);
-        assertEquals(Math.E, result2);        
+        assertEquals(Math.E, result2, 0);        
     }        
 }

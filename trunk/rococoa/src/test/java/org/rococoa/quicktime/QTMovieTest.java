@@ -19,8 +19,14 @@
  
 package org.rococoa.quicktime;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
+import org.junit.Test;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
@@ -43,7 +49,7 @@ public class QTMovieTest extends RococoaTestCase {
         QTKit instance = QTKit.instance;
     }
     
-    public void test() {
+    @Test public void test() {
         File file = new File("testdata/DrWho.mov");
         NSObjectByReference errorReference = new NSObjectByReference();
         QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
@@ -61,7 +67,7 @@ public class QTMovieTest extends RococoaTestCase {
     }
     
     
-    public void testError() {
+    @Test public void testError() {
         File file = new File("NOSUCH");
         NSObjectByReference errorReference = new NSObjectByReference();
         QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
@@ -70,7 +76,7 @@ public class QTMovieTest extends RococoaTestCase {
         assertEquals(-2000, error.code().intValue());
     }
 
-    public void testAttributeForKey() throws Exception {
+    @Test public void testAttributeForKey() throws Exception {
         loadMovie("testdata/DrWho.mov");
         NSObject attribute = movie.attributeForKey(QTMovie.QTMovieTimeScaleAttribute);
         
@@ -103,7 +109,7 @@ public class QTMovieTest extends RococoaTestCase {
         assertNotNull(movie.id());
     }
     
-    public void testGetTracks() throws Exception {
+    @Test public void testGetTracks() throws Exception {
         loadMovie("testdata/DrWho.mov");
         NSArray tracks = movie.tracks();
         assertEquals(2, tracks.count());
@@ -118,7 +124,7 @@ public class QTMovieTest extends RococoaTestCase {
         assertEquals(0, mpegTracks.count());
     }
     
-    public void testGetQTMedia() throws Exception {
+    @Test public void testGetQTMedia() throws Exception {
         loadMovie("testdata/DrWho.mov");
         QTTrack track = Rococoa.cast(movie.tracksOfMediaType(QTMedia.QTMediaTypeVideo).objectAtIndex(0), QTTrack.class);
         QTMedia media = track.media();

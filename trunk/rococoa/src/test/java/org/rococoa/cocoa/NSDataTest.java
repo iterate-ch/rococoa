@@ -19,10 +19,14 @@
  
 package org.rococoa.cocoa;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.rococoa.RococoaTestCase;
+
 public class NSDataTest extends RococoaTestCase {
 
-    public void testInitWithBytes() throws Exception {
+    @Test public void testInitWithBytes() throws Exception {
        byte[] bytes = "Hello".getBytes();
        
        NSData data = NSData.CLASS.dataWithBytes_length(bytes, bytes.length);

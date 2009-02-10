@@ -19,13 +19,15 @@
  
 package org.rococoa;
 
-import org.rococoa.cocoa.NSAutoreleasePool;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+import org.rococoa.cocoa.NSAutoreleasePool;
 
 @SuppressWarnings("nls")
 public class FoundationRetainReleaseTest extends RococoaTestCase {
     
-    public void test() {
+    @Test public void test() {
         ID idOfString = Foundation.cfString("Hello world");
         assertEquals(1, Foundation.cfGetRetainCount(idOfString));
 
@@ -39,7 +41,7 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         // causes count to go to 0 and dispose will happen
     }    
     
-    public void testAutorelease() {
+    @Test public void testAutorelease() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
         
         ID idOfString = Foundation.cfString("Hello world");
@@ -58,7 +60,7 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         // causes count to go to 0 and dispose will happen
     }
     
-    public void testInitedObject() {
+    @Test public void testInitedObject() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
 
         ID idOfClass = Foundation.getClass("NSString");

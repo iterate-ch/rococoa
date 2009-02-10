@@ -19,29 +19,28 @@
  
 package org.rococoa;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
-import org.junit.Test;
+/**
+ * Print a brief summary of the LogRecord in a human readable format ON ONE LINE, and include details of
+ * the thread from which it was logged. Blatant copy of the default 'SimpleFormatter' included with JDK.
+ */
+public class LevelAndThreadLogFormatter extends LogFormatter
+{
 
+    @Override
+    protected void appendExtras(LogRecord record, StringBuffer sb) {
+        sb.append("\t["); 
+        sb.append(record.getLevel().getLocalizedName());
+        sb.append("] "); 
 
-@SuppressWarnings("nls")
-public class RococoaMainThreadTest extends RococoaTestCase {
-    private interface TestShunt extends NSObject {
-        boolean isMainThread();
-    };
-    
-    private @RunOnMainThread interface TestShuntOnMainThread extends TestShunt {};
-    
-    @Test public void testNotMainThread() {
-        TestShunt testShunt = Rococoa.create("TestShunt", TestShunt.class);
-        assertFalse(testShunt.isMainThread());
+        sb.append("{"); 
+        sb.append(Thread.currentThread());
+        sb.append("} "); 
     }
-
-    @Test public void testOnMainThread() {
-        TestShunt testShunt = Rococoa.create("TestShunt", TestShuntOnMainThread.class);
-        assertTrue(testShunt.isMainThread());
-
-    }
-
 }

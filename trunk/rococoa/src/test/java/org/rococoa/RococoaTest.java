@@ -19,21 +19,28 @@
  
 package org.rococoa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 import org.rococoa.cocoa.NSArray;
 import org.rococoa.cocoa.NSDate;
 import org.rococoa.cocoa.NSNumber;
 import org.rococoa.cocoa.NSString;
 
-
 @SuppressWarnings("nls")
 public class RococoaTest extends RococoaTestCase {
         
-    public void testCreate() {
+    @Test public void testCreate() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         assertEquals(42, fortyTwo.intValue());        
     }
     
-    public void testEqualsWithAliases() {
+    @Test public void testEqualsWithAliases() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         NSNumber fortyTwoAlias = Rococoa.wrap(fortyTwo.id(), NSNumber.class);
         NSNumber fortyThree = NSNumber.CLASS.numberWithInt(43);
@@ -43,7 +50,7 @@ public class RococoaTest extends RococoaTestCase {
         assertFalse(fortyTwo.equals(null));
     }
         
-    public void testEqualsMapsToIsEqual() {
+    @Test public void testEqualsMapsToIsEqual() {
         NSString s1 = NSString.stringWithString("string");
         NSString s2 = NSString.stringWithString("STRING").lowercaseString();
         assertNotSame(s1, s2);
@@ -51,7 +58,7 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(s1, s2);
     }
    
-    public void testReturnTypes() {
+    @Test public void testReturnTypes() {
         NSNumber e = NSNumber.CLASS.numberWithDouble(Math.E);
         assertEquals(2, e.intValue());
         assertEquals(2, e.longValue());
@@ -59,7 +66,7 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(Math.E, e.doubleValue(), 0.001);
     }
     
-    public void testPassOCObject() {
+    @Test public void testPassOCObject() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);    
         NSNumber e = NSNumber.CLASS.numberWithDouble(Math.E);
         
@@ -68,13 +75,13 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(1, fortyTwo.compare(e));
     }
     
-    public void testStringMarshalling() {
+    @Test public void testStringMarshalling() {
         NSString string = NSString.CLASS.stringWithString("Hello world");
         assertTrue(string.isEqualToString("Hello world"));
         assertFalse(string.isEqualToString("Hello worldy"));
     }
     
-    public void testKeywordMethod() {
+    @Test public void testKeywordMethod() {
         // TODO - this method doesn't actually test keyword methods any more
         NSDate epoc = NSDate.CLASS.dateWithTimeIntervalSince1970(0);
         assertEquals(0, epoc.timeIntervalSince1970(), 0.000001f);
@@ -82,7 +89,7 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(40, anotherDate.timeIntervalSince1970(), 0.000001f);        
     }
         
-    public void testVarags() {
+    @Test public void testVarags() {
         NSArray array = NSArray.CLASS.arrayWithObjects(
                 NSNumber.CLASS.numberWithBool(true),
                 NSNumber.CLASS.numberWithInt(42),
@@ -93,7 +100,7 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(3, array.count());
     }
     
-    public void testFactory() {
+    @Test public void testFactory() {
         NSNumber._Class nsNumberClass = Rococoa.createClass("NSNumber",  NSNumber._Class.class); //$NON-NLS-1$
         assertEquals(nsNumberClass.id(), Foundation.getClass("NSNumber"));
     }
@@ -102,7 +109,7 @@ public class RococoaTest extends RococoaTestCase {
         public NSObject numberWithInt(int value);
     }
 
-    public void testDownCast() {
+    @Test public void testDownCast() {
         // this is OK
         NSObject numberAsObject = NSNumber.CLASS.numberWithInt(42);
         assertEquals(42, ((NSNumber) numberAsObject).intValue());
@@ -119,12 +126,12 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(42, Rococoa.cast(returnAsObject, NSNumber.class).intValue());
     }
     
-    public void testToString() {
+    @Test public void testToString() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         assertEquals("42", fortyTwo.toString());        
     }
     
-    public void testGeneratedClassName() {
+    @Test public void testGeneratedClassName() {
         NSString string = NSString.stringWithString("Hello World");
         Class<? extends NSString> stringClass = string.getClass();
         assertEquals(NSString.class.getPackage(), stringClass.getPackage());

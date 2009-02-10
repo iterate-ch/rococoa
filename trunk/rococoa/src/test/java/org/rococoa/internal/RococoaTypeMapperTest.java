@@ -19,13 +19,16 @@
  
 package org.rococoa.internal;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.IDByReference;
 import org.rococoa.NSObjectByReference;
 import org.rococoa.RococoaTestCase;
 import org.rococoa.cocoa.NSNumber;
-import org.rococoa.internal.RococoaTypeMapper;
 
 import com.sun.jna.FromNativeConverter;
 import com.sun.jna.NativeLong;
@@ -40,12 +43,11 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
     
     private TypeMapper typeMapper = new RococoaTypeMapper();
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before public void setUp() {
         typeMapper = new RococoaTypeMapper();
     }
     
-    public void testConvertNSObjectAsArgumentToID() {
+    @Test public void testConvertNSObjectAsArgumentToID() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(45);
         ToNativeConverter toNative = typeMapper.getToNativeConverter(fortyTwo.getClass());
             // argument passing is based on actual type
@@ -59,7 +61,7 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         assertEquals(null, toNative.toNative(null, null));
     }
     
-    public void testConvertReturnIDToNSObject() {
+    @Test public void testConvertReturnIDToNSObject() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(45);
         
         FromNativeConverter fromNative = typeMapper.getFromNativeConverter(NSNumber.class);
@@ -92,7 +94,7 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         assertEquals(null, fromNative.fromNative(null, null));
     }
     
-    public void testConvertStringAsArgumentToIDofCFString() {
+    @Test public void testConvertStringAsArgumentToIDofCFString() {
         ToNativeConverter toNative = typeMapper.getToNativeConverter("Hello".getClass());
             // argument passing is based on actual type
         
@@ -105,7 +107,7 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
         assertEquals(null, toNative.toNative(null, null));
     }
     
-    public void testConvertReturnIDToString() {
+    @Test public void testConvertReturnIDToString() {
         ID helloID = Foundation.cfString("Hello");
         
         FromNativeConverter fromNative = typeMapper.getFromNativeConverter(String.class);

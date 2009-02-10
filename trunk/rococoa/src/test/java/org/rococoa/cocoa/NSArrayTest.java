@@ -19,12 +19,15 @@
  
 package org.rococoa.cocoa;
 
-import org.rococoa.RococoaTestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.rococoa.Rococoa;
+import org.rococoa.RococoaTestCase;
 
 public class NSArrayTest extends RococoaTestCase {
 
-    public void test() {
+    @Test public void test() {
         NSArray array = NSArray.CLASS.arrayWithObjects(
                 NSNumber.CLASS.numberWithInt(42),
                 NSNumber.CLASS.numberWithInt(64)
