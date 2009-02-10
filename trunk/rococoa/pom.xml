@@ -4,7 +4,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa</artifactId>
   <packaging>jar</packaging>
-  <version>0.3.0</version>
+  <version>0.3.1-snapshot</version>
   <name>Rococoa</name>
   <url>http://www.rococoa.org</url>
   
@@ -12,7 +12,7 @@
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>3.0.9-patched-by-rococoa</version>
+      <version>3.0.10-snapshot</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
