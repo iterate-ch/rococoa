@@ -12,7 +12,7 @@
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>3.0.5</version>
+      <version>3.0.9-patched-by-rococoa</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

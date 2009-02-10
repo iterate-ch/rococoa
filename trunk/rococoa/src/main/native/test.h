@@ -9,25 +9,45 @@
 #import <Cocoa/Cocoa.h>
 #import <QTKit/QTKit.h>
 
-typedef struct TestStruct {
+typedef struct TestIntDoubleStruct {
 	int anInt;
 	double aDouble;
-} TestStruct;
+} TestIntDoubleStruct;
 
 typedef struct TestStructOfStruct {
 	double aDouble;
-	TestStruct aStruct;
+	TestIntDoubleStruct aStruct;
 } TestStructOfStruct;
 
-TestStruct returnStructByValue(int a, double b);
+typedef struct TestFloatFloatStruct {
+	float a;
+	float b;
+} TestFloatFloatStruct;
 
-double addFieldsOfStructByValue(TestStruct s);
+typedef struct TestIntFloatStruct {
+	int a;
+	float b;
+} TestIntFloatStruct;
+
+typedef struct TestIntIntStruct {
+	int a;
+	int b;
+} TestIntIntStruct;
+
+typedef struct TestIntLongStruct {
+	int a;
+	int64_t b;
+} TestIntLongStruct;
+
+TestIntDoubleStruct createIntDoubleStruct(int a, double b);
+
+double addFieldsOfStructByValue(TestIntDoubleStruct s);
 
 @interface TestShunt : NSObject
 
-- (TestStruct) testReturnStructByValue: (int) a and: (double) b;
+- (TestIntDoubleStruct) testReturnStructByValue: (int) a and: (double) b;
 
-- (double) testAddFieldsOfStructByValue: (TestStruct) s;
+- (double) testAddFieldsOfStructByValue: (TestIntDoubleStruct) s;
 
 - (TestStructOfStruct) testReturnStructOfStructByValue: (int) a and: (double) b;
 
