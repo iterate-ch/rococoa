@@ -19,15 +19,17 @@
  
 package org.rococoa.cocoa;
 
-import com.sun.jna.Structure;
-
 import java.awt.geom.Dimension2D;
 
-public class NSSize extends Structure implements Structure.ByValue {
-    public CGFloat width;
-    public CGFloat height;
+import com.sun.jna.Structure;
 
-    public NSSize() {}
+public class NSSize extends Structure implements Structure.ByValue {
+    public final CGFloat width;
+    public final CGFloat height;
+
+    public NSSize() {
+        this(0, 0);
+    }
     
     public NSSize(double width, double height) {
         this.width = new CGFloat(width);

@@ -9,12 +9,12 @@
 #import "test.h"
 #import <stdarg.h>
 
-TestStruct returnStructByValue(int a, double b) {
-	TestStruct result = {a, b};
+TestIntDoubleStruct createIntDoubleStruct(int a, double b) {
+	TestIntDoubleStruct result = {a, b};
 	return result;
 }
 
-double addFieldsOfStructByValue(TestStruct s) {
+double addFieldsOfStructByValue(TestIntDoubleStruct s) {
 	return s.anInt + s.aDouble;
 }
 
@@ -22,24 +22,44 @@ double addFieldsOfStructByValue(TestStruct s) {
 double addFieldsOfStructByValueVARARGS(size_t count, ...) {
 	va_list vl;
 	va_start(vl, count);
-	TestStruct s = va_arg(vl, TestStruct);
+	TestIntDoubleStruct s = va_arg(vl, TestIntDoubleStruct);
 	double result = addFieldsOfStructByValue(s);
 	va_end(vl);
 	return result;
 }
 
-@implementation TestShunt
-
-- (TestStruct) testReturnStructByValue: (int) a and: (double) b {
-	return returnStructByValue(a, b);
+TestFloatFloatStruct createFloatFloatStruct(float a, float b) {
+	TestFloatFloatStruct result = {a, b};
+	return result;
 }
 
-- (double) testAddFieldsOfStructByValue: (TestStruct) s {
+TestIntFloatStruct createIntFloatStruct(int a, float b) {
+	TestIntFloatStruct result = {a, b};
+	return result;
+}
+
+TestIntLongStruct createIntLongStruct(int a, int64_t b) {
+	TestIntLongStruct result = {a, b};
+	return result;
+}
+
+TestIntIntStruct createIntIntStruct(int a, int b) {
+	TestIntIntStruct result = {a, b};
+	return result;
+}
+
+@implementation TestShunt
+
+- (TestIntDoubleStruct) testReturnStructByValue: (int) a and: (double) b {
+	return createIntDoubleStruct(a, b);
+}
+
+- (double) testAddFieldsOfStructByValue: (TestIntDoubleStruct) s {
 	return addFieldsOfStructByValue(s);
 }
 
 - (TestStructOfStruct) testReturnStructOfStructByValue: (int) a and: (double) b {
-	TestStruct inside = returnStructByValue(a, b);
+	TestIntDoubleStruct inside = createIntDoubleStruct(a, b);
 	TestStructOfStruct result = {b, inside};
 	return result;
 }

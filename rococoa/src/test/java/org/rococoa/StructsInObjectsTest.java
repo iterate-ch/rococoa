@@ -22,16 +22,26 @@ package org.rococoa;
 import org.rococoa.cocoa.NSSize;
 import org.rococoa.cocoa.NSValue;
 
+import com.sun.jna.Library;
+
 /**
  * Checks that we can embed a struct by value in a object.
  * 
  */
 public class StructsInObjectsTest extends RococoaTestCase {
     
+    public interface MyLibrary extends Library {
+        NSSize objc_msgSend(ID receiver, Selector selector, Object... args);
+    }
+
     public void test() throws Exception {
-        NSSize aSize = new NSSize(1, 3);
+        NSSize aSize = new NSSize(1f, 3f);
         NSValue value = NSValue.CLASS.valueWithSize(aSize);
-        NSSize size = value.sizeValue(); // fails here with jna 3.0.9 in Java 1.5
+        
+        
+        Foundation.send(value.id(), Foundation.selector("sizeValue"), NSSize.class);
+        NSSize size = value.sizeValue(); 
+            // fails here with jna 3.0.6+ in Java 1.5, see StaticStructureReturnTest
 
         assertEquals(1.0, size.width.doubleValue(), 0.0001);
         assertEquals(3.0, size.height.doubleValue(), 0.0001);        
