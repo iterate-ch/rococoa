@@ -24,17 +24,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
-
 import org.junit.After;
 import org.junit.Before;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.jna.Pointer;
 
 /**
  * A TestCase which runs tests with an autorelease pool in place.
@@ -46,14 +42,15 @@ public abstract class RococoaTestCase {
     
     // stress our memory management
     public static boolean gcAfterTest = true;
+    protected final static Logger logging ;
 
     static {
     	initializeLogging();
+    	logging = LoggerFactory.getLogger("org.rococoa.RococoaTestCase");
+    	logVersions();
     };
 
-    protected static Logger logging = LoggerFactory.getLogger("org.rococoa.RococoaTestCase");
-
-    public static void initializeLogging() {
+    private static void initializeLogging() {
         try {
             InputStream is = null;
             try {
@@ -70,21 +67,25 @@ public abstract class RococoaTestCase {
         }
     }
     
+    private static void logVersions() {
+        logging.info("Running with JAVA_HOME = {}, java.version = {}, sizeof(Pointer) = {}", 
+                new Object[] { System.getenv("JAVA_HOME"),
+                    System.getProperty("java.version"),
+                    Pointer.SIZE});
+    }
+
     protected NSAutoreleasePool pool;
     
     @Before
     public void preSetup() {
-//        logging.info("Starting test {}.{}", new Object[] {getClass().getName(), getName()});
         pool = NSAutoreleasePool.new_();
     }
 
     @After
     public void postTeardown() {
-//        logging.info("Ending test {}", getName());
         if (gcAfterTest)
             gc();
         pool.release();
-//        logging.info("Ended test {}", getName());
     }
 
     private void gc() {
@@ -93,16 +94,4 @@ public abstract class RococoaTestCase {
         System.runFinalization();
     }
     
-    public static Test skipOnJava6Suite(Class<? extends TestCase> testClass) {
-        if (System.getProperty("java.version").startsWith("1.6")) {
-            return new TestSuite(testClass) {
-                @Override
-                public void run(TestResult result) {
-                    result.addFailure(this, new AssertionFailedError("Tests skipped"));
-                }
-            };
-        }
-        return new TestSuite(testClass);
-    }
-
 }
