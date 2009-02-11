@@ -19,11 +19,6 @@
  
 package org.rococoa;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.MessageFormat;
-import java.util.Date;
-import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
