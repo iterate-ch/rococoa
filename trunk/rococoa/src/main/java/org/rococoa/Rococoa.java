@@ -79,7 +79,7 @@ public abstract class Rococoa  {
         // From Memory Management Programming Guide for Cocoa
         // This is the fundamental rule:
         // You take ownership of an object if you create it using a method whose
-        // name begins with “alloc” or “new” or contains “copy” (for example,
+        // name begins with 'alloc' or 'new' or contains 'copy' (for example,
         // alloc, newObject, or mutableCopy), or if you send it a retain
         // message. You are responsible for relinquishing ownership of objects
         // you own using release or autorelease. Any other time you receive an
@@ -213,7 +213,7 @@ public abstract class Rococoa  {
         if (retainCount != expected)
             throw new IllegalStateException("Created an object which had a retain count of " + retainCount + " not " + expected);
     }
-    
+
     /**
      * Enforce static factory-ness.
      */
