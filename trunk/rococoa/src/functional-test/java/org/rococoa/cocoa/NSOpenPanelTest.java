@@ -4,19 +4,23 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
+import static org.junit.Assert .*;
+import org.junit.Test;
 import org.rococoa.ID;
+import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 import org.rococoa.RococoaTestCase;
 
 public class NSOpenPanelTest extends RococoaTestCase {
 
     // Requires user to select a text file somewhere downtree from ~
+    @Test
     public void testShow() {
         new JFrame().setVisible(true); // otherwise no panel
         NSOpenPanel panel = NSOpenPanel.CLASS.openPanel();
         
         // Keep this reference!
-        ID ocProxy = Rococoa.wrap(new Object() {
+        NSObject ocProxy = Rococoa.proxy(new Object() {
             @SuppressWarnings("unused")
             public boolean panel_shouldShowFilename(ID panel, String filename) {
                 char initialChar = new File(filename).getName().toLowerCase().charAt(0);
@@ -24,7 +28,7 @@ public class NSOpenPanelTest extends RococoaTestCase {
             }
         });
         
-        panel.setDelegate(ocProxy);
+        panel.setDelegate(ocProxy.id());
         int button = panel.runModalForTypes(null);
 //              or, eg        
 //                NSArray.CLASS.arrayWithObjects(
