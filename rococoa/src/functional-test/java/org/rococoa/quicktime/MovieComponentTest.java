@@ -25,6 +25,9 @@ import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.JFrame;
 
+import org.junit.Test;
+import static org.junit.Assert .*;
+
 import org.rococoa.*;
 
 public class MovieComponentTest extends RococoaTestCase {
@@ -36,7 +39,8 @@ public class MovieComponentTest extends RococoaTestCase {
         @SuppressWarnings("unused")
         QTKit instance = QTKit.instance;
     }
-    
+
+    @Test
     public void testShow() throws Exception {
         assertTrue(FILE.exists());
 
