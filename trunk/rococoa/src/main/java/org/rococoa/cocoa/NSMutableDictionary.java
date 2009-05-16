@@ -30,12 +30,27 @@ public abstract class NSMutableDictionary extends NSDictionary {
 
     public interface _Class extends NSClass {
         NSMutableDictionary dictionaryWithCapacity(int numItems);
+        NSMutableDictionary dictionaryWithObjects_forKeys(NSArray objects, NSArray keys);
+        NSMutableDictionary dictionaryWithObjectsAndKeys(NSObject...objects);
+        NSMutableDictionary dictionaryWithDictionary(NSDictionary dict);
     }
     
     public static NSMutableDictionary dictionaryWithCapacity(int numItems) {
         return CLASS.dictionaryWithCapacity(numItems);
     }
 
+    public static NSMutableDictionary dictionaryWithObjects_forKeys(NSArray objects, NSArray keys) {
+        return CLASS.dictionaryWithObjects_forKeys(objects, keys);
+    }
+    
+    public static NSMutableDictionary dictionaryWithObjectsAndKeys(NSObject...objects) {
+        return CLASS.dictionaryWithObjectsAndKeys(objects);
+    }
+    
+    public static NSMutableDictionary dictionaryWithDictionary(NSDictionary dictionary) {
+        return CLASS.dictionaryWithDictionary(dictionary);
+    }
+    
     public abstract void setValue_forKey(NSObject object, NSObject key);
 
     public abstract void setValue_forKey(NSObject object, String key);

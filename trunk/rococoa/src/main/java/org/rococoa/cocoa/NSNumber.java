@@ -34,6 +34,7 @@ public interface NSNumber extends NSObject {
         public NSNumber numberWithInt(int value);
         public NSNumber numberWithDouble(double e);
         public NSNumber numberWithLong(long value);
+        public NSNumber numberWithFloat(float value);
     }
     
     public short shortValue();
