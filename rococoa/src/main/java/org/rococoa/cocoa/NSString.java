@@ -19,31 +19,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
 package org.rococoa.cocoa;
 
 import org.rococoa.Foundation;
+import org.rococoa.ID;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 
 public abstract class NSString implements NSObject {
-    public static _Class CLASS = Rococoa.createClass("NSString",  _Class.class);         //$NON-NLS-1$
+
+    public static _Class CLASS = Rococoa.createClass("NSString", _Class.class);         //$NON-NLS-1$
+
     public interface _Class extends NSClass {
         NSString stringWithString(String string);
     }
-    
+
     public static NSString stringWithString(String string) {
         return CLASS.stringWithString(string);
     }
-    
+
     public abstract boolean isEqualToString(String string);
-    
+
     public abstract NSString substringFromIndex(int anIndex);
-    
+
     public abstract NSString lowercaseString();
 
+    @Override
     public String toString() {
         return Foundation.toString(id());
+    }
+
+    public static NSString getGlobalString(String libraryName, String globalVarName) {
+        return Rococoa.wrap(ID.getGlobal(libraryName, globalVarName), NSString.class);
+    }
+
+    public static NSString getGlobalString(String globalVarName) {
+        return getGlobalString("AppKit", globalVarName);
     }
 }
