@@ -20,6 +20,7 @@
 package org.rococoa;
 
 import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.NativeLong;
 
 
@@ -60,5 +61,9 @@ public class ID extends NativeLong {
     
     public boolean isNull() {
         return longValue() == 0;
+    }
+
+    public static ID getGlobal(String libraryName, String globalVarName) {
+        return new ID(NativeLibrary.getInstance(libraryName).getGlobalVariableAddress(globalVarName).getNativeLong(0).longValue());
     }
 }
