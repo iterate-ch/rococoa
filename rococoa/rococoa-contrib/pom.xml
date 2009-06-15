@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.rococoa</groupId>
+  <artifactId>rococoa-contrib</artifactId>
+  <packaging>jar</packaging>
+  <version>0.3.1-snapshot</version>
+  <name>Rococoa Contrib</name>
+  <url>http://www.rococoa.org</url>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.rococoa</groupId>
+      <artifactId>rococoa</artifactId>
+      <version>0.3.1-snapshot</version>
+    </dependency>
+  </dependencies>
+  
+  <properties>
+  	<maven.compile.source>1.5</maven.compile.source>
+  	<maven.compile.target>1.5</maven.compile.target>
+  </properties>
+
+  <build>
+    
+    <plugins>
+    
+      <plugin>
+    	<groupId>org.apache.maven.plugins</groupId>
+    	<artifactId>maven-compiler-plugin</artifactId>
+    	<configuration>
+    		<source>${maven.compile.source}</source>
+    		<target>${maven.compile.target}</target>
+    	</configuration>
+      </plugin>     
+         
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptor>src/main/assembly/dist.xml</descriptor>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
