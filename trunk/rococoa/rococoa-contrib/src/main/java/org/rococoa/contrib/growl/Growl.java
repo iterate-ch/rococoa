@@ -2,8 +2,6 @@ package org.rococoa.contrib.growl;
 
 import org.rococoa.NSObject;
 import org.rococoa.cocoa.*;
-import org.rococoa.cocoa.app.NSApplication;
-import org.rococoa.cocoa.app.NSDistributedNotificationCenter;
 
 import java.util.ArrayList;
 import java.util.Collections;
