@@ -23,7 +23,11 @@ import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 
-
+/**
+ * @author Duncan McGregor
+ * @author Paul Loy (added addEntriesFromDictionary for Growl contrib)
+ *
+ */
 public abstract class NSMutableDictionary extends NSDictionary {
     
     public static final _Class CLASS = Rococoa.createClass("NSMutableDictionary", _Class.class); //$NON-NLS-1$
@@ -54,5 +58,7 @@ public abstract class NSMutableDictionary extends NSDictionary {
     public abstract void setValue_forKey(NSObject object, NSObject key);
 
     public abstract void setValue_forKey(NSObject object, String key);
+    
+    public abstract void addEntriesFromDictionary(NSDictionary dictionary);
     
 }
