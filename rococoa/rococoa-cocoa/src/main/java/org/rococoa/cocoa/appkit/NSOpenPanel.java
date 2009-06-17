@@ -1,6 +1,12 @@
-package org.rococoa.cocoa.foundation;
+package org.rococoa.cocoa.appkit;
 
-import org.rococoa.*;
+import org.rococoa.ID;
+import org.rococoa.NSClass;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
+import org.rococoa.RunOnMainThread;
+import org.rococoa.cocoa.foundation.NSArray;
+import org.rococoa.cocoa.foundation.NSString;
 
 public @RunOnMainThread interface NSOpenPanel extends NSObject {
     
