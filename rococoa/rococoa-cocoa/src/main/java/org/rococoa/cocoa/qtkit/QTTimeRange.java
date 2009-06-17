@@ -17,37 +17,30 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.quicktime;
+package org.rococoa.cocoa.qtkit;
 
-import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 
-public class QTTimeByReference extends Structure {
+public class QTTimeRange extends Structure implements Structure.ByValue {
 
-    public long timeValue;
-    public NativeLong timeScale;
-    public NativeLong flags;
+    public QTTime time;     
+    public QTTime duration;
 
-    public QTTimeByReference() {
+    public QTTimeRange() {
     }
 
-    public QTTimeByReference(long timeValue, int timeScale) {
-        this(timeValue, timeScale, 0);
-    }
-
-    public QTTimeByReference(long timeValue, int timeScale, int flags) {
-        this.timeValue = timeValue;
-        this.timeScale = new NativeLong(timeScale);
-        this.flags = new NativeLong();
+    public QTTimeRange(QTTime time, QTTime duration) {
+        this.time = time;
+        this.duration = duration;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + flags.intValue();
-        result = prime * result + timeScale.intValue();
-        result = prime * result + (int) (timeValue ^ (timeValue >>> 32));
+        result = prime * result
+                + ((duration == null) ? 0 : duration.hashCode());
+        result = prime * result + ((time == null) ? 0 : time.hashCode());
         return result;
     }
 
@@ -55,16 +48,20 @@ public class QTTimeByReference extends Structure {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (!super.equals(obj))
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final QTTime other = (QTTime) obj;
-        if (!flags.equals(other.flags))
+        final QTTimeRange other = (QTTimeRange) obj;
+        if (duration == null) {
+            if (other.duration != null)
+                return false;
+        } else if (!duration.equals(other.duration))
             return false;
-        if (!timeScale.equals(other.timeScale))
-            return false;
-        if (timeValue != other.timeValue)
+        if (time == null) {
+            if (other.time != null)
+                return false;
+        } else if (!time.equals(other.time))
             return false;
         return true;
     }

@@ -19,6 +19,13 @@
       <artifactId>rococoa-core</artifactId>
       <version>0.3.1-snapshot</version>
     </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   
   <properties>
@@ -27,6 +34,12 @@
   </properties>
 
   <build>
+  
+    <resources>
+      <resource>
+        <directory>src/test/resources</directory>
+      </resource>
+    </resources>
     
     <plugins>
     

@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.util.concurrent.Callable;
 
 import org.junit.Test;
+import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")
 public class FoundationMainThreadTest extends RococoaTestCase {

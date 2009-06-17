@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.rococoa.cocoa.NSNumber;
+import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")
 public class NSClassTest extends RococoaTestCase {

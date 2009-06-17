@@ -30,6 +30,7 @@ import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSNotification;
 import org.rococoa.cocoa.NSNotificationCenter;
 import org.rococoa.cocoa.NSString;
+import org.rococoa.test.RococoaTestCase;
 
 import com.sun.jna.NativeLong;
 

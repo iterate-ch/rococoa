@@ -22,7 +22,7 @@ package org.rococoa.cocoa;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.rococoa.RococoaTestCase;
+import org.rococoa.test.RococoaTestCase;
 
 public class NSDataTest extends RococoaTestCase {
 

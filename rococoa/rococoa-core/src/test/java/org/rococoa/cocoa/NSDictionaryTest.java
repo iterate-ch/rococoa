@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.rococoa.Rococoa;
-import org.rococoa.RococoaTestCase;
+import org.rococoa.test.RococoaTestCase;
 
 public class NSDictionaryTest extends RococoaTestCase {
     

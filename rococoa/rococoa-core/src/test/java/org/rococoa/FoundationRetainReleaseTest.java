@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.rococoa.cocoa.NSAutoreleasePool;
+import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")
 public class FoundationRetainReleaseTest extends RococoaTestCase {

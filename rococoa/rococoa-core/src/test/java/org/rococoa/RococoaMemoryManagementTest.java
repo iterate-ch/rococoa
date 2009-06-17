@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 import org.junit.Test;
 import org.rococoa.cocoa.NSAutoreleasePool;
 import org.rococoa.cocoa.NSDate;
+import org.rococoa.test.RococoaTestCase;
 
 public class RococoaMemoryManagementTest extends RococoaTestCase {
     
