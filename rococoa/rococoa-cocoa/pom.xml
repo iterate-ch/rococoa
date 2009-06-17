@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.rococoa</groupId>
-  <artifactId>rococoa-contrib</artifactId>
+  <artifactId>rococoa-cocoa</artifactId>
   <packaging>jar</packaging>
   <version>0.3.1-snapshot</version>
-  <name>Rococoa Contrib</name>
+  <name>Rococoa Cocoa Mappings</name>
   <url>http://www.rococoa.org</url>
   
   <parent>
@@ -17,11 +17,6 @@
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-core</artifactId>
-      <version>0.3.1-snapshot</version>
-    </dependency>
-    <dependency>
-      <groupId>org.rococoa</groupId>
-      <artifactId>rococoa-cocoa</artifactId>
       <version>0.3.1-snapshot</version>
     </dependency>
   </dependencies>
