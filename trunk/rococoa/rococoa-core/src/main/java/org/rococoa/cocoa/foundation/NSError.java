@@ -16,15 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+package org.rococoa.cocoa.foundation;
 
-package org.rococoa.cocoa;
+import org.rococoa.NSClass;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
 
-import com.sun.jna.NativeLong;
+public interface NSError extends NSObject {
+    
+    public static final _Class CLASS = Rococoa.createClass("NSError", _Class.class); //$NON-NLS-1$
 
-/**
- *
- * @author pixel
- */
-public class NSInteger extends NativeLong  {
-    private static final long serialVersionUID = 0;
+    public interface _Class extends NSClass {
+        NSError alloc();
+    }
+
+    public NSInteger code();
+
+    public String domain();
+
+    public String localizedDescription();
 }

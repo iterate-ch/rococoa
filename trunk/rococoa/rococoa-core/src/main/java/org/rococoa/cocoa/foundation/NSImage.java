@@ -16,17 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+package org.rococoa.cocoa.foundation;
 
-package org.rococoa.cocoa;
+import org.rococoa.NSObject;
 
 
-/**
- *
- * @author pixel
- */
-public class NSRange extends CFRange {
-    public NSRange() {}
-    public NSRange(final CFIndex location, final CFIndex length) {
-        super(location, length);
-    }
+public interface NSImage extends NSObject {
+    
+    void setScalesWhenResized(boolean scaleWhenResizing);
+    
+    void setSize(NSSize size);
+    
+    NSData TIFFRepresentation();
+
 }

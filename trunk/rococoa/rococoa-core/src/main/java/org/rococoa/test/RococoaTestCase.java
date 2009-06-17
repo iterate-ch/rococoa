@@ -26,7 +26,7 @@ import java.util.logging.LogManager;
 
 import org.junit.After;
 import org.junit.Before;
-import org.rococoa.cocoa.NSAutoreleasePool;
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,3 @@
-/**
- * 
- */
 /*
  * Copyright 2007, 2008 Duncan McGregor
  * 
@@ -19,21 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package org.rococoa.cocoa;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
+package org.rococoa.cocoa.foundation;
 
+import com.sun.jna.NativeLong;
 
-public interface NSDate extends NSObject {
-    public static final _Class CLASS = Rococoa.createClass("NSDate",  _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
-        public NSDate dateWithTimeIntervalSince1970(double d);
+/**
+ *
+ * @author pixel
+ */
+public class NSUInteger extends NativeLong {
+    private static final long serialVersionUID = 0;
+    
+    public NSUInteger() {
+        
     }
-
-    double timeIntervalSince1970();
-
-    String description();
+    public NSUInteger(long value) {
+        super(value);
+    }
+    
 }

@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.rococoa.cocoa;
+package org.rococoa.cocoa.foundation;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;

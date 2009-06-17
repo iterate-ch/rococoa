@@ -31,17 +31,11 @@ import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
 import org.rococoa.Rococoa;
-import org.rococoa.cocoa.NSArray;
-import org.rococoa.cocoa.NSError;
-import org.rococoa.cocoa.NSMutableDictionary;
-import org.rococoa.cocoa.NSNumber;
-import org.rococoa.cocoa.NSString;
-import org.rococoa.cocoa.qtkit.QTKit;
-import org.rococoa.cocoa.qtkit.QTMedia;
-import org.rococoa.cocoa.qtkit.QTMovie;
-import org.rococoa.cocoa.qtkit.QTTime;
-import org.rococoa.cocoa.qtkit.QTTimeRange;
-import org.rococoa.cocoa.qtkit.QTTrack;
+import org.rococoa.cocoa.foundation.NSArray;
+import org.rococoa.cocoa.foundation.NSError;
+import org.rococoa.cocoa.foundation.NSMutableDictionary;
+import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 
 

@@ -16,23 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package org.rococoa.cocoa;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
+package org.rococoa.cocoa.foundation;
 
-public interface NSMutableArray extends NSObject {
+import org.rococoa.cocoa.CFIndex;
+import org.rococoa.cocoa.CFRange;
 
-    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSClass {
-        NSMutableArray arrayWithCapacity(int numItems);
+
+/**
+ *
+ * @author pixel
+ */
+public class NSRange extends CFRange {
+    public NSRange() {}
+    public NSRange(final CFIndex location, final CFIndex length) {
+        super(location, length);
     }
-    
-    int count();
-    void addObject(NSObject anObject);
-    void addObject(String string);
-    
-    NSObject objectAtIndex(int index);
 }

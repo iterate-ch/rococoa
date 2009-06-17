@@ -16,23 +16,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+package org.rococoa.cocoa.foundation;
 
-package org.rococoa.cocoa;
+import org.rococoa.NSClass;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
 
-import com.sun.jna.NativeLong;
-
-/**
- *
- * @author pixel
- */
-public class NSUInteger extends NativeLong {
-    private static final long serialVersionUID = 0;
-    
-    public NSUInteger() {
-        
+public interface NSURL extends NSObject  {
+    public static final _Class CLASS = Rococoa.createClass("NSURL", _Class.class); //$NON-NLS-1$
+    public interface _Class extends NSClass {
+        public NSURL URLWithString(String value);
+        public NSURL fileURLWithPath(String path);
     }
-    public NSUInteger(long value) {
-        super(value);
-    }
-    
+    public NSURL absoluteURL();
+    public String path();
 }

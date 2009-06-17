@@ -1,4 +1,4 @@
-package org.rococoa.cocoa;
+package org.rococoa.cocoa.foundation;
 
 import org.rococoa.*;
 

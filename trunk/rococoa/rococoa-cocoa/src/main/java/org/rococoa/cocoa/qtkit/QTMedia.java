@@ -22,7 +22,7 @@ package org.rococoa.cocoa.qtkit;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.RunOnMainThread;
-import org.rococoa.cocoa.NSDictionary;
+import org.rococoa.cocoa.foundation.NSDictionary;
 
 import com.sun.jna.Pointer;
 

@@ -17,24 +17,28 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.cocoa;
+package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
+import java.awt.geom.Dimension2D;
 
-public interface NSArray extends NSObject {
-    
-    public static final _Class CLASS = Rococoa.createClass("NSArray", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSClass {
-        /**
-         * @param objects Contents and then a trailing null
-         */
-        NSArray arrayWithObjects(NSObject...objects);
+import org.rococoa.cocoa.CGFloat;
+
+import com.sun.jna.Structure;
+
+public class NSSize extends Structure implements Structure.ByValue {
+    public final CGFloat width;
+    public final CGFloat height;
+
+    public NSSize() {
+        this(0, 0);
     }
     
-    int count();
+    public NSSize(double width, double height) {
+        this.width = new CGFloat(width);
+        this.height = new CGFloat(height);
+    }
 
-    NSObject objectAtIndex(int zeroOffsetIndex);
-    
+    public NSSize(Dimension2D pSize) {
+        this(pSize.getWidth(), pSize.getHeight());
+    }
 }

@@ -3,7 +3,7 @@ package org.rococoa.cocoa;
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
-import org.rococoa.cocoa.NSDictionary;
+import org.rococoa.cocoa.foundation.NSDictionary;
 
 /**
  * NSDistributedNotificationCenter

@@ -17,17 +17,17 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.cocoa;
+package org.rococoa.cocoa.foundation;
 
+import org.rococoa.NSClass;
 import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
 
 
-public interface NSImage extends NSObject {
-    
-    void setScalesWhenResized(boolean scaleWhenResizing);
-    
-    void setSize(NSSize size);
-    
-    NSData TIFFRepresentation();
-
+public interface NSNotification extends NSObject {
+    public static final _Class CLASS = Rococoa.createClass("NSNotification",  _Class.class); //$NON-NLS-1$
+    public interface _Class extends NSClass {
+        NSNotification notificationWithName_object(String notificationName, NSObject object);
+    }
+  
 }
