@@ -35,6 +35,7 @@ public interface NSArray extends NSObject {
     
     int count();
 
+    NSObject lastObject();
     NSObject objectAtIndex(int zeroOffsetIndex);
     
 }
