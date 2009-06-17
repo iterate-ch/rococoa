@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
 
 import org.rococoa.ID;
 import org.rococoa.Rococoa;
-import org.rococoa.cocoa.NSInvocation;
-import org.rococoa.cocoa.NSMethodSignature;
+import org.rococoa.cocoa.foundation.NSInvocation;
+import org.rococoa.cocoa.foundation.NSMethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

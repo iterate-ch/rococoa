@@ -17,14 +17,13 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rococoa.cocoa;
-
-import com.sun.jna.Structure;
-import org.rococoa.cocoa.NSSize;
+package org.rococoa.cocoa.foundation;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
+import com.sun.jna.Structure;
 
 /**
  * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>

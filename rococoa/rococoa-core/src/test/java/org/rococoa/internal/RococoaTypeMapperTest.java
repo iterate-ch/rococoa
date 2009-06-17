@@ -27,7 +27,7 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.IDByReference;
 import org.rococoa.NSObjectByReference;
-import org.rococoa.cocoa.NSNumber;
+import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.test.RococoaTestCase;
 
 import com.sun.jna.FromNativeConverter;

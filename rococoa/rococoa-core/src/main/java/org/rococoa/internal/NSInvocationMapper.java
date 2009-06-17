@@ -11,9 +11,9 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
-import org.rococoa.cocoa.NSInteger;
-import org.rococoa.cocoa.NSInvocation;
-import org.rococoa.cocoa.NSUInteger;
+import org.rococoa.cocoa.foundation.NSInteger;
+import org.rococoa.cocoa.foundation.NSInvocation;
+import org.rococoa.cocoa.foundation.NSUInteger;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;

@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package org.rococoa.cocoa;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
+package org.rococoa.cocoa.foundation;
 
+import com.sun.jna.NativeLong;
 
-public interface NSNotification extends NSObject {
-    public static final _Class CLASS = Rococoa.createClass("NSNotification",  _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
-        NSNotification notificationWithName_object(String notificationName, NSObject object);
-    }
-  
+/**
+ *
+ * @author pixel
+ */
+public class NSInteger extends NativeLong  {
+    private static final long serialVersionUID = 0;
 }

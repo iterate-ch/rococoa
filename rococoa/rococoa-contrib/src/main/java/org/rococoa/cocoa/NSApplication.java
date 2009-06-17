@@ -1,8 +1,12 @@
 package org.rococoa.cocoa;
 
-import org.rococoa.*;
-import org.rococoa.cocoa.NSImage;
-import org.rococoa.cocoa.NSInteger;
+import org.rococoa.ID;
+import org.rococoa.NSClass;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
+import org.rococoa.RunOnMainThread;
+import org.rococoa.cocoa.foundation.NSImage;
+import org.rococoa.cocoa.foundation.NSInteger;
 
 /**
  * NSApplication

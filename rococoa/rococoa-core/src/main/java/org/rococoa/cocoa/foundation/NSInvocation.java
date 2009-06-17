@@ -17,23 +17,16 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.cocoa;
+package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
 import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
 
-public interface NSError extends NSObject {
-    
-    public static final _Class CLASS = Rococoa.createClass("NSError", _Class.class); //$NON-NLS-1$
+import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
 
-    public interface _Class extends NSClass {
-        NSError alloc();
-    }
+public interface  NSInvocation extends NSObject {
 
-    public NSInteger code();
-
-    public String domain();
-
-    public String localizedDescription();
+    NSMethodSignature methodSignature();
+    void getArgument_atIndex(Pointer receiver, int index);
+    void setReturnValue(Memory buffer);
 }

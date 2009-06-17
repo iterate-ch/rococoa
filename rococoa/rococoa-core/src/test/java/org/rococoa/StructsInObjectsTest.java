@@ -22,8 +22,8 @@ package org.rococoa;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.rococoa.cocoa.NSSize;
-import org.rococoa.cocoa.NSValue;
+import org.rococoa.cocoa.foundation.NSSize;
+import org.rococoa.cocoa.foundation.NSValue;
 import org.rococoa.test.RococoaTestCase;
 
 import com.sun.jna.Library;

@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
 import org.rococoa.Rococoa;
-import org.rococoa.cocoa.NSAutoreleasePool;
-import org.rococoa.cocoa.NSNumber;
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
+import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")

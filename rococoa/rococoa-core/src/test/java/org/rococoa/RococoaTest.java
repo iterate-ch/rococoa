@@ -27,14 +27,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.rococoa.Foundation;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
-import org.rococoa.cocoa.NSArray;
-import org.rococoa.cocoa.NSDate;
-import org.rococoa.cocoa.NSNumber;
-import org.rococoa.cocoa.NSString;
+import org.rococoa.cocoa.foundation.NSArray;
+import org.rococoa.cocoa.foundation.NSDate;
+import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")

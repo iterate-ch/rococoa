@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.TestStruct;
-import org.rococoa.cocoa.NSString;
+import org.rococoa.cocoa.foundation.NSString;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;

@@ -16,19 +16,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package org.rococoa.cocoa;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.Rococoa;
+package org.rococoa.cocoa.foundation;
 
-public interface NSURL extends NSObject  {
-    public static final _Class CLASS = Rococoa.createClass("NSURL", _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
-        public NSURL URLWithString(String value);
-        public NSURL fileURLWithPath(String path);
+import com.sun.jna.Structure;
+import org.rococoa.cocoa.CGFloat;
+
+import java.awt.geom.Point2D;
+
+/**
+ * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>
+ */
+public class NSPoint extends Structure implements Structure.ByValue {
+    public final CGFloat x;
+    public final CGFloat y;
+
+    public NSPoint() {
+        this(0, 0);
     }
-    public NSURL absoluteURL();
-    public String path();
+    
+    public NSPoint(double x, double y) {
+        this.x = new CGFloat(x);
+        this.y = new CGFloat(y);
+    }
+
+    public NSPoint(Point2D point) {
+        this(point.getX(), point.getY());
+    }
+
+    public Point2D getPoint() {
+        return new Point2D.Double(x.doubleValue(), y.doubleValue());
+    }
 }

@@ -22,7 +22,7 @@ package org.rococoa;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.rococoa.cocoa.NSAutoreleasePool;
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")

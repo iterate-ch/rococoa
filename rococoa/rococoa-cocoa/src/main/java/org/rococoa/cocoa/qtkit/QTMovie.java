@@ -29,10 +29,10 @@ import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
 import org.rococoa.Rococoa;
 import org.rococoa.RunOnMainThread;
-import org.rococoa.cocoa.NSArray;
-import org.rococoa.cocoa.NSDictionary;
-import org.rococoa.cocoa.NSImage;
-import org.rococoa.cocoa.NSString;
+import org.rococoa.cocoa.foundation.NSArray;
+import org.rococoa.cocoa.foundation.NSDictionary;
+import org.rococoa.cocoa.foundation.NSImage;
+import org.rococoa.cocoa.foundation.NSString;
 
 import com.sun.jna.Pointer;
 

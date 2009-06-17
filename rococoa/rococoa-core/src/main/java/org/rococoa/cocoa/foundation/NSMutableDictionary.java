@@ -17,7 +17,7 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.cocoa;
+package org.rococoa.cocoa.foundation;
 
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
