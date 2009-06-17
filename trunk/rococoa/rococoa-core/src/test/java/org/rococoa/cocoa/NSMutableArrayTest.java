@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
-import org.rococoa.RococoaTestCase;
+import org.rococoa.test.RococoaTestCase;
 
 public class NSMutableArrayTest extends RococoaTestCase {
 

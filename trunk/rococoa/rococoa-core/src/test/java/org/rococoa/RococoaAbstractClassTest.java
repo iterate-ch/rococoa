@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
+import org.rococoa.test.RococoaTestCase;
 
 
 public class RococoaAbstractClassTest extends RococoaTestCase {

@@ -17,7 +17,7 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.quicktime;
+package org.rococoa.cocoa.qtkit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,12 +31,18 @@ import org.rococoa.NSClass;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
 import org.rococoa.Rococoa;
-import org.rococoa.RococoaTestCase;
 import org.rococoa.cocoa.NSArray;
 import org.rococoa.cocoa.NSError;
 import org.rococoa.cocoa.NSMutableDictionary;
 import org.rococoa.cocoa.NSNumber;
 import org.rococoa.cocoa.NSString;
+import org.rococoa.cocoa.qtkit.QTKit;
+import org.rococoa.cocoa.qtkit.QTMedia;
+import org.rococoa.cocoa.qtkit.QTMovie;
+import org.rococoa.cocoa.qtkit.QTTime;
+import org.rococoa.cocoa.qtkit.QTTimeRange;
+import org.rococoa.cocoa.qtkit.QTTrack;
+import org.rococoa.test.RococoaTestCase;
 
 
 @SuppressWarnings("nls")

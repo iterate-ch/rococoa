@@ -17,7 +17,7 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.quicktime;
+package org.rococoa.cocoa.qtkit;
 
 import org.rococoa.ID;
 import org.rococoa.NSObject;

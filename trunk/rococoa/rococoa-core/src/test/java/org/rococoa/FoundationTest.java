@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.rococoa.test.RococoaTestCase;
 
 public class FoundationTest extends RococoaTestCase {  
     

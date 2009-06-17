@@ -22,6 +22,7 @@ package org.rococoa;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.rococoa.test.RococoaTestCase;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;

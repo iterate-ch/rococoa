@@ -33,7 +33,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.5</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
@@ -49,6 +48,12 @@
 
   
   <build>
+  
+    <resources>
+      <resource>
+        <directory>src/test/resources</directory>
+      </resource>
+    </resources>
   
     <plugins>
     
