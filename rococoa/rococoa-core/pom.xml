@@ -80,7 +80,7 @@
                 <exec dir="." executable="xcodebuild" failonerror="true">               
                 	<arg value="-project"/><arg value="rococoa.xcodeproj"/>
                 	<arg value="-target"/><arg value="librococoa"/>
-                	<arg value="-configuration"/><arg value="Debug"/>
+                	<arg value="-configuration"/><arg value="Release"/>
                	</exec>
               </tasks>
             </configuration>
@@ -151,6 +151,33 @@
           </execution>
         </executions>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
       
   </build>
