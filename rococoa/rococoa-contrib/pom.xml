@@ -58,6 +58,33 @@
           </execution>
         </executions>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.rococoa</groupId>
+                  <artifactId>rococoa-core</artifactId>
+                  <version>0.3.1-snapshot</version>
+                  <type>dylib</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${basedir}</outputDirectory>
+                  <destFileName>librococoa.dylib</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
