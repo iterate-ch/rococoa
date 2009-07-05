@@ -19,16 +19,21 @@
  
 package org.rococoa.quicktime;
 
-import java.awt.event.*;
+import static org.junit.Assert.assertTrue;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.JFrame;
 
 import org.junit.Test;
-import static org.junit.Assert .*;
-
-import org.rococoa.*;
+import org.rococoa.cocoa.qtkit.MovieComponent;
+import org.rococoa.cocoa.qtkit.QTKit;
+import org.rococoa.cocoa.qtkit.QTMovie;
+import org.rococoa.cocoa.qtkit.QTMovieView;
+import org.rococoa.test.RococoaTestCase;
 
 public class MovieComponentTest extends RococoaTestCase {
     

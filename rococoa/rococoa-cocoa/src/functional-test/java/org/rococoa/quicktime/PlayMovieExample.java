@@ -23,6 +23,11 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
+import org.rococoa.cocoa.qtkit.MovieComponent;
+import org.rococoa.cocoa.qtkit.QTKit;
+import org.rococoa.cocoa.qtkit.QTMovie;
+import org.rococoa.cocoa.qtkit.QTMovieView;
+
 public class PlayMovieExample {
 
     static final File FILE = new File("testdata/DrWho.mov");
