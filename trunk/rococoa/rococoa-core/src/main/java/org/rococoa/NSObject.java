@@ -21,7 +21,11 @@ package org.rococoa;
 
 public interface NSObject {
     
-    // synthesised by tic
+    public interface _Class extends NSClass {
+    	NSObject alloc();
+	}
+
+	// synthesised by tic
     ID id();
     
     NSObject retain();
