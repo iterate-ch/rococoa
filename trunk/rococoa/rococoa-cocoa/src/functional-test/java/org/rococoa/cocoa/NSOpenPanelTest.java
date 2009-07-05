@@ -9,7 +9,9 @@ import org.junit.Test;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
-import org.rococoa.RococoaTestCase;
+import org.rococoa.cocoa.appkit.NSOpenPanel;
+import org.rococoa.cocoa.foundation.NSString;
+import org.rococoa.test.RococoaTestCase;
 
 public class NSOpenPanelTest extends RococoaTestCase {
 
