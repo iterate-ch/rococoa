@@ -4,7 +4,7 @@
   <artifactId>rococoa-core</artifactId>
   <packaging>jar</packaging>
   <version>0.3.1-snapshot</version>
-  <name>Rococoa Contrib</name>
+  <name>Rococoa Core</name>
   <url>http://www.rococoa.org</url>
   
   <parent>
@@ -96,7 +96,7 @@
                 <exec dir="." executable="xcodebuild" failonerror="true">
                 	<arg value="-project"/><arg value="rococoa.xcodeproj"/>
                 	<arg value="-target"/><arg value="librococoa"/>
-                	<arg value="-configuration"/><arg value="Debug"/>
+                	<arg value="-configuration"/><arg value="Release"/>
                 	<arg value="clean"/>
                 </exec>
               </tasks>
@@ -127,6 +127,27 @@
               <goal>attached</goal>
             </goals>
             <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <id>install-library</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <groupId>org.rococoa</groupId>
+              <artifactId>rococoa-core</artifactId>
+              <version>0.3.1-snapshot</version>
+              <packaging>dylib</packaging>
+              <file>${basedir}/build/Release/librococoa.dylib</file>
+            </configuration>
           </execution>
         </executions>
       </plugin>
