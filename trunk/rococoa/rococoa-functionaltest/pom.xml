@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-functionaltest</artifactId>
-  <name>rococoa-functionaltest</name>
+  <name>Rococoa Functional Test</name>
   <version>0.3.1-snapshot</version>
   <url>http://maven.apache.org</url>
   <dependencies>
