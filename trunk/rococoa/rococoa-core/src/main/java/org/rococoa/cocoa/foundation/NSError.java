@@ -29,11 +29,21 @@ public interface NSError extends NSObject {
 
     public interface _Class extends NSClass {
         NSError alloc();
+        NSError errorWithDomain_code_userInfo(String domain, NSInteger code, NSDictionary userInfo);
     }
+    
+    public NSError initWithDomain_code_userInfo(String domain, NSInteger code, NSDictionary userInfo);
 
     public NSInteger code();
 
     public String domain();
 
     public String localizedDescription();
+    public String localizedRecoverySuggestion();
+    public NSArray localizedRecoveryOptions();
+    public String localizedFailureReason();
+    
+    public NSObject recoveryAttempter();
+    
+    public NSDictionary userInfo();
 }
