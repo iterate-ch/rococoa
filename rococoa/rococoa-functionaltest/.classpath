@@ -1,0 +1,15 @@
+<classpath>
+  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/asm/asm/3.1/asm-3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/cglib/cglib/2.2/cglib-2.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/java/dev/jna/jna/3.0.10-snapshot/jna-3.0.10-snapshot.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rococoa/rococoa-cocoa/0.3.1-snapshot/rococoa-cocoa-0.3.1-snapshot.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rococoa/rococoa-contrib/0.3.1-snapshot/rococoa-contrib-0.3.1-snapshot.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/rococoa/rococoa-core/0.3.1-snapshot/rococoa-core-0.3.1-snapshot.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.6/slf4j-api-1.5.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.6/slf4j-jdk14-1.5.6.jar"/>
+</classpath>
