@@ -30,13 +30,13 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
     
     @Test public void test() {
         ID idOfString = Foundation.cfString("Hello world");
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString);
 
         assertEquals(idOfString, Foundation.cfRetain(idOfString));
-        assertEquals(2, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(2, idOfString);
 
         Foundation.cfRelease(idOfString);
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString);
 
         Foundation.cfRelease(idOfString);
         // causes count to go to 0 and dispose will happen
@@ -46,16 +46,16 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
         
         ID idOfString = Foundation.cfString("Hello world");
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString);
         
         Foundation.sendReturnsVoid(idOfString, "autorelease");
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString); // autorelease does not increase the count
         
         Foundation.sendReturnsVoid(idOfString, "retain");
-        assertEquals(2, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(2, idOfString);
         
         pool.release();
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString);
 
         Foundation.cfRelease(idOfString);
         // causes count to go to 0 and dispose will happen
@@ -67,11 +67,11 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         ID idOfClass = Foundation.getClass("NSString");
         ID idOfString = Foundation.sendReturnsID(idOfClass, "alloc");
         idOfString = Foundation.sendReturnsID(idOfString, "initWithCString:", "Hello world");
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString);
 
         // show that it wasn't in the pool
         pool.release();
-        assertEquals(1, Foundation.cfGetRetainCount(idOfString));
+        assertRetainCount(1, idOfString);
         Foundation.cfRelease(idOfString);
     }
     
