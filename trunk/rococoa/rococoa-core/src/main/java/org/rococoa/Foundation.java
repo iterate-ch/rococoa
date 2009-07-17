@@ -266,4 +266,21 @@ public abstract class Foundation {
                 callbacks.methodSignatureCallback);
     }
 
+    public static boolean selectorNameMeansWeOwnReturnedObject(String selectorName) {
+        // From Memory Management Programming Guide for Cocoa
+        // This is the fundamental rule:
+        // You take ownership of an object if you create it using a method whose
+        // name begins with 'alloc' or 'new' or contains 'copy' (for example,
+        // alloc, newObject, or mutableCopy), or if you send it a retain
+        // message. You are responsible for relinquishing ownership of objects
+        // you own using release or autorelease. Any other time you receive an
+        // object, you must not release it.
+	
+	// Note that this does not appear to be an infallible rule - see
+	// https://rococoa.dev.java.net/servlets/ReadMsg?list=dev&msgNo=71
+        return selectorName.startsWith("alloc") || 
+        	selectorName.startsWith("new") || 
+        	selectorName.toLowerCase().contains("copy");
+    }
+
 }

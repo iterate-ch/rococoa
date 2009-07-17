@@ -53,10 +53,10 @@ public abstract class Rococoa  {
     /**
      * Create a Java NSObject representing an instance of the Objective-C class
      * ocClassName. The Objective-C instance is created by calling the static 
-     * factory ocFactoryName, passing args.
+     * factory method named ocMethodName, passing args.
      */
-    public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass, String ocFactoryName, Object... args) {
-        boolean weOwnObject = factoryNameMeansWeOwnObject(ocFactoryName);
+    public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass, String ocMethodName, Object... args) {
+        boolean weOwnObject = Foundation.selectorNameMeansWeOwnReturnedObject(ocMethodName);
         
         // If we don't own the object we know that it has been autorelease'd
         // But we need to own these objects, so that they are not dealloc'd when
@@ -64,7 +64,7 @@ public abstract class Rococoa  {
         // Objects that we own (because they were created with 'alloc' or 'new')
         // have not been autorelease'd, so we don't retain them.
         boolean retain = !weOwnObject;
-        return create(ocClassName, javaClass, ocFactoryName, retain, args);
+        return create(ocClassName, javaClass, ocMethodName, retain, args);
     }
     
     /**
@@ -75,18 +75,6 @@ public abstract class Rococoa  {
         return create(ocClassName, javaClass, "new");
     }
 
-    private static boolean factoryNameMeansWeOwnObject(String ocFactoryName) {
-        // From Memory Management Programming Guide for Cocoa
-        // This is the fundamental rule:
-        // You take ownership of an object if you create it using a method whose
-        // name begins with 'alloc' or 'new' or contains 'copy' (for example,
-        // alloc, newObject, or mutableCopy), or if you send it a retain
-        // message. You are responsible for relinquishing ownership of objects
-        // you own using release or autorelease. Any other time you receive an
-        // object, you must not release it.
-        return ocFactoryName.startsWith("alloc") || ocFactoryName.startsWith("new");
-    }
-    
     private static <T extends NSObject> T create(String ocClassName, Class<T> javaClass,
             String ocFactoryName, 
             boolean retain,
@@ -122,9 +110,9 @@ public abstract class Rococoa  {
         return wrap(object.id(), desiredType, true);
     }
 
-    protected static <T extends NSObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
+    public static <T extends NSObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
         // Why would we not want to retain? Well if we are wrapping a Core Foundation
-        // created object, or one created with new (allow init), it will not
+        // created object, or one created with new (alloc init), it will not
         // have been autorelease'd. 
         NSObjectInvocationHandler invocationHandler = new NSObjectInvocationHandler(id, javaClass, retain);
         return createProxy(javaClass, invocationHandler);        

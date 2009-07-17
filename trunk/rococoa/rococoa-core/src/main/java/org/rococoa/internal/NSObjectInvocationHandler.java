@@ -67,12 +67,11 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             OBJECT_EQUALS = Object.class.getMethod("equals", Object.class);
             OCOBJECT_ID = NSObject.class.getMethod("id");
         }
-        catch (Exception e) {
-            throw new RuntimeException("Error retrieving method");
+        catch (Exception x) {
+            throw new RuntimeException("Error retrieving method", x);
         }
     }
 
-    
     private final ID ocInstance;
     private final String javaClassName;
     private final boolean invokeOnMainThread;
@@ -81,8 +80,17 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         this.ocInstance = ocInstance;
         this.javaClassName = javaClass.getSimpleName();
         invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
-        if (ocInstance.isNull())
-            return;
+
+        if (logging.isTraceEnabled()) {
+            int retainCount = Foundation.cfGetRetainCount(ocInstance);
+            logging.trace("Creating NSObjectInvocationHandler for id {}, javaclass {}. retain = {}, retainCount = {}", 
+                    new Object[] {ocInstance, javaClass, retain, retainCount});
+        }
+
+        if (ocInstance.isNull()) {
+            throw new NullPointerException();
+        }
+
         if (retain) {
             if (invokeOnMainThread) {
                 Foundation.runOnMainThread(new Runnable() {
@@ -201,10 +209,6 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }
 
     private Object invokeCococaOnThisOrMainThread(final Method method, final Object[] args) {
-        // TODO - is this the best course?
-        if (ocInstance.isNull())
-            throw new NullPointerException("Invoking method " + method);
-                        
         if (invokeOnMainThread) {
             return Foundation.callOnMainThread(
                 new Callable<Object>() {
