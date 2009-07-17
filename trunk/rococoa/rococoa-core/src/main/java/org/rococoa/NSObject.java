@@ -21,11 +21,13 @@ package org.rococoa;
 
 public interface NSObject {
     
+    public static _Class CLASS = Rococoa.createClass("NSObject", _Class.class);
+
     public interface _Class extends NSClass {
     	NSObject alloc();
 	}
 
-	// synthesised by tic
+    // synthesised
     ID id();
     
     NSObject retain();
