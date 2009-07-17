@@ -19,9 +19,8 @@
  
 package org.rococoa.internal;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
+import static org.junit.Assert.*;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.TestStruct;
@@ -30,8 +29,7 @@ import org.rococoa.cocoa.foundation.NSString;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 
-@SuppressWarnings("nls")
-public class OCInvocationCallbacksTest extends TestCase {
+public class OCInvocationCallbacksTest {
 
     public static class JavaImplementor {
         public void returnsVoidTakesVoid() {}
@@ -63,13 +61,8 @@ public class OCInvocationCallbacksTest extends TestCase {
         }
     }
 
-    private OCInvocationCallbacks callbacks;
-    
-    @Override
-    protected void setUp() throws Exception {
-        callbacks = new OCInvocationCallbacks(new JavaImplementor());
-    }
-    
+    private OCInvocationCallbacks callbacks = new OCInvocationCallbacks(new JavaImplementor());
+        
     @Test public void testMethodForSelector() throws SecurityException, NoSuchMethodException {
         assertNull(callbacks.methodForSelector("nosuch"));
         assertEquals(
