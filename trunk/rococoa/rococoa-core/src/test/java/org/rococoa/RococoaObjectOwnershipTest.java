@@ -1,6 +1,5 @@
 package org.rococoa;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.lang.ref.WeakReference;
@@ -10,47 +9,50 @@ import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSDate;
 import org.rococoa.test.RococoaTestCase;
 
-public class RococoaMemoryManagementTest extends RococoaTestCase {
+public class RococoaObjectOwnershipTest extends RococoaTestCase {
     
-    @Test public void testClassFactoryMethod() {
-        // calling a factory method directly results in an autorelease'd object
-        check(true, 
+    public static boolean shouldBeInPool = true;
+    public static boolean shouldNotBeInPool = false;
+	
+    @Test public void directFactoryMethodsReturnsYieldsPooledObject() {
+	// TODO - I've seen this fail with a retain count of 3. I wonder whether
+	// there is some aggressive instance sharing going on with NSDate
+        check(shouldBeInPool, 
             new Factory() {
                 public NSDate create() {
                     return Rococoa.create("NSDate", NSDate.class, "dateWithTimeIntervalSince1970:", 0.0);
                 }});
     }
     
-    @Test public void testMethodOnClassObject() {
-        // calling a factory method on an NSClass results in an autorelease'd object
-        check(true, 
+    @Test public void factoryMethodOnClassYieldsPooledObject() {
+	// TODO - see above
+        check(shouldBeInPool, 
             new Factory() {
                 public NSDate create() {
                     return NSDate.CLASS.dateWithTimeIntervalSince1970(0.0);
                 }});
     }
     
-    @Test public void testSpecialCaseForNew() {
-        // calling new on an NSClass results in a NOT autorelease'd object
-        check(false, 
+    @Test public void createYieldsNonPooledObject() {
+        check(shouldNotBeInPool, 
             new Factory() {
                 public NSDate create() {
                     return Rococoa.create("NSDate", NSDate.class);
                 }});
     }
     
-    @Test public void testSpecialCaseForNewByName() {
+    @Test public void newYieldsNonPooledObject() {
         // calling new on an NSClass results in a NOT autorelease'd object
-        check(false, 
+        check(shouldNotBeInPool, 
             new Factory() {
                 public NSDate create() {
                     return Rococoa.create("NSDate", NSDate.class, "new");
                 }});
     }
     
-    @Test public void testSpecialCaseForAlloc() {
+    @Test public void allocYieldsNonPooledObject() {
         // calling alloc on an NSClass results in a NOT autorelease'd object
-        check(false, 
+        check(shouldNotBeInPool, 
             new Factory() {
                 public NSObject create() {
                     // NSDate.alloc fails as it is an Umbrella class
@@ -63,21 +65,24 @@ public class RococoaMemoryManagementTest extends RococoaTestCase {
     }
     
     private void check(boolean expectedAutorelease, Factory factory) {
-        int initialRetainCount = expectedAutorelease ? 2 : 1;
+        int expectedInitialRetainCount = expectedAutorelease ? 2 : 1;
+        // that will decrease the count IF it was pooled
+        int expectedFinalRetainCount = expectedAutorelease ? 
+        	expectedInitialRetainCount - 1 : expectedInitialRetainCount; 	
         
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
         
         NSObject object = factory.create();        
-        assertEquals(initialRetainCount, object.retainCount());
+        assertRetainCount(expectedInitialRetainCount, object);
         
         // aliasing should increase the retain count, as the alias also owns it
         NSObject alias = Rococoa.cast(object, NSObject.class);
         assertSame(object.id(), alias.id());
-        assertEquals(initialRetainCount + 1, object.retainCount());
-        assertEquals(initialRetainCount + 1, alias.retainCount());
+        assertRetainCount(expectedInitialRetainCount + 1, object);
+        assertRetainCount(expectedInitialRetainCount + 1, alias);
         
-        // wait until number has been GC'd
-        WeakReference<NSObject> reference = new WeakReference<NSObject>(object);
+        // wait until object has been GC'd
+        WeakReference<Object> reference = new WeakReference<Object>(object);
         object = null;
         while (reference.get() != null) {
             gc();
@@ -85,23 +90,12 @@ public class RococoaMemoryManagementTest extends RococoaTestCase {
         gc();
         
         // it should now have been release'd
-        assertEquals(initialRetainCount, alias.retainCount());
+        assertRetainCount(expectedInitialRetainCount, alias);
         
         // now let the pool go
         pool.release();
 
-        // that will decrease the count IF it was pooled
-        if (expectedAutorelease)
-            assertEquals(initialRetainCount - 1, alias.retainCount());
-        else
-            assertEquals(initialRetainCount, alias.retainCount());
+        assertRetainCount(expectedFinalRetainCount, alias);
     }
 
-    private void gc() {
-        System.gc();
-        System.gc();
-        System.runFinalization();
-    }
-
-    
 }
