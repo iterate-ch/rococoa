@@ -51,10 +51,12 @@ public abstract class NSString implements NSObject {
         return Foundation.toString(id());
     }
 
+    // TODO - move to Rococoa
     public static NSString getGlobalString(String libraryName, String globalVarName) {
         return Rococoa.wrap(ID.getGlobal(libraryName, globalVarName), NSString.class);
     }
 
+    // TODO - move to Rococoa
     public static NSString getGlobalString(String globalVarName) {
         return getGlobalString("AppKit", globalVarName);
     }
