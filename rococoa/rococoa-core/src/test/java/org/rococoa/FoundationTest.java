@@ -99,6 +99,10 @@ public class FoundationTest extends RococoaTestCase {
         assertSame("noSelector:NamedThis:OrribleThing:", noSuchSelector.getName());
     }
     
+    @Test public void sendMessageToNilIsOK() {
+	assertEquals(new ID(0), Foundation.sendReturnsID(new ID(0), "description"));
+    }
+    
     // TODO - make work by wrapping call with native try- catch
     @Ignore("to make work") 
     @Test public void testInvokeUnknownSelector() {
