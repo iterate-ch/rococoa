@@ -19,6 +19,8 @@
  
 package org.rococoa.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +28,9 @@ import java.util.logging.LogManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.rococoa.Foundation;
+import org.rococoa.ID;
+import org.rococoa.NSObject;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,8 +92,17 @@ public abstract class RococoaTestCase {
             gc();
         pool.release();
     }
+    
+    public static void assertRetainCount(int expected, NSObject object) {
+	assertRetainCount(expected, object.id());
+    }    
 
-    private void gc() {
+    public static void assertRetainCount(int expected, ID id) {
+	assertEquals(expected, Foundation.cfGetRetainCount(id));
+    }    
+
+
+    public static void gc() {
         System.gc();
         System.gc();
         System.runFinalization();
