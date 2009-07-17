@@ -43,6 +43,9 @@ import com.sun.jna.Native;
  * Marshalling of Java types to C types is handled by JNA. Marshalling of Java
  * type to Objective-C types is handled by RococoaTypeMapper.
  * 
+ * Not to be confused with the Mac Foundation or Core Foundation frameworks, most
+ * users shouldn't need to access this class directly. 
+ * 
  * @author duncan
  */
 @SuppressWarnings("nls")
