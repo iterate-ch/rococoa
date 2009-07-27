@@ -54,7 +54,7 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         Foundation.sendReturnsVoid(idOfString, "retain");
         assertRetainCount(2, idOfString);
         
-        pool.release();
+        pool.drain();
         assertRetainCount(1, idOfString);
 
         Foundation.cfRelease(idOfString);
@@ -70,7 +70,7 @@ public class FoundationRetainReleaseTest extends RococoaTestCase {
         assertRetainCount(1, idOfString);
 
         // show that it wasn't in the pool
-        pool.release();
+        pool.drain();
         assertRetainCount(1, idOfString);
         Foundation.cfRelease(idOfString);
     }
