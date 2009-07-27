@@ -126,8 +126,8 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return;
         if (logging.isTraceEnabled()) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
-            logging.trace("finalizing {}, releasing with retain count = {}", 
-                    new Object[] {ocInstance, retainCount});
+            logging.trace("finalizing [{} {}], releasing with retain count = {}", 
+                    new Object[] {javaClassName, ocInstance, retainCount});
         }
         Foundation.cfRelease(ocInstance);                    
     }
