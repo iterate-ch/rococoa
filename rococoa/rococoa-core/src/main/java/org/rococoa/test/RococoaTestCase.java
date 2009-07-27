@@ -90,7 +90,7 @@ public abstract class RococoaTestCase {
     public void postTeardown() {
         if (gcAfterTest)
             gc();
-        pool.release();
+        pool.drain();
     }
     
     public static void assertRetainCount(int expected, NSObject object) {

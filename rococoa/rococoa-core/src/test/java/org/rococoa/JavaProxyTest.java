@@ -265,7 +265,7 @@ public class JavaProxyTest extends RococoaTestCase {
                 Foundation.selector("notify:"),
                 "MyNotification",
                 null);
-        pool.release();
+        pool.drain();
         pool = NSAutoreleasePool.new_();
 
         NSNotification notification = NSNotification.CLASS.notificationWithName_object("MyNotification", null);        

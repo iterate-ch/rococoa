@@ -10,5 +10,7 @@ public abstract class NSAutoreleasePool implements NSObject {
     }
     
     public abstract void addObject(NSObject object);
+    
+    public abstract void drain();
 
 }

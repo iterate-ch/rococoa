@@ -93,7 +93,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
         assertRetainCount(expectedInitialRetainCount, alias);
         
         // now let the pool go
-        pool.release();
+        pool.drain();
 
         assertRetainCount(expectedFinalRetainCount, alias);
     }

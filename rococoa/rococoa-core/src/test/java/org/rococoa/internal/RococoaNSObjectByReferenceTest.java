@@ -45,7 +45,7 @@ public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
                 
         // we better have retained the result by the time it gets back
         assertEquals(3, value.retainCount());
-        pool.release();
+        pool.drain();
         assertEquals(2, value.retainCount());
     }
 
