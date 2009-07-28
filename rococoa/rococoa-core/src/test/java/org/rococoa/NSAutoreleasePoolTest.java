@@ -1,17 +1,34 @@
 package org.rococoa;
 
-import java.lang.ref.WeakReference;
-
 import org.junit.After;
 import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.test.RococoaTestCase;
 
-
+/**
+ * NSAutoreleasePool's behaviour wrt retain counts is interesting. 
+ *
+ * Mike Swingler - "NSAutoreleasePools are magical, and are not actually 
+ * allocated or released objects (though you get a point(er) to an id that does 
+ * respond to selectors...but that's no different than an @"some string" constant."
+ *
+ * This test documents the observed behaviour.
+ */
 public class NSAutoreleasePoolTest {
 
     private NSAutoreleasePool pool;
     private final ID idString;
+    
+    
+    @Test public void nothingAffectsReferenceCount() {
+        RococoaTestCase.assertRetainCount(1, pool);
+        pool.drain();
+        RococoaTestCase.assertRetainCount(1, pool);
+        pool.release();
+        RococoaTestCase.assertRetainCount(1, pool);
+        Foundation.cfRelease(pool.id());
+        RococoaTestCase.assertRetainCount(1, pool);
+    }
     
     public NSAutoreleasePoolTest() {
         idString = Foundation.cfString("test");
@@ -39,27 +56,14 @@ public class NSAutoreleasePoolTest {
 	Foundation.cfRelease(pool.id());
 	RococoaTestCase.assertRetainCount(1, idString);
     }
-
-    @Test public void finalizeDoesntRelease() {	
-        WeakReference<Object> reference = new WeakReference<Object>(pool);
-        pool = null;
-        while (reference.get() != null) {
-            RococoaTestCase.gc();
-        }
-        for (int i = 0; i < 10; i++) {
-            RococoaTestCase.gc();
-            RococoaTestCase.assertRetainCount(2, idString);
-        }
-    }
     
-    @Test public void nothingAffectsReferenceCount() {
-        RococoaTestCase.assertRetainCount(1, pool);
-        pool.drain();
-        RococoaTestCase.assertRetainCount(1, pool);
-        pool.release();
-        RococoaTestCase.assertRetainCount(1, pool);
-        Foundation.cfRelease(pool.id());
-        RococoaTestCase.assertRetainCount(1, pool);
+    @Test public void drainOnAnotherThreadDoesntRelease() throws InterruptedException {
+        Thread thread = new Thread("test") {
+            public void run() {
+                pool.drain();
+            }};
+        thread.start();
+        thread.join();
+        RococoaTestCase.assertRetainCount(2, idString);
     }
-    
 }

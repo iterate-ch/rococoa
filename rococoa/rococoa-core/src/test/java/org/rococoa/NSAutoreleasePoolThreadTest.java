@@ -1,7 +1,6 @@
 package org.rococoa;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import org.junit.Ignore;
@@ -9,12 +8,39 @@ import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.test.RococoaTestCase;
 
-// Not a RococoaTestCase so we know the state of the pools
+/**
+ * NSAutoreleasePool's behaviour wrt threads is interesting. It seems that if 
+ * the thread that the pool was created on has finished, then draining the pool
+ * crashes. The tests here document the observed behaviour.
+ * 
+ * Our default policy is to release the pool's id in its finalizer - this is equivalent
+ * to draining it, and will fail if the finalizer is only run after the thread has
+ * exited. So we need a special case (currently in NSObjectInvocationHandler) to
+ * not release pools in their finalizer.
+ * 
+ * NB - not a RococoaTestCase so we know the state of the pools
+ * @author duncan
+ *
+ */
+
 public class NSAutoreleasePoolThreadTest {
 
     static {
         RococoaTestCase.initializeLogging();        
     }
+    
+    // This is the test that is made pass by a special case in NSObjectInvocationHandler
+    @Test public void garbageCollectDrainedPool() throws InterruptedException {
+        Thread thread = new Thread("test") {
+            public void run() {
+                NSAutoreleasePool pool = NSAutoreleasePool.new_();
+                pool.drain();
+            }};
+        thread.start();
+        thread.join();
+        RococoaTestCase.gc();        
+    }
+
 
     @Test public void drainPoolAndFinalize() {        
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
@@ -27,22 +53,10 @@ public class NSAutoreleasePoolThreadTest {
         RococoaTestCase.gc();
     }
     
-    
     @Test public void drainPoolAndFinalizeOnAnotherThread() throws InterruptedException {
         Thread thread = new Thread("test") {
             public void run() {
                 drainPoolAndFinalize();
-            }};
-        thread.start();
-        thread.join();
-        RococoaTestCase.gc();        
-    }
-
-    @Ignore("crashes") @Test public void cantDrainPoolOnAnotherThreadAndFinalize() throws InterruptedException {
-        Thread thread = new Thread("test") {
-            public void run() {
-                NSAutoreleasePool pool = NSAutoreleasePool.new_();
-                pool.drain();
             }};
         thread.start();
         thread.join();
@@ -105,6 +119,5 @@ public class NSAutoreleasePoolThreadTest {
             throw new RuntimeException(e);
         }
     }
-
     
 }
