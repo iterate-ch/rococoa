@@ -33,7 +33,7 @@ public abstract class NSString implements NSObject {
 
     public interface _Class extends NSClass {
         NSString stringWithString(String string);
-		NSString stringWithFormat(String string, NSObject...objects);
+        NSString stringWithFormat(String string, NSObject...objects);
     }
 
     public static NSString stringWithString(String string) {
