@@ -38,6 +38,7 @@ import org.rococoa.NSObjectByReference;
 import org.rococoa.ReturnType;
 import org.rococoa.Rococoa;
 import org.rococoa.RunOnMainThread;
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,11 +76,15 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     private final ID ocInstance;
     private final String javaClassName;
     private final boolean invokeOnMainThread;
+    private final boolean dontFinalize;
+    
+    private volatile boolean finalized;
 
     public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass, boolean retain) {
         this.ocInstance = ocInstance;
         this.javaClassName = javaClass.getSimpleName();
         invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
+        dontFinalize = shouldNotFinalize(javaClass);
 
         if (logging.isTraceEnabled()) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
@@ -107,17 +112,27 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         return javaClass.getAnnotation(RunOnMainThread.class) != null;
     }
 
+    private boolean shouldNotFinalize(Class<? extends NSObject> javaClass) {
+        return javaClass == NSAutoreleasePool.class; // see NSAutoreleasePoolThreadTest
+    }
+
     @Override
     protected void finalize() throws Throwable {
-        if (invokeOnMainThread) {
-            Foundation.runOnMainThread(new Runnable() {
-                public void run() {
-                    release();                   
-                }}); 
-        } else {
-            release();                    
+        if (finalized || dontFinalize)
+            return;
+        try {
+            if (invokeOnMainThread) {
+                Foundation.runOnMainThread(new Runnable() {
+                    public void run() {
+                        release();                   
+                    }}); 
+            } else {
+                release();                    
+            }
+            super.finalize();
+        } finally {
+            finalized = true;
         }
-        super.finalize();
     }
 
     // must be run on appropriate thread
