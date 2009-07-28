@@ -55,7 +55,7 @@ public abstract class RococoaTestCase {
     	logVersions();
     };
 
-    private static void initializeLogging() {
+    public static void initializeLogging() {
         try {
             InputStream is = null;
             try {
