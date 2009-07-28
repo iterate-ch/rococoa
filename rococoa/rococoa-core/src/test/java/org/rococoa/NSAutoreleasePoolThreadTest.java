@@ -38,7 +38,7 @@ public class NSAutoreleasePoolThreadTest {
         RococoaTestCase.gc();        
     }
 
-    @Ignore("crashes") @Test public void drainPoolOnAnotherThreadAndFinalize() throws InterruptedException {
+    @Ignore("crashes") @Test public void cantDrainPoolOnAnotherThreadAndFinalize() throws InterruptedException {
         Thread thread = new Thread("test") {
             public void run() {
                 NSAutoreleasePool pool = NSAutoreleasePool.new_();
@@ -49,7 +49,7 @@ public class NSAutoreleasePoolThreadTest {
         RococoaTestCase.gc();        
     }
     
-    @Ignore("crashes") @Test public void drainPoolCreatedOnAFinishedThread() throws InterruptedException {
+    @Ignore("crashes") @Test public void cantDrainPoolCreatedOnAFinishedThread() throws InterruptedException {
         final NSAutoreleasePool[] poolHolder = new NSAutoreleasePool[1];
         Thread thread = new Thread("test") {
             public void run() {
