@@ -1,8 +1,6 @@
 package org.rococoa.internal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.rococoa.Foundation;
@@ -32,7 +30,6 @@ public class NSInvocationMapperLookup {
     private static final String NSUINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "I" : "Q";
 
     private static final Map<Class<?>, NSInvocationMapper> classToMapperLookup = new HashMap<Class<?>, NSInvocationMapper>();
-    private static final List<NSInvocationMapper> supertypeConverters = new ArrayList<NSInvocationMapper>();
         
     public static NSInvocationMapper mapperForType(Class<?> type) {
         // first check if we have a direct hit in the classToMapperLookup
@@ -40,12 +37,14 @@ public class NSInvocationMapperLookup {
         if (directMatch != null)
             return directMatch;
         
-        // then check if we have a mapper for any of its supertypes
-        for (NSInvocationMapper each : supertypeConverters) {
-            if (each.type.isAssignableFrom(type))
-                return each;
-        }
-        
+        // Now if it is any subclass of NSObject, then the generic mapper will do
+        if (NSOBJECT.type.isAssignableFrom(type))
+            return NSOBJECT;
+
+        // Now if it is any subclass of NSObject, then the generic mapper will do
+        if (NATIVE_LONG.type.isAssignableFrom(type))
+            return NATIVE_LONG;
+
         // finally if it's a structure (that wasn't found in classToMapperLookup)
         // create a mapper for the actual type and add it for next time
         if (Structure.class.isAssignableFrom(type)) {
@@ -198,42 +197,35 @@ public class NSInvocationMapperLookup {
         });
     }
     
-    static {
-        addToSupertypeConverters(new NSInvocationMapper("@", NSObject.class) {
-            @SuppressWarnings("unchecked")
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
-                ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
-                if (id.isNull())
-                    return null;
-                return Rococoa.wrap(id, (Class<? extends NSObject>) type);
-            }
-            @Override public Memory bufferForResult(Object methodCallResult) {
-                Memory buffer = new Memory(NATIVE_POINTER_SIZE);
-                buffer.setNativeLong(0, ((NSObject) methodCallResult).id());
-                return buffer;
-            }
-        });
-        addToSupertypeConverters(new NSInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
-                return buffer.getNativeLong(0);
-            }
-            @Override public Memory bufferForResult(Object methodCallResult) {
-                Memory result = new Memory(NATIVE_LONG_SIZE);
-                result.setNativeLong(0, ((NativeLong) methodCallResult));
-                return result;
-            }
-        });
-    }
+    static NSInvocationMapper NSOBJECT = new NSInvocationMapper("@", NSObject.class) {
+        @SuppressWarnings("unchecked")
+        @Override public Object readFrom(Memory buffer, Class<?> type) {
+            ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
+            if (id.isNull())
+                return null;
+            return Rococoa.wrap(id, (Class<? extends NSObject>) type);
+        }
+        @Override public Memory bufferForResult(Object methodCallResult) {
+            Memory buffer = new Memory(NATIVE_POINTER_SIZE);
+            buffer.setNativeLong(0, ((NSObject) methodCallResult).id());
+            return buffer;
+        }};
+    
+    static NSInvocationMapper NATIVE_LONG = new NSInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
+        @Override public Object readFrom(Memory buffer, Class<?> type) {
+            return buffer.getNativeLong(0);
+        }
+        @Override public Memory bufferForResult(Object methodCallResult) {
+            Memory result = new Memory(NATIVE_LONG_SIZE);
+            result.setNativeLong(0, ((NativeLong) methodCallResult));
+            return result;
+        }};
     
     private static void addToLookup(NSInvocationMapper mapper) {
         Class<?> type = mapper.type;
         classToMapperLookup.put(type, mapper);
         if (type.isPrimitive())
             classToMapperLookup.put(boxTypeFor(type), mapper);
-    }
-    
-    private static void addToSupertypeConverters(NSInvocationMapper mapper) {
-        supertypeConverters.add(mapper);
     }
     
     private static Class<?> boxTypeFor(Class<?> type) {
