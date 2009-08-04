@@ -165,7 +165,10 @@ public class NSInvocationMapperLookup {
         });
         addToLookup(new NSInvocationMapper("@", String.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
-                return Foundation.toString(ID.fromLong(buffer.getNativeLong(0).longValue()));
+                ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
+                if (id.isNull())
+                    return null;
+                return Foundation.toString(id);
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory buffer = new Memory(NATIVE_POINTER_SIZE);
@@ -199,7 +202,10 @@ public class NSInvocationMapperLookup {
         addToSupertypeConverters(new NSInvocationMapper("@", NSObject.class) {
             @SuppressWarnings("unchecked")
             @Override public Object readFrom(Memory buffer, Class<?> type) {
-                return Rococoa.wrap(ID.fromLong(buffer.getNativeLong(0).longValue()), (Class<? extends NSObject>) type);
+                ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
+                if (id.isNull())
+                    return null;
+                return Rococoa.wrap(id, (Class<? extends NSObject>) type);
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory buffer = new Memory(NATIVE_POINTER_SIZE);
