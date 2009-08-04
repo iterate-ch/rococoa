@@ -171,7 +171,9 @@ public class NSInvocationMapperLookup {
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory buffer = new Memory(NATIVE_POINTER_SIZE);
-                buffer.setNativeLong(0, Foundation.cfString((String) methodCallResult));
+                ID idString = Foundation.cfString((String) methodCallResult);
+                Foundation.sendReturnsID(idString, "autorelease");
+                buffer.setNativeLong(0, idString);
                 return buffer;
             }
         });
