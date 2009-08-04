@@ -179,7 +179,7 @@ public class OCInvocationCallbacks {
      */
     private Object javaObjectForOCArgument(NSInvocation invocation,
             int indexInInvocation, String objCArgumentTypeAsString, Class<?> javaParameterType) {
-        NSInvocationMapper mapper = NSInvocationMapper.mapperForType(javaParameterType);
+        NSInvocationMapper mapper = NSInvocationMapperLookup.mapperForType(javaParameterType);
         if (mapper == null)
             throw new IllegalStateException(
                 String.format("Don't (yet) know how to marshall argument Objective-C type %s as %s", 
@@ -203,7 +203,7 @@ public class OCInvocationCallbacks {
     }
 
     private Memory bufferForReturn(String typeToReturnToObjC, Object methodCallResult) {
-        NSInvocationMapper mapper = NSInvocationMapper.mapperForType(methodCallResult.getClass());
+        NSInvocationMapper mapper = NSInvocationMapperLookup.mapperForType(methodCallResult.getClass());
         return mapper == null ? null : mapper.bufferForResult(methodCallResult);
     }
 
@@ -217,7 +217,7 @@ public class OCInvocationCallbacks {
     }
     
     private String stringForType(Class<?> clas) {
-        NSInvocationMapper result = NSInvocationMapper.mapperForType(clas);
+        NSInvocationMapper result = NSInvocationMapperLookup.mapperForType(clas);
         if (result == null)
             throw new RuntimeException("Unable to give Objective-C type string for Java type " + clas);
         return result.typeString(); 

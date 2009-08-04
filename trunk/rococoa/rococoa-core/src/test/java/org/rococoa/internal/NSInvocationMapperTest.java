@@ -85,6 +85,6 @@ public class NSInvocationMapperTest {
     }
 
     private void check(String expected, Class<?> javaType) {
-        assertEquals(javaType.toString(), expected,  NSInvocationMapper.stringForType(javaType));
+        assertEquals(javaType.toString(), expected,  NSInvocationMapperLookup.stringForType(javaType));
     }
 }
