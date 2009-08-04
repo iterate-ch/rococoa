@@ -38,7 +38,7 @@ class StringTypeConverter implements TypeConverter {
             return null;
         String valueAsString = (String) value;
         ID valueAsID = Foundation.cfString(valueAsString);
-        // TODO - we're just leaking this CFString
+        Foundation.sendReturnsID(valueAsID, "autorelease");
         return valueAsID.toNative();
     }
 }
