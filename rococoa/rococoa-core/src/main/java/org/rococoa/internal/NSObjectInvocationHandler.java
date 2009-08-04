@@ -35,10 +35,10 @@ import org.rococoa.ID;
 import org.rococoa.IDByReference;
 import org.rococoa.NSObject;
 import org.rococoa.NSObjectByReference;
+import org.rococoa.ReleaseInFinalize;
 import org.rococoa.ReturnType;
 import org.rococoa.Rococoa;
 import org.rococoa.RunOnMainThread;
-import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     private final ID ocInstance;
     private final String javaClassName;
     private final boolean invokeOnMainThread;
-    private final boolean dontFinalize;
+    private final boolean releaseOnFinalize;
     
     private volatile boolean finalized;
 
@@ -84,7 +84,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         this.ocInstance = ocInstance;
         this.javaClassName = javaClass.getSimpleName();
         invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
-        dontFinalize = shouldNotFinalize(javaClass);
+        releaseOnFinalize = shouldReleaseInFinalize(javaClass);
 
         if (logging.isTraceEnabled()) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
@@ -112,13 +112,18 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         return javaClass.getAnnotation(RunOnMainThread.class) != null;
     }
 
-    private boolean shouldNotFinalize(Class<? extends NSObject> javaClass) {
-        return javaClass == NSAutoreleasePool.class; // see NSAutoreleasePoolThreadTest
+    private boolean shouldReleaseInFinalize(Class<? extends NSObject> javaClass) {
+        // Almost everything should be released in finalize, except wrappers for
+        // NSAutoreleasePool. 
+        ReleaseInFinalize annotation = javaClass.getAnnotation(ReleaseInFinalize.class);
+        if (annotation == null) 
+            return true;
+        return annotation.value();
     }
 
     @Override
     protected void finalize() throws Throwable {
-        if (finalized || dontFinalize)
+        if (finalized || !releaseOnFinalize)
             return;
         try {
             if (invokeOnMainThread) {
