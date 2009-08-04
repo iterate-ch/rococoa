@@ -29,7 +29,7 @@ public class NSAutoreleasePoolThreadTest {
         RococoaTestCase.initializeLogging();        
     }
     
-    // This is the test that is made pass by a special case in NSObjectInvocationHandler
+    // This is the test that is made pass by marking NSAutoreleasePool as ReleaseInFinalize(false)
     @Test public void garbageCollectDrainedPool() throws InterruptedException {
         Thread thread = new Thread("test") {
             public void run() {
