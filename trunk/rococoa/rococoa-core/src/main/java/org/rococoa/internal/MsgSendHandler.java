@@ -97,8 +97,8 @@ class MsgSendHandler implements InvocationHandler {
         options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
         
         Pair<Method, Function> invocation = invocationFor(returnTypeForThisCall); 
-        options.put(OPTION_INVOKING_METHOD, invocation.first);
-        return invocation.second.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
+        options.put(OPTION_INVOKING_METHOD, invocation.a);
+        return invocation.b.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
     }
     
     private Object[] removeReturnTypeFrom(Object[] args) {
