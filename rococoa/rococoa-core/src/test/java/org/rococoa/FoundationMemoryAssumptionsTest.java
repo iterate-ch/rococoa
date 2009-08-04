@@ -104,5 +104,24 @@ public class FoundationMemoryAssumptionsTest {
 	assertThat(idInitedNSString, not(equalTo(idEmptyNSString)));
 	assertRetainCount(1, idInitedNSString);
     }
+    
+    // Check that toll-free bridging applies to autorelease
+    @Test public void autoReleaseWorksForCFString() {
+        ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");      
+
+        ID cfStringRef = Foundation.cfString("awooga");
+        assertRetainCount(1, cfStringRef);
+        
+        // retain so that draining the pool doesn't free
+        assertEquals(cfStringRef, Foundation.cfRetain(cfStringRef));
+        assertRetainCount(2, cfStringRef);
+
+        
+        Foundation.sendReturnsID(cfStringRef, "autorelease");
+        assertRetainCount(2, cfStringRef);
+        
+        Foundation.sendReturnsVoid(idPool, "drain");
+        assertRetainCount(1, cfStringRef);
+    }
 
 }
