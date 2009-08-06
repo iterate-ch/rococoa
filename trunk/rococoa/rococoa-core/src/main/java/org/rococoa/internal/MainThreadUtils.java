@@ -6,25 +6,28 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.Selector;
 
-import com.sun.jna.Native;
-
+/**
+ * Exists just to tidy up Foundation.
+ * 
+ * @author duncan
+ *
+ */
 public abstract class MainThreadUtils {
     
-    private static final RococoaLibrary rococoaLibrary;
-    static {
-        rococoaLibrary = (RococoaLibrary) Native.loadLibrary("rococoa", RococoaLibrary.class);        
-    }
-
     private static final ID idNSThreadClass = Foundation.getClass("NSThread");
     private static final Selector isMainThreadSelector = Foundation.selector("isMainThread");
     
-    private static final ThreadLocal<Boolean> isMainThreadThreadLocal = new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean> isMainThreadThreadLocal = new ThreadLocal<Boolean>() {
+        protected Boolean initialValue() {
+            return nsThreadSaysIsMainThread();
+        }
+    };
     
     /**
      * Return the result of calling callable on the main Cococoa thread.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T callOnMainThread(final Callable<T> callable) {
+    public static <T> T callOnMainThread(RococoaLibrary rococoaLibrary, final Callable<T> callable) {
         final Object[] result = new Object[1];
         final Throwable[] thrown = new Throwable[1];
         RococoaLibrary.VoidCallback callback = new RococoaLibrary.VoidCallback() {
@@ -47,7 +50,7 @@ public abstract class MainThreadUtils {
     /**
      * Run runnable on the main Cococoa thread.
      */
-    public static void runOnMainThread(final Runnable runnable) {
+    public static void runOnMainThread(RococoaLibrary rococoaLibrary, final Runnable runnable) {
         final Throwable[] thrown = new Throwable[1];
         RococoaLibrary.VoidCallback callback = new RococoaLibrary.VoidCallback() {
             public void callback() {
@@ -66,12 +69,7 @@ public abstract class MainThreadUtils {
     }
 
     public static boolean isMainThread() {
-        Boolean cached = isMainThreadThreadLocal.get();
-        if (cached == null) {
-            cached = nsThreadSaysIsMainThread();
-            isMainThreadThreadLocal.set(cached);
-        }
-        return cached;
+        return isMainThreadThreadLocal.get();
     }
     
     private static boolean nsThreadSaysIsMainThread() {
