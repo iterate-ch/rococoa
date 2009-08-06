@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  * available when NSObject's are finalized, but not pay the price of creating one
  * per call.
  * 
- * Take care, this is unproven code.
+ * Take care, this is tested but unproven code (2009/08).
  * 
  * @author duncan
  *
