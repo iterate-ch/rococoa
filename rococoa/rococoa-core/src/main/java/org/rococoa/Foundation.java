@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.rococoa.internal.FoundationLibrary;
+import org.rococoa.internal.MainThreadUtils;
 import org.rococoa.internal.MsgSendInvocationMapper;
 import org.rococoa.internal.MsgSendLibrary;
 import org.rococoa.internal.OCInvocationCallbacks;
@@ -209,49 +210,22 @@ public abstract class Foundation {
         send(receiver, selector(selectorName), void.class, args);
     }
 
+    public static boolean isMainThread() {
+        return MainThreadUtils.isMainThread();
+    }
+    
     /**
      * Return the result of calling callable on the main Cococoa thread.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T callOnMainThread(final Callable<T> callable) {
-        final Object[] result = new Object[1];
-        final Throwable[] thrown = new Throwable[1];
-        RococoaLibrary.VoidCallback callback = new RococoaLibrary.VoidCallback() {
-            public void callback() {
-                try {
-                    result[0] = callable.call();
-                } catch (Throwable t) {
-                    thrown[0] = t;
-                }
-            }
-        };
-        rococoaLibrary.callOnMainThread(callback);
-        if (thrown[0] instanceof Error)
-            throw (Error) thrown[0];
-        if (thrown[0] != null)
-            throw new RuntimeException(thrown[0]);
-        return (T) result[0];        
+        return MainThreadUtils.callOnMainThread(callable);
     }
     
     /**
      * Run runnable on the main Cococoa thread.
      */
     public static void runOnMainThread(final Runnable runnable) {
-        final Throwable[] thrown = new Throwable[1];
-        RococoaLibrary.VoidCallback callback = new RococoaLibrary.VoidCallback() {
-            public void callback() {
-                try {
-                    runnable.run();
-                } catch (Throwable t) {
-                    thrown[0] = t;
-                }
-            }
-        };
-        rococoaLibrary.callOnMainThread(callback);
-        if (thrown[0] instanceof Error)
-            throw (Error) thrown[0];
-        if (thrown[0] != null)
-            throw new RuntimeException(thrown[0]);
+        MainThreadUtils.runOnMainThread(runnable);
     }
 
     /**

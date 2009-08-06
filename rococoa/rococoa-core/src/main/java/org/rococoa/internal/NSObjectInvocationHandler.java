@@ -85,7 +85,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass, boolean retain) {
         this.ocInstance = ocInstance;
         this.javaClassName = javaClass.getSimpleName();
-        invokeOnMainThread = shouldInvokeOnMainThread(javaClass);
+        invokeOnMainThread = shouldInvokeMethodsOnMainThread(javaClass);
         releaseOnFinalize = shouldReleaseInFinalize(javaClass);
 
         if (logging.isTraceEnabled()) {
@@ -99,7 +99,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
 
         if (retain) {
-            if (invokeOnMainThread) {
+            if (callAcrossToMainThread()) {
                 Foundation.runOnMainThread(new Runnable() {
                     public void run() {
                         Foundation.cfRetain(ocInstance);                    
@@ -110,7 +110,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
     }
     
-    private boolean shouldInvokeOnMainThread(Class<? extends NSObject> javaClass) {
+    private boolean shouldInvokeMethodsOnMainThread(Class<? extends NSObject> javaClass) {
         return javaClass.getAnnotation(RunOnMainThread.class) != null;
     }
 
@@ -128,7 +128,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         if (finalized || !releaseOnFinalize)
             return;
         try {
-            if (invokeOnMainThread) {
+            if (callAcrossToMainThread()) {
                 Foundation.runOnMainThread(new Runnable() {
                     public void run() {
                         release();                   
@@ -209,7 +209,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }    
     
     private Object invokeDescription() {
-        if (invokeOnMainThread) {
+        if (callAcrossToMainThread()) {
             return Foundation.callOnMainThread(
                 new Callable<Object>() {
                     public Object call() {
@@ -221,7 +221,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }
     
     private Object invokeIsEqual(final ID another) {
-        if (invokeOnMainThread) {
+        if (callAcrossToMainThread()) {
             return Foundation.callOnMainThread(
                 new Callable<Object>() {
                     public Object call() {
@@ -233,7 +233,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }
 
     private Object invokeCococaOnThisOrMainThread(final Method method, final Object[] args) {
-        if (invokeOnMainThread) {
+        if (callAcrossToMainThread()) {
             return Foundation.callOnMainThread(
                 new Callable<Object>() {
                     public Object call() {
@@ -327,6 +327,10 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             result.append(part).append(":");
         }
         return result.toString();
+    }
+    
+    private boolean callAcrossToMainThread() {
+        return invokeOnMainThread && !Foundation.isMainThread();
     }
     
 }
