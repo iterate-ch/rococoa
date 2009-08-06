@@ -218,14 +218,14 @@ public abstract class Foundation {
      * Return the result of calling callable on the main Cococoa thread.
      */
     public static <T> T callOnMainThread(final Callable<T> callable) {
-        return MainThreadUtils.callOnMainThread(callable);
+        return MainThreadUtils.callOnMainThread(rococoaLibrary, callable);
     }
     
     /**
      * Run runnable on the main Cococoa thread.
      */
     public static void runOnMainThread(final Runnable runnable) {
-        MainThreadUtils.runOnMainThread(runnable);
+        MainThreadUtils.runOnMainThread(rococoaLibrary, runnable);
     }
 
     /**
