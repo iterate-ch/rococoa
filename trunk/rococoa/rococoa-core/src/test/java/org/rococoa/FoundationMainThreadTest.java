@@ -20,7 +20,10 @@
 package org.rococoa;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
@@ -30,22 +33,75 @@ import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")
 public class FoundationMainThreadTest extends RococoaTestCase {
+    
+    private ID idNSThreadClass = Foundation.getClass("NSThread");
+    private Selector isMainThreadSelector = Foundation.selector("isMainThread");
+    
+    private boolean nsThreadSaysIsMainThread() {
+        return Foundation.send(idNSThreadClass, isMainThreadSelector, boolean.class);
+    }
+    
+    @Test public void mainThreadChanges() {
+        // Not sure that I understand this result
+        assertFalse(nsThreadSaysIsMainThread());
+        Thread t1 = Foundation.callOnMainThread(new Callable<Thread>() {
+            public Thread call() throws Exception {
+                assertTrue(nsThreadSaysIsMainThread());
+                return Thread.currentThread();
+            }});
+        Thread t2 = Foundation.callOnMainThread(new Callable<Thread>() {
+            public Thread call() throws Exception {
+                assertTrue(nsThreadSaysIsMainThread());
+                return Thread.currentThread();
+            }});
+        assertNotSame(t1, Thread.currentThread());
+        assertNotSame(t1, t2);
+        assertFalse(t1.equals(t2));
+        assertSame(t1.getThreadGroup(), t2.getThreadGroup());
+        assertNotSame(Thread.currentThread().getThreadGroup(), t1.getThreadGroup());
+    }
+    
+    @Test public void testCallOnMainThreadFromMainThread() {
+        // Weird 
+        Thread mainThread = Foundation.callOnMainThread(new Callable<Thread> (){
+            public Thread call() throws Exception {
+                assertTrue(nsThreadSaysIsMainThread());
+                
+                Thread insideThread = Foundation.callOnMainThread(new Callable<Thread> (){
+                    public Thread call() throws Exception {
+                        assertTrue(nsThreadSaysIsMainThread());
+                        return Thread.currentThread();
+                    }});
 
+                assertSame(Thread.currentThread(), insideThread);
+                return insideThread;
+            }});
+        assertNotSame(mainThread, Thread.currentThread());
+    }
+    
+    @Test public void isMainThread() {
+        assertFalse(Foundation.isMainThread());
+        assertTrue(Foundation.callOnMainThread(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                return Foundation.isMainThread();
+            }}));
+    }
+    
     @Test public void testCallOnMainThread() {
-        final Thread testThread = Thread.currentThread();
         Callable<Double> callable = new Callable<Double>() {
             public Double call() throws Exception {
-                assertNotSame(testThread, Thread.currentThread());
+                assertTrue(nsThreadSaysIsMainThread());
                 ID clas = Foundation.getClass("NSNumber");
                 ID aDouble = Foundation.sendReturnsID(clas, "numberWithDouble:", Math.E);
                 Object[] args = {};
                 return Foundation.send(aDouble, Foundation.selector("doubleValue"), double.class, args);
             }};
-            
-        assertEquals(Math.E, Foundation.callOnMainThread(callable), 0.001);        
+
+        assertEquals(Math.E, Foundation.callOnMainThread(callable), 0.001);
     }
 
-    @Test public void testCallOnMainThreadThrows() {
+    @Test
+    public void testCallOnMainThreadThrows() {
         Callable<Double> callable = new Callable<Double>() {
             public Double call() throws Exception {
                 throw new Error("deliberate");
