@@ -54,6 +54,8 @@ import com.sun.jna.Pointer;
 @SuppressWarnings("nls")
 public class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
     
+    private static final int FINALIZE_AUTORELEASE_BATCH_SIZE = 1000;
+
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
     
     static final Method OBJECT_TOSTRING;
@@ -72,7 +74,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             throw new RuntimeException("Error retrieving method", x);
         }
     }
-
+    
     private final ID ocInstance;
     private final String javaClassName;
     private final boolean invokeOnMainThread;
@@ -132,7 +134,9 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
                         release();                   
                     }}); 
             } else {
+                AutoreleaseBatcher autoreleaseBatcher = AutoreleaseBatcher.forThread(FINALIZE_AUTORELEASE_BATCH_SIZE);
                 release();                    
+                autoreleaseBatcher.operate();
             }
             super.finalize();
         } finally {
@@ -149,7 +153,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             logging.trace("finalizing [{} {}], releasing with retain count = {}", 
                     new Object[] {javaClassName, ocInstance, retainCount});
         }
-        Foundation.cfRelease(ocInstance);                    
+        Foundation.cfRelease(ocInstance);
     }
     
     /**
