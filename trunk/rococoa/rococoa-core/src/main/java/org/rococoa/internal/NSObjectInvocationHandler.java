@@ -166,7 +166,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
         if (isSpecialMethod(method))
             return invokeSpecialMethod(method, args);        
-        return invokeCococaOnThisOrMainThread(method, args);
+        return invokeCocoa(method, args);
     }
 
     /**
@@ -184,7 +184,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return methodProxy.invokeSuper(proxy, args);
         }
         // normal case
-        return invokeCococaOnThisOrMainThread(method, args);            
+        return invokeCocoa(method, args);            
     }
 
     private boolean isSpecialMethod(Method method) {
@@ -209,47 +209,19 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }    
     
     private Object invokeDescription() {
-        if (callAcrossToMainThread()) {
-            return Foundation.callOnMainThread(
-                new Callable<Object>() {
-                    public Object call() {
-                        return Foundation.send(ocInstance, "description", String.class);
-                    }});
-        } else {
-            return Foundation.send(ocInstance, "description", String.class);
-        }
+        return sendOnThisOrMainThread(ocInstance, "description", String.class);
     }
     
     private Object invokeIsEqual(final ID another) {
-        if (callAcrossToMainThread()) {
-            return Foundation.callOnMainThread(
-                new Callable<Object>() {
-                    public Object call() {
-                        return Foundation.send(ocInstance, "isEqual:", Boolean.class, another);
-                    }});
-        } else {
-            return Foundation.send(ocInstance, "isEqual:", Boolean.class, another);
-        }
+        return sendOnThisOrMainThread(ocInstance, "isEqual:", Boolean.class, another);
     }
 
-    private Object invokeCococaOnThisOrMainThread(final Method method, final Object[] args) {
-        if (callAcrossToMainThread()) {
-            return Foundation.callOnMainThread(
-                new Callable<Object>() {
-                    public Object call() {
-                        return invokeCococoa(method, args);
-                    }});
-        } else {
-            return invokeCococoa(method, args);
-        }
-    }
-
-    private Object invokeCococoa(final Method method, final Object[] args) {
+    private Object invokeCocoa(final Method method, final Object[] args) {
         final String selectorName = selectorNameFor(method);
         final Class<?> returnType = returnTypeFor(method);
         final Object[] marshalledArgs = marshallArgsFor(method, args);
 
-        Object result = Foundation.send(ocInstance, selectorName, returnType, marshalledArgs);
+        Object result = sendOnThisOrMainThread(ocInstance, selectorName, returnType, marshalledArgs);
         fillInReferences(args, marshalledArgs);
         
         if (result instanceof Pointer && method.getReturnType().equals(String.class))
@@ -257,6 +229,18 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return ((Pointer) result).getString(0);
         else
             return result;
+    }
+    
+    private Object sendOnThisOrMainThread(final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
+        if (callAcrossToMainThread()) {
+            return Foundation.callOnMainThread(
+                new Callable<Object>() {
+                    public Object call() {
+                        return Foundation.send(id, selectorName, returnType, args);
+                    }});
+        } else {
+            return Foundation.send(id, selectorName, returnType, args);
+        }        
     }
 
     /**
