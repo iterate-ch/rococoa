@@ -27,4 +27,10 @@ import com.sun.jna.NativeLong;
  */
 public class NSInteger extends NativeLong  {
     private static final long serialVersionUID = 0;
+
+    public NSInteger() {
+    }
+    public NSInteger(long value) {
+        super(value);
+    }
 }
