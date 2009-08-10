@@ -22,11 +22,13 @@ package org.rococoa;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CyclicBarrier;
 
 import org.junit.Test;
 import org.rococoa.test.RococoaTestCase;
@@ -100,27 +102,41 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         assertEquals(Math.E, Foundation.callOnMainThread(callable), 0.001);
     }
 
-    @Test
-    public void testCallOnMainThreadThrows() {
-        Callable<Double> callable = new Callable<Double>() {
-            public Double call() throws Exception {
-                throw new Error("deliberate");
-            }};
-
+    @Test public void callOnMainThreadPropagatesError() {
+        Throwable thrown = new Error("deliberate");
         try {
-            Foundation.callOnMainThread(callable);
+            throwOnMainThreadViaCallable(thrown);
             fail();
-        } catch (Error expected) {
-            assertEquals("deliberate", expected.getMessage());
+        } catch (Error e) {
+            assertSame(thrown, e);
         }
     }
     
-    @Test public void testRunOnMainThread() {
-        final Thread testThread = Thread.currentThread();
+    @Test public void callOnMainThreadPropagatesRuntimeException() {
+        Throwable thrown = new RuntimeException("deliberate");
+        try {
+            throwOnMainThreadViaCallable(thrown);
+            fail();
+        } catch (RuntimeException e) {
+            assertSame(thrown, e);
+        }
+    }
+
+    @Test public void callOnMainThreadWrapsException() {
+        Throwable thrown = new Exception("deliberate");
+        try {
+            throwOnMainThreadViaCallable(thrown);
+            fail();
+        } catch (Exception e) {
+            assertSame(thrown, e.getCause());
+        }
+    }
+    
+    @Test public void runOnMainThread() {
         final double[] result = new double[1];
         Runnable runnable = new Runnable() {
             public void run() {
-                assertNotSame(testThread, Thread.currentThread());
+                assertTrue(nsThreadSaysIsMainThread());
                 ID clas = Foundation.getClass("NSNumber");
                 ID aDouble = Foundation.sendReturnsID(clas, "numberWithDouble:", Math.E);
                 Object[] args = {};
@@ -129,4 +145,76 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         Foundation.runOnMainThread(runnable);    
         assertEquals(Math.E, result[0], 0.001);        
     }
+    
+    @Test public void runOnMainThreadPropagatesError() {
+        Throwable thrown = new Error("deliberate");
+        try {
+            throwOnMainThreadViaRunnable(thrown);
+            fail();
+        } catch (Error e) {
+            assertSame(thrown, e);
+        }
+    }
+    
+    @Test public void runOnMainThreadPropagatesRuntimeException() {
+        Throwable thrown = new RuntimeException("deliberate");
+        try {
+            throwOnMainThreadViaRunnable(thrown);
+            fail();
+        } catch (RuntimeException e) {
+            assertSame(thrown, e);
+        }
+    }
+
+    @Test public void runOnMainThreadNoWait() throws Exception {
+        final Throwable[] throwable = new Throwable[1];
+        final CyclicBarrier barrier = new CyclicBarrier(2);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    assertTrue(nsThreadSaysIsMainThread());
+                    barrier.await();
+                } catch (Throwable t) {
+                    throwable[0] = t;
+                }
+            }};
+        Foundation.runOnMainThread(runnable, false);
+        barrier.await();
+        assertNull(throwable[0]);
+    }
+    
+    @Test public void runOnMainThreadNoWaitThrows() throws Exception {
+        final Throwable[] throwable = new Throwable[1];
+        final CyclicBarrier barrier = new CyclicBarrier(2);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    barrier.await();
+                } catch (Throwable t) {
+                    throwable[0] = t;
+                }
+                throw new Error("deliberate");
+            }};
+        Foundation.runOnMainThread(runnable, false); // Exception is just logged
+        barrier.await();
+    }
+    
+    private void throwOnMainThreadViaCallable(final Throwable x) {
+        Callable<Double> callable = new Callable<Double>() {
+            public Double call() throws Exception {
+                if (x instanceof Error) throw (Error) x;
+                else throw (Exception) x;
+            }};
+        Foundation.callOnMainThread(callable);
+    }
+
+    private void throwOnMainThreadViaRunnable(final Throwable x) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                if (x instanceof Error) throw (Error) x;
+                else throw (RuntimeException) x;
+            }};
+        Foundation.runOnMainThread(runnable);
+    }
+    
 }

@@ -42,6 +42,6 @@ public interface RococoaLibrary extends Library {
     /**
      * Call callback on the main Cococa event thread
      */
-    public void callOnMainThread(RococoaLibrary.VoidCallback callback);
+    public void callOnMainThread(RococoaLibrary.VoidCallback callback, boolean waitUntilDone);
     
 }

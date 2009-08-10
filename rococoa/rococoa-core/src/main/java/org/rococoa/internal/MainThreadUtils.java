@@ -6,6 +6,8 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.RococoaException;
 import org.rococoa.Selector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exists just to tidy up Foundation.
@@ -14,6 +16,7 @@ import org.rococoa.Selector;
  *
  */
 public abstract class MainThreadUtils {
+    private static Logger logging = LoggerFactory.getLogger("org.rococoa.foundation");
     
     private static final ID idNSThreadClass = Foundation.getClass("NSThread");
     private static final Selector isMainThreadSelector = Foundation.selector("isMainThread");
@@ -40,33 +43,31 @@ public abstract class MainThreadUtils {
                 }
             }};
             
-        rococoaLibrary.callOnMainThread(callback);
-        if (thrown[0] instanceof Error)
-            throw (Error) thrown[0];
-        if (thrown[0] != null)
-            throw new RococoaException(thrown[0]);
+        rococoaLibrary.callOnMainThread(callback, true);
+        rethrow(thrown[0]);
         return (T) result[0];        
     }
     
     /**
      * Run runnable on the main Cococoa thread.
+     * @param wait 
      */
-    public static void runOnMainThread(RococoaLibrary rococoaLibrary, final Runnable runnable) {
+    public static void runOnMainThread(RococoaLibrary rococoaLibrary, final Runnable runnable, final boolean waitUntilDone) {
         final Throwable[] thrown = new Throwable[1];
         RococoaLibrary.VoidCallback callback = new RococoaLibrary.VoidCallback() {
             public void callback() {
                 try {
                     runnable.run();
                 } catch (Throwable t) {
-                    thrown[0] = t;
+                    if (waitUntilDone)
+                        thrown[0] = t;
+                    else
+                        logging.error("Lost exception on main thread", t);
                 }
             }};
             
-        rococoaLibrary.callOnMainThread(callback);
-        if (thrown[0] instanceof Error)
-            throw (Error) thrown[0];
-        if (thrown[0] != null)
-            throw new RococoaException(thrown[0]);
+        rococoaLibrary.callOnMainThread(callback, waitUntilDone);
+        rethrow(thrown[0]);
     }
 
     public static boolean isMainThread() {
@@ -75,6 +76,16 @@ public abstract class MainThreadUtils {
     
     private static boolean nsThreadSaysIsMainThread() {
         return Foundation.send(idNSThreadClass, isMainThreadSelector, boolean.class);
+    }
+    
+    private static void rethrow(Throwable t) {
+        if (t == null)
+            return;
+        if (t instanceof Error)
+            throw (Error) t;
+        if (t instanceof RuntimeException)
+            throw (RuntimeException) t;
+        throw new RococoaException(t);
     }
 
 }
