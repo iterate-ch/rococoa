@@ -1,13 +1,13 @@
 #include "Rococoa.h"
 #include <objc/objc-runtime.h>
 
-void callOnMainThread(void (*fn)()) {
+void callOnMainThread(void (*fn)(), BOOL waitUntilDone) {
 	// NSLog(@"callOnMainThread function at address %p", fn);
 	// Pool is required as we're being called from Java, which probably doesn't have a pool to 
 	// allocate the NSValue from.
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	[RococoaHelper performSelectorOnMainThread: @selector(callback:) 
-		withObject: [NSValue valueWithPointer: fn] waitUntilDone: YES];
+		withObject: [NSValue valueWithPointer: fn] waitUntilDone: waitUntilDone];
 	[pool release];
 }
 

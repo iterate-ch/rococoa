@@ -222,12 +222,18 @@ public abstract class Foundation {
     }
     
     /**
-     * Run runnable on the main Cococoa thread.
+     * Run runnable on the main Cococoa thread, waiting for completion.
      */
     public static void runOnMainThread(final Runnable runnable) {
-        MainThreadUtils.runOnMainThread(rococoaLibrary, runnable);
+        MainThreadUtils.runOnMainThread(rococoaLibrary, runnable, true);
     }
 
+    /**
+     * Run runnable on the main Cococoa thread, optionally waiting for completion.
+     */
+    public static void runOnMainThread(Runnable runnable, boolean waitUntilDone) {
+        MainThreadUtils.runOnMainThread(rococoaLibrary, runnable, waitUntilDone);
+    }
     /**
      * Create an Objective-C object which delegates to callbacks when methods
      * are invoked on it.
