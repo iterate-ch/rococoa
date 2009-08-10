@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.rococoa.ID;
+import org.rococoa.RococoaException;
 import org.rococoa.Selector;
-
 
 import com.sun.jna.Function;
 import com.sun.jna.Library;
@@ -77,7 +77,7 @@ class MsgSendHandler implements InvocationHandler {
             OBJC_MSGSEND_STRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_stret", 
                     ID.class, Selector.class, Object[].class);
         } catch (Exception x) {
-            throw new RuntimeException(x);
+            throw new RococoaException(x);
         }
     }
 
@@ -117,7 +117,7 @@ class MsgSendHandler implements InvocationHandler {
             return prototype.size() < stretCutoff ?
                     objc_msgSend_Pair : objc_msgSend_stret_Pair;
         } catch (Exception x) {
-            throw new RuntimeException(x);
+            throw new RococoaException(x);
         }
     }
 }

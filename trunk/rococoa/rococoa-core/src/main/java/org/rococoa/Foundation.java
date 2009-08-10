@@ -100,7 +100,7 @@ public abstract class Foundation {
                     utf16Bytes.length,
                     StringEncoding.kCFStringEncodingUTF16LE.value, (byte) 0);
         } catch (UnsupportedEncodingException x) {
-            throw new RuntimeException(x);
+            throw new RococoaException(x);
         }
     }
     
@@ -137,10 +137,10 @@ public abstract class Foundation {
             byte[] buffer = new byte[potentialLengthInBytes];
             byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF16LE.value);
             if (ok == 0)
-                throw new RuntimeException("Could not convert string");
+                throw new RococoaException("Could not convert string");
             return new String(buffer, "UTF-16LE").substring(0, lengthInChars); 
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new RococoaException(e);
         }
     }
     
@@ -151,7 +151,7 @@ public abstract class Foundation {
         byte[] buffer = new byte[potentialLengthInBytes];
         byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF8.value);
         if (ok == 0)
-            throw new RuntimeException("Could not convert string");
+            throw new RococoaException("Could not convert string");
         return Native.toString(buffer);
     }
     

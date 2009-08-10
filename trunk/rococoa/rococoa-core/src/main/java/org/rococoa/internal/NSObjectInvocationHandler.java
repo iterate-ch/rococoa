@@ -38,6 +38,7 @@ import org.rococoa.NSObjectByReference;
 import org.rococoa.ReleaseInFinalize;
 import org.rococoa.ReturnType;
 import org.rococoa.Rococoa;
+import org.rococoa.RococoaException;
 import org.rococoa.RunOnMainThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             OCOBJECT_ID = NSObject.class.getMethod("id");
         }
         catch (Exception x) {
-            throw new RuntimeException("Error retrieving method", x);
+            throw new RococoaException("Error retrieving method", x);
         }
     }
     
