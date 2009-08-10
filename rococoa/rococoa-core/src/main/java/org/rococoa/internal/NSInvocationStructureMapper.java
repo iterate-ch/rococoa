@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.rococoa.RococoaException;
 import org.rococoa.cocoa.foundation.NSInvocation;
 
 import com.sun.jna.Memory;
@@ -83,7 +84,7 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
         try {
             return (T) clas.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Could not instantiate " + clas,  e);
+            throw new RococoaException("Could not instantiate " + clas,  e);
         }
     }
 

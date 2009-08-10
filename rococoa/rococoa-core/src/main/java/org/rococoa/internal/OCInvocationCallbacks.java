@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 
 import org.rococoa.ID;
 import org.rococoa.Rococoa;
+import org.rococoa.RococoaException;
 import org.rococoa.cocoa.foundation.NSInvocation;
 import org.rococoa.cocoa.foundation.NSMethodSignature;
 import org.slf4j.Logger;
@@ -147,10 +148,10 @@ public class OCInvocationCallbacks {
             putResultIntoInvocation(invocation, typeToReturnToObjC, result);
         } catch (InvocationTargetException e) {
             logging.error("Exception calling method for selector " + selectorName, e);
-            throw new RuntimeException("Exception calling method for selector " + selectorName, e.getCause());
+            throw new RococoaException("Exception calling method for selector " + selectorName, e.getCause());
         } catch (Exception e) {
             logging.error("Exception calling method for selector " + selectorName, e);
-            throw new RuntimeException("Exception calling method for selector " + selectorName, e);
+            throw new RococoaException("Exception calling method for selector " + selectorName, e);
         }
     }
     
@@ -223,7 +224,7 @@ public class OCInvocationCallbacks {
     private String stringForType(Class<?> clas) {
         NSInvocationMapper result = NSInvocationMapperLookup.mapperForType(clas);
         if (result == null)
-            throw new RuntimeException("Unable to give Objective-C type string for Java type " + clas);
+            throw new RococoaException("Unable to give Objective-C type string for Java type " + clas);
         return result.typeString(); 
     }
     

@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
+import org.rococoa.RococoaException;
 import org.rococoa.Selector;
 
 /**
@@ -43,7 +44,7 @@ public abstract class MainThreadUtils {
         if (thrown[0] instanceof Error)
             throw (Error) thrown[0];
         if (thrown[0] != null)
-            throw new RuntimeException(thrown[0]);
+            throw new RococoaException(thrown[0]);
         return (T) result[0];        
     }
     
@@ -65,7 +66,7 @@ public abstract class MainThreadUtils {
         if (thrown[0] instanceof Error)
             throw (Error) thrown[0];
         if (thrown[0] != null)
-            throw new RuntimeException(thrown[0]);
+            throw new RococoaException(thrown[0]);
     }
 
     public static boolean isMainThread() {
