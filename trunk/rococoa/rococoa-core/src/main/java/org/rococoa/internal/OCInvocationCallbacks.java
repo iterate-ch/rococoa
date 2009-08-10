@@ -19,6 +19,7 @@
  
 package org.rococoa.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.rococoa.ID;
@@ -137,19 +138,22 @@ public class OCInvocationCallbacks {
                 
             if (method.getReturnType() == void.class && !(typeToReturnToObjC.equals("v")))
                 throw new NoSuchMethodException(String.format(
-                        "Method %s returns void, but  selector %s expects %s",
+                        "Method %s returns void, but selector %s expects %s",
                         method.getName(), selectorName, typeToReturnToObjC));
                 
             Object[] marshalledArgs = argsForFrom(method, invocation, nsMethodSignature);
             method.setAccessible(true); // needed if implementation is an anonymous subclass of Object
             Object result  = method.invoke(o, marshalledArgs);
             putResultIntoInvocation(invocation, typeToReturnToObjC, result);
+        } catch (InvocationTargetException e) {
+            logging.error("Exception calling method for selector " + selectorName, e);
+            throw new RuntimeException("Exception calling method for selector " + selectorName, e.getCause());
         } catch (Exception e) {
-            logging.error("Exception calling method", e);
-            throw new RuntimeException(e);
+            logging.error("Exception calling method for selector " + selectorName, e);
+            throw new RuntimeException("Exception calling method for selector " + selectorName, e);
         }
     }
-
+    
     private String methodNameForSelector(String selectorName) {
         String candidate =  selectorName.replaceAll(":", "_");
         return candidate.endsWith("_") ? 
