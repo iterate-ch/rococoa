@@ -33,4 +33,7 @@ public class NSInteger extends NativeLong  {
     public NSInteger(long value) {
         super(value);
     }
+    public NSInteger(NativeLong nativeLong) {
+    	super(nativeLong.longValue());
+    }
 }
