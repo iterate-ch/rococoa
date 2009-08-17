@@ -2,6 +2,7 @@ package org.rococoa.internal;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSUInteger;
 
@@ -30,9 +31,10 @@ public class NSInvocationMapperTest {
         unsigned long long: Q
         NSInteger: i
         NSUInteger: I
+        CGFloat: f
         float: f
         double: d
-        long double: d        
+        long double: d
          */
         check("c", boolean.class);
         check("c", byte.class);
@@ -43,6 +45,7 @@ public class NSInvocationMapperTest {
         check("i", NSInteger.class);
         check("I", NSUInteger.class);
         check("l", NativeLong.class);
+        check("f", CGFloat.class);
         check("f", float.class);
         check("d", double.class);        
     }
@@ -67,9 +70,10 @@ public class NSInvocationMapperTest {
         unsigned long long: Q
         NSInteger: q
         NSUInteger: Q
+        CGFloat: d
         float: f
         double: d
-        long double: d      
+        long double: d
          */
         check("c", boolean.class);
         check("c", byte.class);
@@ -80,8 +84,9 @@ public class NSInvocationMapperTest {
         check("q", NSInteger.class);
         check("Q", NSUInteger.class);
         check("q", NativeLong.class);
+        check("d", CGFloat.class);
         check("f", float.class);
-        check("d", double.class);        
+        check("d", double.class);
     }
 
     private void check(String expected, Class<?> javaType) {

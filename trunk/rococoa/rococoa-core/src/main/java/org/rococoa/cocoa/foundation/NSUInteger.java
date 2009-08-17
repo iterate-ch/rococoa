@@ -34,5 +34,7 @@ public class NSUInteger extends NativeLong {
     public NSUInteger(long value) {
         super(value);
     }
-    
+    public NSUInteger(NativeLong nativeLong) {
+    	super(nativeLong.longValue());
+    }
 }

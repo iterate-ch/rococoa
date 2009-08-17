@@ -7,6 +7,7 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
+import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSUInteger;
 
@@ -28,6 +29,7 @@ public class NSInvocationMapperLookup {
     private static final String NATIVE_LONG_ENCODING = NATIVE_LONG_SIZE == 4 ? "l" : "q";
     private static final String NSINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "i" : "q";
     private static final String NSUINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "I" : "Q";
+    private static final String CGFLOAT_ENCODING = NATIVE_LONG_SIZE == 4 ? "f" : "d";
 
     private static final Map<Class<?>, NSInvocationMapper> classToMapperLookup = new HashMap<Class<?>, NSInvocationMapper>();
         
@@ -84,7 +86,7 @@ public class NSInvocationMapperLookup {
         addToLookup(new NSInvocationMapper("c", byte.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getByte(0);
-            }        
+            }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(1);
                 result.setByte(0, ((Byte) methodCallResult).byteValue());
@@ -100,7 +102,7 @@ public class NSInvocationMapperLookup {
             public Memory bufferForResult(Object methodCallResult) {
                 throw new UnsupportedOperationException("Don't yet support char, while I think what to do");
                 // TODO - think what to do
-            }                
+            }
         });
         addToLookup(new NSInvocationMapper("s", short.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
@@ -160,7 +162,7 @@ public class NSInvocationMapperLookup {
                 Memory result = new Memory(NATIVE_POINTER_SIZE);
                 result.setNativeLong(0, ((ID) methodCallResult));
                 return result;
-            };
+            }
         });
         addToLookup(new NSInvocationMapper("@", String.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
@@ -179,21 +181,39 @@ public class NSInvocationMapperLookup {
         });
         addToLookup(new NSInvocationMapper(NSINTEGER_ENCODING, NSInteger.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
-                return buffer.getInt(0);
+                return new NSInteger(buffer.getNativeLong(0));
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
-                Memory result = new Memory(4);
-                result.setInt(0, ((Integer) methodCallResult));
+                Memory result = new Memory(NATIVE_LONG_SIZE);
+                result.setNativeLong(0, ((NativeLong) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper(NSUINTEGER_ENCODING, NSUInteger.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
-                return buffer.getInt(0);
+                return new NSUInteger(buffer.getNativeLong(0));
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
-                Memory result = new Memory(4);
-                result.setInt(0, ((Integer) methodCallResult));
+                Memory result = new Memory(NATIVE_LONG_SIZE);
+                result.setNativeLong(0, ((NativeLong) methodCallResult));
+                return result;
+            }
+        });
+        addToLookup(new NSInvocationMapper(CGFLOAT_ENCODING, CGFloat.class) {
+            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            	if (NATIVE_LONG_SIZE == 4)
+            		return new CGFloat(buffer.getFloat(0));
+            	if (NATIVE_LONG_SIZE == 8)
+            		return new CGFloat(buffer.getDouble(0));
+            	throw new IllegalStateException();
+            }
+            @Override public Memory bufferForResult(Object methodCallResult) {
+                Memory result = new Memory(NATIVE_LONG_SIZE);
+                
+                if (NATIVE_LONG_SIZE == 4)
+                	result.setFloat(0, ((Float) methodCallResult));
+                if (NATIVE_LONG_SIZE == 8)
+                	result.setDouble(0, ((Double) methodCallResult));
                 return result;
             }
         });
