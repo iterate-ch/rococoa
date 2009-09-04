@@ -34,15 +34,34 @@ public class RococoaMainThreadTest extends RococoaTestCase {
     
     private @RunOnMainThread interface TestShuntOnMainThread extends TestShunt {};
     
-    @Test public void testNotMainThread() {
+    @Test public void testNotMainThreadAtClassLevel() {
         TestShunt testShunt = Rococoa.create("TestShunt", TestShunt.class);
         assertFalse(testShunt.isMainThread());
     }
 
-    @Test public void testOnMainThread() {
+    @Test public void testOnMainThreadAtClassLevel() {
         TestShunt testShunt = Rococoa.create("TestShunt", TestShuntOnMainThread.class);
         assertTrue(testShunt.isMainThread());
 
     }
 
+    @Test public void testNotMainThreadAtMethodLevel() {
+        TestShunt testShunt = Rococoa.create("TestShunt", TestShuntUnAnnotatedMethod.class);
+        assertFalse(testShunt.isMainThread());
+    }
+
+    @Test public void testOnMainThreadAtMethodLevel() {
+        TestShunt testShunt = Rococoa.create("TestShunt", TestShuntAnnotatedMethod.class);
+        assertTrue(testShunt.isMainThread());
+
+    }
+
+    private interface TestShuntAnnotatedMethod extends TestShunt {
+        @RunOnMainThread
+        public boolean isMainThread();
+    }
+
+    private interface TestShuntUnAnnotatedMethod extends TestShunt {
+        public boolean isMainThread();
+    }
 }

@@ -19,6 +19,7 @@
  
 package org.rococoa.internal;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -111,8 +112,8 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
     }
     
-    private boolean shouldInvokeMethodsOnMainThread(Class<? extends NSObject> javaClass) {
-        return javaClass.getAnnotation(RunOnMainThread.class) != null;
+    private boolean shouldInvokeMethodsOnMainThread(AnnotatedElement element) {
+        return element != null && element.getAnnotation(RunOnMainThread.class) != null;
     }
 
     private boolean shouldReleaseInFinalize(Class<? extends NSObject> javaClass) {
@@ -210,11 +211,11 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }    
     
     private Object invokeDescription() {
-        return sendOnThisOrMainThread(ocInstance, "description", String.class);
+        return sendOnThisOrMainThread(null, ocInstance, "description", String.class);
     }
     
     private Object invokeIsEqual(final ID another) {
-        return sendOnThisOrMainThread(ocInstance, "isEqual:", Boolean.class, another);
+        return sendOnThisOrMainThread(null, ocInstance, "isEqual:", Boolean.class, another);
     }
 
     private Object invokeCocoa(final Method method, final Object[] args) {
@@ -222,7 +223,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         final Class<?> returnType = returnTypeFor(method);
         final Object[] marshalledArgs = marshallArgsFor(method, args);
 
-        Object result = sendOnThisOrMainThread(ocInstance, selectorName, returnType, marshalledArgs);
+        Object result = sendOnThisOrMainThread(method, ocInstance, selectorName, returnType, marshalledArgs);
         fillInReferences(args, marshalledArgs);
         
         if (result instanceof Pointer && method.getReturnType().equals(String.class))
@@ -232,8 +233,8 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return result;
     }
     
-    private Object sendOnThisOrMainThread(final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
-        if (callAcrossToMainThread()) {
+    private Object sendOnThisOrMainThread(final Method method, final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
+        if (callAcrossToMainThread(method)) {
             return Foundation.callOnMainThread(
                 new Callable<Object>() {
                     public Object call() {
@@ -313,9 +314,13 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
         return result.toString();
     }
-    
+
     private boolean callAcrossToMainThread() {
-        return invokeOnMainThread && !Foundation.isMainThread();
+        return callAcrossToMainThread(null);
+    }
+
+    private boolean callAcrossToMainThread(Method m) {
+        return (invokeOnMainThread || shouldInvokeMethodsOnMainThread(m) ) && !Foundation.isMainThread() ;
     }
     
 }
