@@ -226,7 +226,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertTrue("Output should be paused", status.isOutputPaused());
         assertEquals("Check number of characters left failed", 16, status.getNumberOfCharactersLeft());        
         ss.continueSpeaking();
-        sd.waitForNextWord(1000);
+        sd.waitForNextWord(2000);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
         Thread.sleep(500);
         status = ss.getStatus();   
@@ -264,10 +264,10 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertTrue("Should have error position", sd.position > 0);
         assertTrue("Should have error message", sd.errorMessage != null);
 
-        //does not work http://openradar.appspot.com/6524554
-        //NSSpeechSynthesizer.NSSpeechError error = ss.getError();
-        //assertTrue("Should find error", error.getErrorCount() > 0);
-        //System.out.println("Get error  2 returned: " + error);
+        NSSpeechSynthesizer.NSSpeechError error = ss.getError();
+        assertTrue("Should find error", error.getErrorCount() > 0);
+        assertTrue("Should have error position", error.getNewestCharacterOffset() > 0);
+        assertTrue("Should have error code", error.getNewestCode() != 0);
         sd.waitForSpeechDone(5000, true);
     }
 
@@ -279,7 +279,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertEquals("Should be text in, phonemes out", "_d1AOg.", ss.phonemesFromText("dog"));
         ss.setInputMode(NSSpeechSynthesizer.NSSpeechMode.Phoneme);
         assertEquals(NSSpeechSynthesizer.NSSpeechMode.Phoneme, ss.getInputMode());
-        assertEquals("Should be phonemes in, phonemes out", "~d1AOg.", ss.phonemesFromText("_d1AOg."));        
+        assertEquals("Should be phonemes in, phonemes out", "_d1AOg.", ss.phonemesFromText("_d1AOg."));
     }
     
     @Test
@@ -361,10 +361,8 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.startSpeakingString("I see no " + NSSpeechSynthesizer.createSyncPoint('A') + " ships sailing");
         sd.waitForWord(2500, "sailing");
         assertEquals("Should have synch with A", "A", sd.synchMark);
-        sd.waitForSpeechDone(3000, true);
-   
-        //does not work http://openradar.appspot.com/6524554
-        //assertEquals("Should be able to get recent sync", 'A', ss.getRecentSync());
+        sd.waitForSpeechDone(3000, true);   
+        assertEquals("Should be able to get recent sync", 'A', ss.getRecentSync());
     }
 
     @Test
@@ -385,22 +383,21 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
     
     @Test
     public void testCommandDelimiter() {
-        /*NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
 
-        // this isn't working... but it also raises a question - NSSpeechCommand - should it encapsulate the available commands and
+        // this raises a question - NSSpeechCommand - should it encapsulate the available commands and
         //offer factory methods? e.g. NSSpeechCommand.createSyncPoint above has a bug, in the sense that it doesn't know what the
         //current delimiters actually are... actually, since there's no API to GET the current delimiters, in the general case it can't
         //work - the caller would always have to pass them in - still could maybe work as a factory still, just more complex
         //something like NSSpeechCommand.createSync(String prefix, String suffix, String syncPoint) ? 
 
-        Does not work: http://openradar.appspot.com/radar?id=2645
-        ss.setCommandDelimiter(new NSSpeechSynthesizer.NSSpeechCommand("{{", "}}"));
-        ss.startSpeakingString("I see no {{sync 0x42}} ships sailing");
+        ss.setCommandDelimiter(new NSSpeechSynthesizer.NSSpeechCommand("{", "}"));
+        ss.startSpeakingString("I see no {sync 0x42} ships sailing");
         sd.waitForWord(2500, "sailing");
         assertEquals("Should have synch with B", "B", sd.synchMark);
         sd.waitForSpeechDone(3000, true);
-        */
+        
     }
 
     @Test
@@ -429,9 +426,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
             sd.waitForSpeechDone(5000, true);
             assertTrue(helloWorld.exists());
             fis = new FileInputStream(helloWorld);
-            /* does not work http://openradar.appspot.com/radar?id=2645
-             assertTrue("Should have some bytes", fis.available() > 0);
-             */
+            assertTrue("Should have some bytes", fis.available() > 0);
         } finally {
             if ( fis != null ) {
                 fis.close();
