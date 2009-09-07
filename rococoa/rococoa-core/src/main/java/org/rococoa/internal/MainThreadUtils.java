@@ -22,6 +22,7 @@ public abstract class MainThreadUtils {
     private static final Selector isMainThreadSelector = Foundation.selector("isMainThread");
     
     private static final ThreadLocal<Boolean> isMainThreadThreadLocal = new ThreadLocal<Boolean>() {
+        @Override
         protected Boolean initialValue() {
             return nsThreadSaysIsMainThread();
         }
@@ -49,8 +50,9 @@ public abstract class MainThreadUtils {
     }
     
     /**
-     * Run runnable on the main Cococoa thread.
-     * @param wait 
+     * @param runnable Run runnable on the main Cocoa thread.
+     * @param waitUntilDone A Boolean that specifies whether the current thread blocks until after
+     * the specified selector is performed on the receiver on the main thread.
      */
     public static void runOnMainThread(RococoaLibrary rococoaLibrary, final Runnable runnable, final boolean waitUntilDone) {
         final Throwable[] thrown = new Throwable[1];
@@ -87,5 +89,4 @@ public abstract class MainThreadUtils {
             throw (RuntimeException) t;
         throw new RococoaException(t);
     }
-
 }
