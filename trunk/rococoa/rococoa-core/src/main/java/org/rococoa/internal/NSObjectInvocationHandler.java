@@ -1,13 +1,13 @@
 /*
  * Copyright 2007, 2008 Duncan McGregor
- * 
+ *
  * This file is part of Rococoa, a library to allow Java to talk to Cocoa.
- * 
+ *
  * Rococoa is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Rococoa is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.internal;
 
 import java.lang.reflect.AnnotatedElement;
@@ -49,22 +49,22 @@ import com.sun.jna.Pointer;
 /**
  * Listens to invocations of methods on a Java NSObject, and forwards them to
  * its Objective-C counterpart.
- * 
+ *
  * @author duncan
  *
  */
 @SuppressWarnings("nls")
 public class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
-    
+
     private static final int FINALIZE_AUTORELEASE_BATCH_SIZE = 1000;
 
     private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
-    
+
     static final Method OBJECT_TOSTRING;
     static final Method OBJECT_HASHCODE;
     static final Method OBJECT_EQUALS;
     static final Method OCOBJECT_ID;
-    
+
     static {
         try {
             OBJECT_TOSTRING = Object.class.getMethod("toString");
@@ -76,23 +76,23 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             throw new RococoaException("Error retrieving method", x);
         }
     }
-    
+
     private final ID ocInstance;
     private final String javaClassName;
     private final boolean invokeOnMainThread;
-    private final boolean releaseOnFinalize;
-    
+    private boolean releaseOnFinalize;
+
     private volatile boolean finalized;
 
     public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass, boolean retain) {
         this.ocInstance = ocInstance;
-        this.javaClassName = javaClass.getSimpleName();
+        javaClassName = javaClass.getSimpleName();
         invokeOnMainThread = shouldInvokeMethodsOnMainThread(javaClass);
         releaseOnFinalize = shouldReleaseInFinalize(javaClass);
 
         if (logging.isTraceEnabled()) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
-            logging.trace("Creating NSObjectInvocationHandler for id {}, javaclass {}. retain = {}, retainCount = {}", 
+            logging.trace("Creating NSObjectInvocationHandler for id {}, javaclass {}. retain = {}, retainCount = {}",
                     new Object[] {ocInstance, javaClass, retain, retainCount});
         }
 
@@ -104,23 +104,23 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             if (callAcrossToMainThread()) {
                 Foundation.runOnMainThread(new Runnable() {
                     public void run() {
-                        Foundation.cfRetain(ocInstance);                    
-                    }}); 
+                        Foundation.cfRetain(ocInstance);
+                    }});
             } else {
-                Foundation.cfRetain(ocInstance);                                
+                Foundation.cfRetain(ocInstance);
             }
         }
     }
-    
+
     private boolean shouldInvokeMethodsOnMainThread(AnnotatedElement element) {
         return element != null && element.getAnnotation(RunOnMainThread.class) != null;
     }
 
     private boolean shouldReleaseInFinalize(Class<? extends NSObject> javaClass) {
         // Almost everything should be released in finalize, except wrappers for
-        // NSAutoreleasePool. 
+        // NSAutoreleasePool.
         ReleaseInFinalize annotation = javaClass.getAnnotation(ReleaseInFinalize.class);
-        if (annotation == null) 
+        if (annotation == null)
             return true;
         return annotation.value();
     }
@@ -133,11 +133,11 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             if (callAcrossToMainThread()) {
                 Foundation.runOnMainThread(new Runnable() {
                     public void run() {
-                        release();                   
-                    }}); 
+                        release();
+                    }});
             } else {
                 AutoreleaseBatcher autoreleaseBatcher = AutoreleaseBatcher.forThread(FINALIZE_AUTORELEASE_BATCH_SIZE);
-                release();                    
+                release();
                 autoreleaseBatcher.operate();
             }
             super.finalize();
@@ -152,22 +152,22 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return;
         if (logging.isTraceEnabled()) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
-            logging.trace("finalizing [{} {}], releasing with retain count = {}", 
+            logging.trace("finalizing [{} {}], releasing with retain count = {}",
                     new Object[] {javaClassName, ocInstance, retainCount});
         }
         Foundation.cfRelease(ocInstance);
     }
-    
+
     /**
      * Callback from java.lang.reflect proxy
-     */    
+     */
     public Object invoke(Object proxy, final Method method, final Object[] args)  throws Throwable {
         if (logging.isTraceEnabled()) {
-            logging.trace("invoking [{} {}].{}({})", 
+            logging.trace("invoking [{} {}].{}({})",
                     new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
         }
         if (isSpecialMethod(method))
-            return invokeSpecialMethod(method, args);        
+            return invokeSpecialMethod(method, args);
         return invokeCocoa(method, args);
     }
 
@@ -176,7 +176,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
      */
     public Object intercept(Object proxy, final Method method, final Object[] args, MethodProxy methodProxy) throws Throwable {
         if (logging.isTraceEnabled()) {
-            logging.trace("invoking [{} {}].{}({})", 
+            logging.trace("invoking [{} {}].{}({})",
                     new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
         }
         if (isSpecialMethod(method))
@@ -186,13 +186,13 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return methodProxy.invokeSuper(proxy, args);
         }
         // normal case
-        return invokeCocoa(method, args);            
+        return invokeCocoa(method, args);
     }
 
     private boolean isSpecialMethod(Method method) {
-        return (OBJECT_TOSTRING.equals(method) || 
+        return (OBJECT_TOSTRING.equals(method) ||
                 OBJECT_EQUALS.equals(method) ||
-                OCOBJECT_ID.equals(method));        
+                OCOBJECT_ID.equals(method));
     }
 
     private Object invokeSpecialMethod(final Method method, final Object[] args) {
@@ -208,12 +208,12 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         if (OCOBJECT_ID.equals(method))
             return ocInstance;
         throw new IllegalArgumentException("Not a special method " + method);
-    }    
-    
+    }
+
     private Object invokeDescription() {
         return sendOnThisOrMainThread(null, ocInstance, "description", String.class);
     }
-    
+
     private Object invokeIsEqual(final ID another) {
         return sendOnThisOrMainThread(null, ocInstance, "isEqual:", Boolean.class, another);
     }
@@ -223,16 +223,20 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         final Class<?> returnType = returnTypeFor(method);
         final Object[] marshalledArgs = marshallArgsFor(method, args);
 
-        Object result = sendOnThisOrMainThread(method, ocInstance, selectorName, returnType, marshalledArgs);
+        final Object result = sendOnThisOrMainThread(method, ocInstance, selectorName, returnType, marshalledArgs);
+        if(null == result && method.getName().startsWith("init")) {
+            // A initializer that returns nil has released the object already
+            releaseOnFinalize = false;
+        }
         fillInReferences(args, marshalledArgs);
-        
+
         if (result instanceof Pointer && method.getReturnType().equals(String.class))
             // special case for return char*
             return ((Pointer) result).getString(0);
         else
             return result;
     }
-    
+
     private Object sendOnThisOrMainThread(final Method method, final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
         if (callAcrossToMainThread(method)) {
             return Foundation.callOnMainThread(
@@ -242,11 +246,11 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
                     }});
         } else {
             return Foundation.send(id, selectorName, returnType, args);
-        }        
+        }
     }
 
     /**
-     * We need to make sure that we have filled in all NSObjectByReferences 
+     * We need to make sure that we have filled in all NSObjectByReferences
      * so that they are retained.
      */
     private void fillInReferences(Object[] args, Object[] marshalledArgs) {
@@ -290,7 +294,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     }
 
     private Object marshall(Object arg) {
-        // Note that this is not the only marshalling that is done. 
+        // Note that this is not the only marshalling that is done.
         // RococoaTypeMapper also gets involved.
         if (arg == null)
             return null;
@@ -322,5 +326,5 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     private boolean callAcrossToMainThread(Method m) {
         return (invokeOnMainThread || shouldInvokeMethodsOnMainThread(m) ) && !Foundation.isMainThread() ;
     }
-    
+
 }
