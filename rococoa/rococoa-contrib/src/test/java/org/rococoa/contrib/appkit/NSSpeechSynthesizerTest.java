@@ -220,7 +220,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.startSpeakingString("Status check number two");
         sd.waitForNextWord(1000);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.WordBoundary);
-        Thread.sleep(500); //this API is very asynchronous ... need to sleep before polling status
+        Thread.sleep(1000); //this API is very asynchronous ... need to sleep before polling status
         NSSpeechStatus status = ss.getStatus();   
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
@@ -228,7 +228,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.continueSpeaking();
         sd.waitForNextWord(2000);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         status = ss.getStatus();   
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
