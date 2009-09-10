@@ -48,35 +48,43 @@ import com.sun.jna.Structure;
  * intercepts, it uses it to determine which function to call, and removes it before
  * calling invoking.
  * 
- * @see http://www.cocoabuilder.com/archive/message/cocoa/2006/6/25/166236
- * and
- * @see http://developer.apple.com/documentation/developertools/Conceptual/LowLevelABI/LowLevelABI.pdf
+ * @see "http://www.cocoabuilder.com/archive/message/cocoa/2006/6/25/166236"
+ * @see "http://developer.apple.com/mac/library/documentation/DeveloperTools/Conceptual/LowLevelABI/Mac_OS_X_ABI_Function_Calls.pdf"
+ * @see "http://www.sealiesoftware.com/blog/archive/2008/10/30/objc_explain_objc_msgSend_stret.html"
  * 
  * Note also that there is a objc_msgSend_fret that is used supposed to be for 
- * floating point return types, but that I haven't (yet) had to use. 
+ * floating point return types, but that I haven't (yet) had to use.
+ *
+ * @see "http://www.sealiesoftware.com/blog/archive/2008/11/16/objc_explain_objc_msgSend_fpret.html"
  * 
  * @author duncan
  * 
  */
 class MsgSendHandler implements InvocationHandler {
 
+    /**
+     * @see com.sun.jna.Function#OPTION_INVOKING_METHOD
+     */
     private final String OPTION_INVOKING_METHOD = "invoking-method";
-    	// TODO - use JNA string when made public
+    // TODO - use JNA string when made public
     
     private final static int I386_STRET_CUTOFF = 9;
     private final static int IA64_STRET_CUTOFF = 17;
-    
+
     private final static int stretCutoff = NativeLong.SIZE == 8 ? IA64_STRET_CUTOFF : I386_STRET_CUTOFF;
-    
+
+    private final static boolean ppc = System.getProperty("os.arch").trim().equalsIgnoreCase("ppc");
+
     private final static Method OBJC_MSGSEND;
-    private final static Method OBJC_MSGSEND_STRET;        
+    private final static Method OBJC_MSGSEND_STRET;
     static {
         try {
-            OBJC_MSGSEND = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend", 
-                ID.class, Selector.class, Object[].class);
-            OBJC_MSGSEND_STRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_stret", 
+            OBJC_MSGSEND = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend",
                     ID.class, Selector.class, Object[].class);
-        } catch (Exception x) {
+            OBJC_MSGSEND_STRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_stret",
+                    ID.class, Selector.class, Object[].class);
+        }
+        catch (NoSuchMethodException x) {
             throw new RococoaException(x);
         }
     }
@@ -91,12 +99,12 @@ class MsgSendHandler implements InvocationHandler {
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class<?> returnTypeForThisCall = (Class<?>) args[0];
-        Object[] argsWithoutReturnType = removeReturnTypeFrom(args);
+        Object[] argsWithoutReturnType = this.removeReturnTypeFrom(args);
         
         Map<String, Object> options = new HashMap<String, Object>(1);    
         options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
         
-        Pair<Method, Function> invocation = invocationFor(returnTypeForThisCall); 
+        Pair<Method, Function> invocation = this.invocationFor(returnTypeForThisCall);
         options.put(OPTION_INVOKING_METHOD, invocation.a);
         return invocation.b.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
     }
@@ -113,11 +121,19 @@ class MsgSendHandler implements InvocationHandler {
         if (!isStructByValue)
             return objc_msgSend_Pair;
         try {
+            if(ppc) {
+                // on ppc32 structs never return in registers
+                return objc_msgSend_stret_Pair;
+            }
+            // on i386 structs with sizeof exactly equal to 1, 2, 4, or 8 return in registers
             Structure prototype = (Structure) returnTypeForThisCall.newInstance();
-            return prototype.size() < stretCutoff ?
-                    objc_msgSend_Pair : objc_msgSend_stret_Pair;
-        } catch (Exception x) {
-            throw new RococoaException(x);
+            return prototype.size() < stretCutoff ? objc_msgSend_Pair : objc_msgSend_stret_Pair;
+        }
+        catch(InstantiationException e) {
+            throw new RococoaException(e);
+        }
+        catch(IllegalAccessException e) {
+            throw new RococoaException(e);
         }
     }
 }
