@@ -68,11 +68,7 @@ id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback
 }
 
 + (const char *)cstringPtrForSelector:(CFStringRef) selectorName {
-	static CFStringEncoding encoding;
-	if(0 == encoding) {
-		encoding = CFStringGetSystemEncoding();
-	}
-	const char* selectorNameChar = CFStringGetCStringPtr(selectorName, encoding);
+	const char* selectorNameChar = CFStringGetCStringPtr(selectorName, CFStringGetFastestEncoding(selectorName));
 	if (NULL == selectorNameChar) {
 		NSLog(@"CFStringGetCStringPtr failed for selector %@", selectorName);
 		return NULL;
