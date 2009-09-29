@@ -6,10 +6,35 @@
 <link rel="stylesheet" type="text/css" href="rococoa.css" title="Default" />
 </head>
 <body>
-<h1>Welcome to Rococoa's Wiki</h1>
+<iframe id="glu" name="glu"  onload="resize_iframe()" src="http://rococoa.wikidot.com/users" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" style="overflow:visible; width:100%;"></iframe>
 
-<iframe src="http://rococoa.wikidot.com" width="100%" height="100%" border="0">
-</iframe>
+<script language="JavaScript">
+<!--
+function resize_iframe()
+{
+
+	var height=window.innerWidth;//Firefox
+	if (document.body.clientHeight)
+	{
+		height=document.body.clientHeight;//IE
+	}
+	//resize the iframe according to the size of the
+	//window (all these should be on the same line)
+	document.getElementById("glu").style.height=parseInt(height-
+	document.getElementById("glu").offsetTop-8)+"px";
+}
+
+// this will resize the iframe every
+// time you change the size of the window.
+window.onresize=resize_iframe;
+
+//Instead of using this you can use:
+//	<BODY onresize="resize_iframe()">
+
+
+//-->
+</script>
+
 
 </body>
 </html>
