@@ -199,6 +199,45 @@ public class FoundationMainThreadTest extends RococoaTestCase {
         barrier.await();
     }
     
+    @Test public void runOnMainThreadNoWaitWithGC() throws Exception {
+        // We had a problem where the callback that JNA uses to invoke Java code
+        // could be gc'd before the call had happened, if waitUntilDone == false
+        
+        // First block the Cocoa main thread
+        final CyclicBarrier barrier1 = new CyclicBarrier(2);
+        final CyclicBarrier barrier2 = new CyclicBarrier(2);
+        Runnable mainThreadBlocker = new Runnable() {
+            public void run() {
+                try {
+                    barrier1.await();
+                    barrier2.await();
+                } catch (Throwable t) { System.out.println(t); }             
+            }};
+        Foundation.runOnMainThread(mainThreadBlocker, false);
+        barrier1.await();
+        // Now we know the main thread is stalled inside run
+
+        // now set up another runnable
+        final CyclicBarrier barrier3 = new CyclicBarrier(2);
+        Runnable actualRunnable = new Runnable() {
+            public void run() {
+                try {
+                    barrier3.await();
+                } catch (Throwable t) { System.out.println(t); }             
+            }};
+        Foundation.runOnMainThread(actualRunnable, false);
+
+        // Give the internal callback a chance to be gc'd
+        gc();
+
+        // release the main thread, so that the callback can happen
+        barrier2.await();
+        
+        // and wait for it to happen - if the internal callback has been gc'd
+        // it won't be invoked and this thread will hang here
+        barrier3.await();
+    }
+    
     private void throwOnMainThreadViaCallable(final Throwable x) {
         Callable<Double> callable = new Callable<Double>() {
             public Double call() throws Exception {
