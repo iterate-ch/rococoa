@@ -1,5 +1,7 @@
 package org.rococoa.internal;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.rococoa.Foundation;
@@ -27,6 +29,9 @@ public abstract class MainThreadUtils {
             return nsThreadSaysIsMainThread();
         }
     };
+    
+    // References to callbacks that must live longer than the method invocation because they are called asynchronously
+    private static final Set<RococoaLibrary.VoidCallback> asynchronousCallbacks = new HashSet<RococoaLibrary.VoidCallback>();
     
     /**
      * Return the result of calling callable on the main Cococoa thread.
@@ -65,9 +70,12 @@ public abstract class MainThreadUtils {
                         thrown[0] = t;
                     else
                         logging.error("Lost exception on main thread", t);
+                } finally {
+                    if (!waitUntilDone) asynchronousCallbacks.remove(this);
                 }
             }};
-            
+
+        if (!waitUntilDone) asynchronousCallbacks.add(callback);
         rococoaLibrary.callOnMainThread(callback, waitUntilDone);
         rethrow(thrown[0]);
     }
