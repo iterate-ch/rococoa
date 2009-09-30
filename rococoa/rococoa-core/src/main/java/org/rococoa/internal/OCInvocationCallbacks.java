@@ -63,7 +63,7 @@ public class OCInvocationCallbacks {
     public final RococoaLibrary.MethodSignatureCallback methodSignatureCallback =
         new RococoaLibrary.MethodSignatureCallback() {
             public String callback(String selectorName) {
-                if(logging.isTraceEnabled()) {
+                if (logging.isTraceEnabled()) {
                     logging.trace("callback wanting methodSignature for selector {}", selectorName);
                 }
                 return methodSignatureForSelector(selectorName);
@@ -76,11 +76,10 @@ public class OCInvocationCallbacks {
     public final RococoaLibrary.SelectorInvokedCallback selectorInvokedCallback =
         new RococoaLibrary.SelectorInvokedCallback() {
             public void callback(String selectorName, ID nsInvocation) {
-                if(logging.isTraceEnabled()) {
+                if (logging.isTraceEnabled()) {
                     logging.trace("callback invoking {} on {}", selectorName, javaObject);
                 }
-                callMethod(javaObject, selectorName,
-                        Rococoa.wrap(nsInvocation, NSInvocation.class));
+                callMethod(javaObject, selectorName, Rococoa.wrap(nsInvocation, NSInvocation.class));
             }
     };
 
@@ -96,7 +95,7 @@ public class OCInvocationCallbacks {
     }
 
     protected Method methodForSelector(String selectorName) {
-        if(null == selectorName) {
+        if (null == selectorName) {
             logging.error("methodForSelector called with null selectorName");
             return null;
         }
@@ -206,7 +205,7 @@ public class OCInvocationCallbacks {
                 throw new IllegalStateException("Java method returned a result, but expected void");// void
             return;
         }
-        if(null == result) {
+        if (null == result) {
             return;
         }
         Memory buffer = bufferForReturn(typeToReturnToObjC, result);
