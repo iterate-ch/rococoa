@@ -21,17 +21,29 @@ package org.rococoa.internal;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.ref.WeakReference;
+
 import org.junit.Test;
 import org.rococoa.NSObject;
 import org.rococoa.cocoa.foundation.NSData;
 import org.rococoa.test.RococoaTestCase;
 
 /**
- * @version $Id:$
+ * @version $Id$
  */
 public class NSObjectInvocationHandlerTest extends RococoaTestCase {
 
-    /**
+public static abstract class NSImage implements NSObject {
+    private static final _Class CLASS = org.rococoa.Rococoa.createClass("NSImage", _Class.class);
+    public interface _Class extends org.rococoa.NSClass {
+        NSImage alloc();
+    }
+    public abstract NSImage initWithData(NSData data);
+}
+
+/**
      * We test for the case when the init method is not able to complete the initialization
      * In such a case,, the init... method could free the receiver and return nil, indicating that
      * the requested object can’t be created.
@@ -56,30 +68,20 @@ public class NSObjectInvocationHandlerTest extends RococoaTestCase {
      */
     @Test
     public void testInitReturnsNil() {
-        final NSImage image = NSImage.alloc();
+        NSImage image = NSImage.CLASS.alloc();
         assertNotNull("Allocation must return valid reference", image);
-        assertNull("Expected init to fail and return nil", image.initWithData(null));
+        
+        NSImage failedInitializedImage = image.initWithData(null);
+        assertNull("Expected init to fail and return nil", failedInitializedImage);
+        assertTrue("Initial image should now be invalid too", image.id().isNull());
+            // TODO - I'm a little unsure about whether this is the best course
+
         // We shall not crash after garbage collection when the NSObjectInvocationHandler is finalized
-        gc();
+        WeakReference<Object> reference = new WeakReference<Object>(failedInitializedImage);
+        failedInitializedImage = null;
+        while (reference.get() != null) {
+            gc();
+        }
     }
 
-    public static abstract class NSImage implements NSObject {
-        private static final _Class CLASS = org.rococoa.Rococoa.createClass("NSImage", _Class.class);
-
-        public static NSImage alloc() {
-            return CLASS.alloc();
-        }
-
-        public static NSImage imageNamed(String name) {
-            return CLASS.imageNamed(name);
-        }
-
-        public interface _Class extends org.rococoa.NSClass {
-            NSImage alloc();
-
-            NSImage imageNamed(String name);
-        }
-
-        public abstract NSImage initWithData(NSData data);
-    }
 }

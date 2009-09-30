@@ -77,17 +77,17 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
     }
 
-    private final ID ocInstance;
+    private ID ocInstance;
     private final String javaClassName;
-    private final boolean invokeOnMainThread;
-    private boolean releaseOnFinalize;
-
+    private final boolean invokeAllMethodsOnMainThread;
+    
+    private final boolean releaseOnFinalize;
     private volatile boolean finalized;
 
     public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass, boolean retain) {
         this.ocInstance = ocInstance;
         javaClassName = javaClass.getSimpleName();
-        invokeOnMainThread = shouldInvokeMethodsOnMainThread(javaClass);
+        invokeAllMethodsOnMainThread = shouldInvokeMethodsOnMainThread(javaClass);
         releaseOnFinalize = shouldReleaseInFinalize(javaClass);
 
         if (logging.isTraceEnabled()) {
@@ -110,10 +110,6 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
                 Foundation.cfRetain(ocInstance);
             }
         }
-    }
-
-    private boolean shouldInvokeMethodsOnMainThread(AnnotatedElement element) {
-        return element != null && element.getAnnotation(RunOnMainThread.class) != null;
     }
 
     private boolean shouldReleaseInFinalize(Class<? extends NSObject> javaClass) {
@@ -161,7 +157,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     /**
      * Callback from java.lang.reflect proxy
      */
-    public Object invoke(Object proxy, final Method method, final Object[] args)  throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)  throws Throwable {
         if (logging.isTraceEnabled()) {
             logging.trace("invoking [{} {}].{}({})",
                     new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
@@ -174,7 +170,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     /**
      * Callback from cglib proxy
      */
-    public Object intercept(Object proxy, final Method method, final Object[] args, MethodProxy methodProxy) throws Throwable {
+    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
         if (logging.isTraceEnabled()) {
             logging.trace("invoking [{} {}].{}({})",
                     new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
@@ -218,15 +214,14 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         return sendOnThisOrMainThread(null, ocInstance, "isEqual:", Boolean.class, another);
     }
 
-    private Object invokeCocoa(final Method method, final Object[] args) {
-        final String selectorName = selectorNameFor(method);
-        final Class<?> returnType = returnTypeFor(method);
-        final Object[] marshalledArgs = marshallArgsFor(method, args);
+    private Object invokeCocoa(final Method method, Object[] args) {
+        String selectorName = selectorNameFor(method);
+        Class<?> returnType = returnTypeFor(method);
+        Object[] marshalledArgs = marshallArgsFor(method, args);
 
-        final Object result = sendOnThisOrMainThread(method, ocInstance, selectorName, returnType, marshalledArgs);
-        if(null == result && method.getName().startsWith("init")) {
-            // A initializer that returns nil has released the object already
-            releaseOnFinalize = false;
+        Object result = sendOnThisOrMainThread(method, ocInstance, selectorName, returnType, marshalledArgs);
+        if (method.getName().startsWith("init")) {
+            handleInitMethod(result);
         }
         fillInReferences(args, marshalledArgs);
 
@@ -237,8 +232,17 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             return result;
     }
 
-    private Object sendOnThisOrMainThread(final Method method, final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
-        if (callAcrossToMainThread(method)) {
+    private void handleInitMethod(Object result) {        
+        // Normally init methods return self, but on error they may return nil.
+        // In this case the ObjC object for which this is the handler is considered
+        // freed and should not be released when we are finalized.
+        if (result != null) 
+            return;
+        ocInstance = ID.fromLong(0);        
+    }
+
+    private Object sendOnThisOrMainThread(Method method, final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
+        if (callAcrossToMainThreadFor(method)) {
             return Foundation.callOnMainThread(
                 new Callable<Object>() {
                     public Object call() {
@@ -318,13 +322,17 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
         return result.toString();
     }
-
-    private boolean callAcrossToMainThread() {
-        return callAcrossToMainThread(null);
+    
+    private boolean shouldInvokeMethodsOnMainThread(AnnotatedElement element) {
+        return element != null && element.getAnnotation(RunOnMainThread.class) != null;
     }
 
-    private boolean callAcrossToMainThread(Method m) {
-        return (invokeOnMainThread || shouldInvokeMethodsOnMainThread(m) ) && !Foundation.isMainThread() ;
+    private boolean callAcrossToMainThread() {
+        return callAcrossToMainThreadFor(null);
+    }
+
+    private boolean callAcrossToMainThreadFor(Method m) {
+        return (invokeAllMethodsOnMainThread || shouldInvokeMethodsOnMainThread(m) ) && !Foundation.isMainThread() ;
     }
 
 }
