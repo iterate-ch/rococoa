@@ -3,36 +3,24 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-cocoa</artifactId>
   <packaging>jar</packaging>
-  <version>0.3.1-snapshot</version>
+  <version>${rococoa.version}</version>
   <name>Rococoa Cocoa Mappings</name>
   <url>http://www.rococoa.org</url>
   
   <parent>
     <groupId>org.rococoa</groupId>
     <artifactId>rococoa</artifactId>
-    <version>0.3.1-snapshot</version>
+    <version>1</version>
   </parent>
   
   <dependencies>
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-core</artifactId>
-      <version>0.3.1-snapshot</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.5</version>
-      <scope>test</scope>
+      <version>${rococoa.version}</version>
     </dependency>
   </dependencies>
   
-  <properties>
-  	<maven.compile.source>1.5</maven.compile.source>
-  	<maven.compile.target>1.5</maven.compile.target>
-  </properties>
-
   <build>
   
     <resources>
@@ -109,6 +97,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.5</version>        
         <executions>
           <execution>
             <id>attach-javadocs</id>

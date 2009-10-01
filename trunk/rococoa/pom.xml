@@ -4,7 +4,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa</artifactId>
   <packaging>pom</packaging>
-  <version>0.3.1-snapshot</version>
+  <version>1</version>
   <name>Rococoa</name>
   <url>http://www.rococoa.org</url>
 
@@ -28,7 +28,6 @@
 	</plugins>
   </build>
 
-
   <repositories>
 	<repository>
 	  <id>maven2-repository.dev.java.net</id>
@@ -37,4 +36,39 @@
 	  <layout>default</layout>
 	</repository>
   </repositories>
+  
+  <properties>
+  	<rococoa.version>0.5</rococoa.version>
+  	<maven.compile.source>1.5</maven.compile.source>
+  	<maven.compile.target>1.5</maven.compile.target>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>3.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.2</version>
+    </dependency>
+  </dependencies>
+  
 </project>
