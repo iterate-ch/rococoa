@@ -22,6 +22,7 @@ package org.rococoa.cocoa.qtkit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class QTMovieTest extends RococoaTestCase {
         NSObjectByReference errorReference = new NSObjectByReference();
         QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
 
-        assertFalse(movie.id().isNull());
+        assertNotNull(movie);
         assertTrue(errorReference.getValueAs(NSError.class).id().isNull());
         
         QTTime time3 =  movie.currentTime();
@@ -71,7 +72,7 @@ public class QTMovieTest extends RococoaTestCase {
         File file = new File("NOSUCH");
         NSObjectByReference errorReference = new NSObjectByReference();
         QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
-        assertTrue(movie.id().isNull());
+        assertNull(movie);
         NSError error = errorReference.getValueAs(NSError.class);
         assertEquals(-2000, error.code().intValue());
     }
