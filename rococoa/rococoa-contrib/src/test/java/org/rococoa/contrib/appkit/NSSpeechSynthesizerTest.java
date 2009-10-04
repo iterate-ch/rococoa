@@ -226,7 +226,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertTrue("Output should be paused", status.isOutputPaused());
         assertEquals("Check number of characters left failed", 16, status.getNumberOfCharactersLeft());        
         ss.continueSpeaking();
-        sd.waitForNextWord(2000);
+        sd.waitForNextWord(2500);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
         Thread.sleep(1000);
         status = ss.getStatus();   
