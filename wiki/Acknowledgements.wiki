@@ -1,3 +1,4 @@
+#summary Rococoa Acknowledgements
 
 = Rococoa Acknowledgements =
 Rococoa owes much to the following people and organisations
