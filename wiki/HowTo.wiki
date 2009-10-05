@@ -1,5 +1,4 @@
-#summary How To
-#sidebar TableOfContents
+#summary Frequently Asked Questions
 
 =Rococoa How To=
 
