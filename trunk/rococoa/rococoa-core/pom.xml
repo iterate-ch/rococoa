@@ -104,7 +104,7 @@
             <configuration>
               <groupId>org.rococoa</groupId>
               <artifactId>rococoa-core</artifactId>
-              <version>rococoa.version</version>
+              <version>${rococoa.version}</version>
               <packaging>dylib</packaging>
               <file>${basedir}/build/Release/librococoa.dylib</file>
             </configuration>
