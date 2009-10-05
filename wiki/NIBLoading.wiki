@@ -1,0 +1,96 @@
+#summary HelloWorld tutorial using NSApplication
+
+= Hello World Tutorial for NIBs =
+
+This tutorial will help you bootstrap a full blown Cocoa application without any AWT. It discusses autorelease pools, loading of NIB files etc.
+
+== Loading NIB file ==
+
+ * Create a main class similar to
+
+{{{
+import org.rococoa.cocoa.foundation. NSAutoreleasePool
+
+public class MainController {
+	public static void main(String[] args) {
+		final NSAutoreleasePool pool = NSAutoreleasePool.push();
+		try {			
+                        // This method also makes a connection to the window server and completes other initialization.
+                        // Your program should invoke this method as one of the first statements in main();
+                        // The NSApplication class sets up autorelease pools (instances of the NSAutoreleasePool class)
+                        // during initialization and inside the event loop—specifically, within its initialization
+                        // (or sharedApplication) and run methods.
+			final NSApplication app = NSApplication.sharedApplication();
+			WindowController w = new WindowController();
+                        // Starts the main event loop. The loop continues until a stop: or terminate: message is
+                        // received. Upon each iteration through the loop, the next available event
+                        // from the window server is stored and then dispatched by sending it to NSApp using sendEvent:.
+                        // The global application object uses autorelease pools in its run method.
+			app.run();
+		} finally {
+			pool.drain();
+		}
+	}
+}
+}}}
+
+Make sure to register this class with the key in the Info.plist dictionary of your application bundle in the Java section. Refer to http://developer.apple.com/mac/library/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html for more information.
+
+ * In the Info.plist of your application add  the `StartOnMainThread` flag like
+{{{
+       <key>Java</key>
+       <dict>
+           <key>StartOnMainThread</key>
+           <true/>
+       </dict>
+}}}
+The event processing on the AppKit thread should then work after invoking `NSApplication.run()` as expected.
+
+ * Implement the window controller to load your first NIB. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject`as is.
+
+{{{
+import org.rococoa.ID;
+import org.rococoa.NSObject;
+import org.rococoa.Rococoa;
+
+public class WindowController {
+
+	public WindowController() {
+	 	 String bundleName = "MyNib"
+	 	 if(!NSBundle.loadNibNamed(bundleName, this.id())) {
+	 	 	 log.fatal("Couldn't load " + bundleName + ".nib");
+	 	 	 return;
+		}
+	}
+	
+    /**
+     * You need to keep a reference to the returned value for as long as it is
+     * active. When it is GCd, it will release the Objective-C proxy.
+     */
+    private NSObject proxy;
+
+    private ID id;
+
+    public NSObject proxy() {
+	 return this.proxy(NSObject.class);
+    }
+
+    public NSObject proxy(Class<? extends NSObject> type) {
+	 if(null == proxy) {
+	 	 proxy = Rococoa.proxy(this, type);
+	}
+	 return proxy;
+    }
+
+    public org.rococoa.ID id() {
+	 return this.id(NSObject.class);
+    }
+
+    public org.rococoa.ID id(Class<? extends NSObject> type) {
+	 if(null == id) {
+	 	 id = this.proxy(type).id();
+	}
+	 return id;
+    }
+}
+}}}
