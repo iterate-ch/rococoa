@@ -1,7 +1,12 @@
+#summary Quicktime and Rococoa
 
 = Quicktime and Rococoa =
+
 Rococoa was written to allow the use of the [http://developer.apple.com/quicktime/qtkit.html QTKit framework] from Java. It's by no means finished, but it is functional.
-The package `org.rococoa.quicktime` contains the work so far on wrapping QTKit. An example of using the code to play a Quicktime Movie can be found in `PlayMovieExample`.
+
+The package `org.rococoa.quicktime` contains the work so far on wrapping QTKit. 
+
+An example of using the code to play a Quicktime Movie can be found in `PlayMovieExample`.
 {{{
 public class PlayMovieExample {
    static final File FILE = new File("testdata/DrWho.mov");
@@ -27,5 +32,17 @@ public class PlayMovieExample {
 }
 }}}
 `QTMovieTest` gives other examples.
-One of the complications involved in using QTKit from Java is that all access to QTKit must be on the Cocoa event thread, which is not the same as the AWT event thread. The `QTMovieView` and `QTMovie` classes are annotated with `@RunOnMainThread` - Rococoa dispatches all method calls to such classes on the Cocoa event thread. If you plan to extend the QTKit coverage your classes may need to be similarly annotated.
-You may notice the absence of calls to `Foundation.createPool()` in the code above. I'm still trying to get my head around this. Because the method calls are all dispatched on the Cocoa event thread, and Cocoa conveniently creates an autorelease pool for event handling code, the calls themselves are in the context of a pool. I don't believe that this is the case for parameters that you pass in though, so bear with my while I think it through.
+
+One of the complications involved in using QTKit from Java is that all access to QTKit must be on the Cocoa event thread, which is not the same as the AWT event thread. 
+
+The `QTMovieView` and `QTMovie` classes are annotated with `@RunOnMainThread` - Rococoa dispatches all method calls to such classes on the Cocoa event thread. 
+
+If you plan to extend the QTKit coverage your classes may need to be similarly annotated.
+
+You may notice the absence of calls to `Foundation.createPool()` in the code above. 
+
+I'm still trying to get my head around this. 
+
+Because the method calls are all dispatched on the Cocoa event thread, and Cocoa conveniently creates an autorelease pool for event handling code, the calls themselves are in the context of a pool. 
+
+I don't believe that this is the case for parameters that you pass in though, so bear with my while I think it through.
