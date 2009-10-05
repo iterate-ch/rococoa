@@ -1,0 +1,9 @@
+
+= Rococoa Acknowledgements =
+Rococoa owes much to the following people and organisations
+  * [http://jna.dev.java.net JNA] does all the heavy lifting of calling into Cocoa and marshaling parameters. Timothy Wall also added pass struct by value and other extension points to make our life simpler.
+  * [http://www.keteracel.com Paul Loy] was the alpha guinea-pig. 
+  * Simon Taylor, Gareth Sylvester-Bradley and Dion Crannitch for Objective-C help.
+  * Richard Care, Matt Bowers, Andy Collins and Morgan David let it go.
+  * [http://www.apple.com Apple Inc] produced Quicktime, Java on Mac OS, the Cocoa-Java Bridge and Quicktime for Java, then killed at least 2 of them.
+If you know Java and Cocoa your name could be on this list! [rococoa-help-wanted.html Get involved!]
