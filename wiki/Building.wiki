@@ -6,8 +6,7 @@
  * Maven 2
  * XCode 3.0
 
-<p>I build on an early MacBook Pro, running 10.5.2. I haven't yet tried building on PPC. Early 
-builds were on Tiger, but I haven't gone back to check that it still does.</p>
+Builds work on Mac OS X 10.5+ on Intel. Building on PPC shows test failures with `long` return values and tests must be omitted using `-Dmaven.test.skip`.
 
 ==Command-line Build Steps==
 
