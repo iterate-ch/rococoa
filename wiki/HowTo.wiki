@@ -1,0 +1,73 @@
+#summary How To
+
+<h1>Rococoa How To</h1>
+
+<h2>Download</h2>
+
+<p>Download your choice of archive from 
+<a href="http://code.google.com/p/rococoa/downloads/list">here</a>.<p>
+
+<h2>Link</h2>
+
+<p>Unarchive your download. Add <code>dist/rococoa-n.n.n.jar</code> and 
+the jars in <code>lib</code> to your classpath.</p>
+
+<p>Add <code>bin</code> to your <code>java.library.path</code>.
+</p>
+
+<h2>Create a Java class representation of an Objective-C class</h2>
+
+<p>For now, see the <a href="rococoa-whistlestop.html">Whistlestop Tour</a>.
+
+<h2>Create an Objective-C instance</h2>
+
+<p>For now, see the <a href="rococoa-whistlestop.html">Whistlestop Tour</a>.
+
+<h2>Call methods on an Objective-C object</h2>
+
+<p>For now, see the <a href="rococoa-whistlestop.html">Whistlestop Tour</a>.
+
+<h2>Manage Memory</h2>
+
+<p>See <a href="rococoa-memory.html">Memory Management</a>.
+
+<h2>Call methods with more than one parameter</h2>
+
+<h2>Call methods that have the name of a Java keyword</h2>
+
+<h2>Not define Objective-C classes</h2>
+
+<h2>Simplify factory methods</h2>
+
+<h2>Add Java behaviour to Rococoa wrappers</h2>
+
+<h2>Pass structures to methods</h2>
+
+<h2>Return structures from methods</h2>
+
+<h2>Debug</h2>
+
+<h2>Log calls</h2>
+
+<h2>Call static Mac functions</h2>
+
+<h2>Get more help</h2>
+
+<h2>See more examples</h2>
+
+<h2>Use Quicktime</h2>
+
+<p>See <a href="rococoa-quicktime.html">Quicktime and Rococoa</a>.</p>
+
+<h2>Build Rococoa</h2>
+
+<p>See <a href="rococoa-building.html">Building Rococoa</a>.</p>
+
+<h2>See what's going on</h2>
+
+<p>Turn the log level up : <code>org.rococoa.level=FINEST</code>.
+This will log all message sending through Rococoa.</p> 
+
+<h2>Help</h2>
+
+<p>See HelpWanted.</p>
