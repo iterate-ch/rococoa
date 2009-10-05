@@ -1,4 +1,4 @@
-(this page was written by oneeyedmen)
+#summary (Ro)cocoa internals : details about objc_msgSend
 
 = Returning values from objc_msgSend etc =
 
