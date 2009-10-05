@@ -4,22 +4,13 @@
 
 While Java has garbage collection, Objective-C memory management (prior to v2) is based around manual reference counting.
 
-[http://developer.apple.com/documentation/Cocoa/Conceptual/MemoryMgmt/MemoryMgmt.html  Essentially], objects have a reference count, 1 when first created, and incremented by calling `- (id)retain`. 
+[http://developer.apple.com/documentation/Cocoa/Conceptual/MemoryMgmt/MemoryMgmt.html  Essentially], objects have a reference count, 1 when first created, and incremented by calling `- (id)retain`. On calling `- (void)release` the count is decremented, and if it has fallen to 0, the object's memory is reclaimed.
 
-On calling `- (void)release` the count is decremented, and if it has fallen to 0, the object's memory is reclaimed.
+Conventionally, newly created objects are put into an autorelease pool, which `retain`s them, and when the pool itself is reclaimed, all of its objects are `release`d. If an object should live longer than the current pool, then client code should `retain` the object itself, and release when done with.
 
-Conventionally, newly created objects are put into an autorelease pool, which `retain`s them, and when the pool itself is reclaimed, all of its objects are `release`d. 
+Rococoa automatically `retain`s Objective-C objects wrapped by the Java NSObject, and `release`s them when the Java NSObject is garbage collected. So why am I bothering you with all this detail? Because you need an autorelease pool in the first place.
 
-If an object should live longer than the current pool, then client code should `retain` the object itself, and release when done with.
-
-Rococoa automatically `retain`s Objective-C objects wrapped by the Java NSObject, and `release`s them when the Java NSObject is garbage collected. 
-
-So why am I bothering you with all this detail? Because you need an autorelease pool in the first place.
-
-At the moment the way Rococoa creates a pool is through `ID Foundation.createPool()`, releasing it with `void Foundation.releasePool(ID pool)`. 
-
-It's your job to make sure that there is a current pool before you invoke any Objective-C methods which need to allocate from it. 
-For example, RococoaTestCase says 
+At the moment the way Rococoa creates a pool is through `ID Foundation.createPool()`, releasing it with `void Foundation.releasePool(ID pool)`. It's your job to make sure that there is a current pool before you invoke any Objective-C methods which need to allocate from it. For example, RococoaTestCase says 
 {{{
    public void runBare() throws Throwable {
        pool = Foundation.createPool();
@@ -37,11 +28,7 @@ Helpfully, if you forget to create a pool, the Objective-C runtime will gently c
 
 Note that while a pool is required during allocation, objects can outlive their pool, and will if you keep a reference to a Java NSObject.
 
-I plan to replace those nasty calls to Foundation with a Java NSAutoreleasePool which you can just hang onto by reference. 
-
-But the current system works, and it's best to be conservative about memory, as accessing an already disposed object will crash your app. 
-
-Actually I'm pretty sure that there's at least one bug hiding in there already - a small prize to anyone who finds it.
+I plan to replace those nasty calls to Foundation with a Java NSAutoreleasePool which you can just hang onto by reference. But the current system works, and it's best to be conservative about memory, as accessing an already disposed object will crash your app. Actually I'm pretty sure that there's at least one bug hiding in there already - a small prize to anyone who finds it.
 
 Finally, note that if your code has been called by the Cocoa event thread (as a result of a native button press for example) then Cocoa will already have arranged a pool for you, and will dispose of it once the event is done.
 
