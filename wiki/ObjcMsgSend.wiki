@@ -1,4 +1,3 @@
-
 = Returning values from objc_msgSend etc =
 
 == Here is my understanding so far ==
@@ -87,9 +86,9 @@ This fails because the struct type is NSPoint. In the i386 function call ABI, su
 
 In this case, you need to use objc_msgSend() (cast to return NSPoint). 
 objc_msgSend_stret() only works for structs returned in memory. 
-}}}
 
 The PPC ABI returns eight-byte structs in memory, so objc_msgSend_stret() is the correct call there. 
+}}}
 
 Ooh, another special case, not even hinted at in the docs seen so far. 
 
