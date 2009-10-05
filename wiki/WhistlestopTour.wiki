@@ -1,4 +1,5 @@
 #summary The core concepts of Rococoa.
+#labels Featured
 
 =Rococoa Whistlestop Tour=
 
@@ -10,7 +11,7 @@ the directory from which you run code).
 
 <strong>I'm about to gloss over some memory management issues. Please don't
 ship code based on Rococoa without getting at least as far as
-<a href="rococoa-memory.html">that section</a>.</strong>
+[Memory that section].</strong>
 
 Now choose a Cocoa class you'd like to represent in Java. Let's say
 NSMutableArray. Create a Java interface called NSMutableArray, extending
