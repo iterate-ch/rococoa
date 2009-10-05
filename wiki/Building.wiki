@@ -1,0 +1,72 @@
+#summary Building Rococoa using Maven.
+#labels Phase-Implementation
+
+<h1>Building Rococoa<h1>
+
+<h2>Prequisites</h2>
+
+<ul>
+<li>Maven 2</li>
+<li>XCode 3.0</li>
+</ul>
+
+<p>I build on an early MacBook Pro, running 10.5.2. I haven't yet tried building on PPC. Early 
+builds were on Tiger, but I haven't gone back to check that it still does.</p>
+
+<h2>Command-line Build Steps</h2>
+
+<ol>
+<li><pre class="block">mkdir rococoa</pre></li>
+<li><pre class="block">
+svn checkout https://rococoa.dev.java.net/svn/rococoa/trunk/rococoa . --username username
+</pre></li>
+<li>The JNA library is not packaged for Maven. Acquire jna.jar (currently v3.0.1), either from 
+<a href="https://jna.dev.java.net/servlets/ProjectDocumentList">http://jna.dev.java.net</a> 
+or from the lib directory of a prebuilt Rococoa distribution. Install it into the 
+Maven repository with 
+<pre class="block">
+mvn install:install-file -DgroupId=net.java.dev -DartifactId=jna \
+    -Dversion=3.0.1 -Dpackaging=jar -Dfile=/path/to/file</pre>
+</li>
+<li>
+Build and test with
+<pre class="block">mvn test</pre>
+If all is successful, you should have a screenful of output, culminating in
+<pre class="block">
+Results :
+[surefire] Tests run: 58, Failures: 0, Errors: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1 minute 46 seconds
+[INFO] Finished at: Fri Feb 22 11:39:09 GMT 2008
+[INFO] Final Memory: 5M/10M
+[INFO] ------------------------------------------------------------------------
+</pre>
+For some reason the native compile step takes an age to fire up xcodebuild on 
+my Leopard MacBook, but then XCode itself takes an age to start as well. Your 
+mileage may vary.
+</li>
+</ol>
+<h2>Other interesting Maven goals include</h2>
+<ul>
+<li><pre class="block">mvn clean</pre></li>
+<li><pre class="block">mvn site</pre> generate javadoc and stuff</li>
+<li><pre class="block">mvn package</pre> to build the distribution.</li>
+</ul>
+
+<h2>Developing using Eclipse and XCode</h2>
+
+<p>To generate an Eclipse project for the Maven build</p>
+
+<pre class="block">mvn eclipse:eclipse</pre>
+
+<p>This will generate the .classpath and .project files for an Eclipse project, 
+that you can import into a workspace. The dependent libraries will be specified
+relative to a <em>Classpath Variable</em> <code>M2_REPO</code>. This should be set (
+<code>Eclipse/Preferences.../Java/Build Path/Classpath Variables</code>) to 
+<code>~/.m2/repository</code>.</p>
+
+<p>If all is well the tests in <code>rococoa/src/test/java</code> should pass when
+run with Eclipse's JUnit test runner.</p>
