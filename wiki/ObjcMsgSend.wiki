@@ -1,3 +1,5 @@
+(this page was written by oneeyedmen)
+
 = Returning values from objc_msgSend etc =
 
 == Here is my understanding so far ==
