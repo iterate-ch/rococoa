@@ -124,4 +124,4 @@ public class WindowController {
 
 ==Missing Rococoa Classes?==
 
-If you are looking in Rococoa for classes such as NSBundle, NSWindow etc., or for some of the methods used above, be aware that they do not all exist. Follow the samples in the `rococoa-contrib` module.
+If you are looking in Rococoa for classes such as NSBundle, NSWindow etc., or for some of the methods used above, be aware that they do not come all bundled yet with Rococoa. The [http://code.google.com/p/jnaerator/ JNAerator] project helps in generating the necessary stubs for Obj-C classes. 
