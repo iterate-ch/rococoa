@@ -40,7 +40,7 @@ mileage may vary.~~
  * {{{mvn site}}} generate javadoc and stuff
  * {{{mvn package}}} to build the distribution.
 
-==Developing using Eclipse and XCode==
+==Developing using Eclipse==
 
 To generate an Eclipse project for the Maven build {{{mvn eclipse:eclipse}}}.
 
@@ -52,3 +52,9 @@ relative to a <em>Classpath Variable</em> <code>M2_REPO</code>. This should be s
 
 <p>If all is well the tests in <code>rococoa/src/test/java</code> should pass when
 run with Eclipse's JUnit test runner.
+
+==Developing using JetBrains IntelliJ Idea==
+
+Make sure the Maven Plugin is enabled. Then choose
+ * New Project. Import project from external model and select _Maven_. The modules should be automatically recognized and added to your project.
+ * To run test cases from within the project, set the working directory in the configuration panel to the path of the rococoa-core module. Otherwise the rococoa.dylib will not be found.
