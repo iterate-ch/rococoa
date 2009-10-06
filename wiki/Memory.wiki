@@ -2,6 +2,8 @@
 
 = Rococoa Memory Management =
 
+== The autorelease pool ==
+
 While Java has garbage collection, Objective-C memory management (prior to Objective-C 2.0) is based around manual reference counting.
 
 [http://developer.apple.com/documentation/Cocoa/Conceptual/MemoryMgmt/MemoryMgmt.html  Essentially], objects have a reference count, 1 when first created, and incremented by calling `- (id)retain`. On calling `- (void)release` the count is decremented, and if it has fallen to 0, the object's memory is reclaimed. (Actuallly Rococoa uses `CFRetain` and `CFRelease`).
@@ -33,3 +35,7 @@ Note that while a pool is required during allocation, objects can outlive their 
 Finally, note that if your code has been called by the Cocoa event thread (as a result of a native button press for example) then Cocoa will already have arranged a pool for you, and will dispose of it once the event is done.
 
 ~~Really finally, I've no idea how this all relates to Objective-C garbage collection, introduced in v2, and am hoping that someone will be able to tell me.~~. See also issue 7.
+
+== Java weak references and Rococoa proxies ==
+
+TODO
