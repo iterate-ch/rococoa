@@ -3,8 +3,8 @@
 =Building Rococoa=
 ==Prequisites==
 
- * Maven 2
- * XCode 3.0
+ * Maven 2 (tested with Maven 2.1.0)
+ * XCode 3.0 or later.
 
 Builds work on Mac OS X 10.5+ on Intel. Building on PPC shows test failures with `long` return values and tests must be omitted using `-Dmaven.test.skip`.
 
