@@ -4,9 +4,9 @@
 
 This tutorial will help you bootstrap a full blown Cocoa application without any AWT. It discusses autorelease pools, loading of NIB files etc.
 
-== Loading NIB file ==
+== Main class to load NSApplication ==
 
- * Create a main class similar to
+Create a main class similar to
 
 {{{
 import org.rococoa.cocoa.foundation. NSAutoreleasePool
@@ -36,6 +36,8 @@ public class MainController {
 
 Make sure to register this class with the key in the Info.plist dictionary of your application bundle in the Java section. Refer to http://developer.apple.com/mac/library/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html for more information.
 
+== Make sure no AWT thread is started ==
+
  * In the Info.plist of your application add  the `StartOnMainThread` flag like
 {{{
        <key>Java</key>
@@ -46,7 +48,8 @@ Make sure to register this class with the key in the Info.plist dictionary of yo
 }}}
 The event processing on the AppKit thread should then work after invoking `NSApplication.run()` as expected.
 
- * Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`.
+==Design NIB file==
+Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`.
 
 http://pixel.recoil.org/rococoa/Nib.png
 
@@ -55,7 +58,8 @@ http://pixel.recoil.org/rococoa/Nib.png
 http://pixel.recoil.org/rococoa/Outlets.png
 http://pixel.recoil.org/rococoa/Connections.png
 
- * Implement the window controller to load your first NIB and become the file owner. 
+==Implement the controller class (aka file owner)==
+Implement the window controller to load your first NIB and become the file owner. 
 
 {{{
 import org.rococoa.ID;
@@ -117,3 +121,7 @@ public class WindowController {
     }
 }
 }}}
+
+==Missing Rococoa Classes?==
+
+If you are looking in Rococoa for classes such as NSBundle, NSWindow etc., or for some of the methods used above, be aware that they do not all exist. Follow the samples in the `rococoa-contrib` module.
