@@ -30,9 +30,9 @@ Results :
 [INFO] ------------------------------------------------------------------------
 }}}
 
-For some reason the native compile step takes an age to fire up xcodebuild on 
+~~For some reason the native compile step takes an age to fire up xcodebuild on 
 my Leopard MacBook, but then XCode itself takes an age to start as well. Your 
-mileage may vary.
+mileage may vary.~~
 
 ==Other interesting Maven goals include==
 
