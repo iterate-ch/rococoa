@@ -10,9 +10,7 @@ Builds work on Mac OS X 10.5+ on Intel. Building on PPC shows test failures with
 
 ==Command-line Build Steps==
 
-{{{
-svn checkout https://rococoa.googlecode.com/svn/trunk/rococoa rococoa --username <googleid>
-}}}
+[http://code.google.com/p/rococoa/source/checkout Checkout] from Subversion or download the [http://code.google.com/p/rococoa/downloads/list latest release].
 
 Build and test with
 {{{
