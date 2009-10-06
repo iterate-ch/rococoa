@@ -124,7 +124,7 @@ public class WindowController {
 
 ==Implementing a delegate==
 
-See also [Memory Memory Management].
+See also [Memory#Java_weak_references_and_Rococoa_proxies Memory Management].
 
 ==Missing Rococoa Classes?==
 
