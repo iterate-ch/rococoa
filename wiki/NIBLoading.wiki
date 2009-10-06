@@ -46,7 +46,14 @@ Make sure to register this class with the key in the Info.plist dictionary of yo
 }}}
 The event processing on the AppKit thread should then work after invoking `NSApplication.run()` as expected.
 
- * Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`. Create a new outlet in the NIB file owner named `mainWindow` and connect it the the `NSWindow` instance. Define an action named `buttonClicked:` on the file owner and control drag from the `NSButton` instance to the file owner to connect the action. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject` as is.
+ * Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`.
+
+http://pixel.recoil.org/rococoa/Nib.png
+
+ Define a new outlet in the NIB file owner named `mainWindow` and connect it the the `NSWindow` instance. Define an action named `buttonClicked:` on the file owner and control drag from the `NSButton` instance to the file owner to connect the action. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject` as is.
+
+http://pixel.recoil.org/rococoa/Outlets.png
+http://pixel.recoil.org/rococoa/Connections.png
 
  * Implement the window controller to load your first NIB and become the file owner. 
 
