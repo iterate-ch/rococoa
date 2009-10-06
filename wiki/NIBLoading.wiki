@@ -55,13 +55,26 @@ import org.rococoa.Rococoa;
 
 public class WindowController {
 
-	public WindowController() {
-	 	 String bundleName = "MyNib"
-	 	 if(!NSBundle.loadNibNamed(bundleName, this.id())) {
-	 	 	 log.fatal("Couldn't load " + bundleName + ".nib");
-	 	 	 return;
-		}
-	}
+    public WindowController() {
+        String bundleName = "MyNib"
+        if(!NSBundle.loadNibNamed(bundleName, this.id())) {
+            System.err.println("Couldn't load " + bundleName + ".nib");
+            return;
+        }
+    }
+
+    // Injected outlet from NIB
+    private NSWindow window;
+    
+    // Called when loading NIB using NSBundle. NIB has a window outlet defined.
+    public void setMainWindow(NSWindow mainWindow) {
+        System.out.println("Outlet set to: " + mainWindow.title());
+    }
+    
+    // NSButton in NIB has an action to the file owner named buttonClicked:    
+    public void buttonClicked(ID sender) {
+        System.out.println("Hello World from: " + sender);
+    }
 	
     /**
      * You need to keep a reference to the returned value for as long as it is
@@ -76,10 +89,10 @@ public class WindowController {
     }
 
     public NSObject proxy(Class<? extends NSObject> type) {
-	 if(null == proxy) {
-	 	 proxy = Rococoa.proxy(this, type);
+        if(null == proxy) {
+            proxy = Rococoa.proxy(this, type);
 	}
-	 return proxy;
+	return proxy;
     }
 
     public org.rococoa.ID id() {
@@ -87,10 +100,10 @@ public class WindowController {
     }
 
     public org.rococoa.ID id(Class<? extends NSObject> type) {
-	 if(null == id) {
-	 	 id = this.proxy(type).id();
+	if(null == id) {
+            id = this.proxy(type).id();
 	}
-	 return id;
+	return id;
     }
 }
 }}}
