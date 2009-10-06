@@ -46,7 +46,9 @@ Make sure to register this class with the key in the Info.plist dictionary of yo
 }}}
 The event processing on the AppKit thread should then work after invoking `NSApplication.run()` as expected.
 
- * Implement the window controller to load your first NIB. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject`as is.
+ * Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`. Create a new outlet in the NIB file owner named `mainWindow` and connect it the the `NSWindow` instance. Define an action named `buttonClicked:` on the file owner of type `NSObject` and control drag from the `NSButton` instance to the file owner to connect the action.
+
+ * Implement the window controller to load your first NIB and become the file owner. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject`as is.
 
 {{{
 import org.rococoa.ID;
@@ -66,7 +68,7 @@ public class WindowController {
     // Injected outlet from NIB
     private NSWindow window;
     
-    // Called when loading NIB using NSBundle. NIB has a window outlet defined.
+    // Called when loading NIB using NSBundle. NIB has a mainWindow outlet defined.
     public void setMainWindow(NSWindow mainWindow) {
         System.out.println("Outlet set to: " + mainWindow.title());
     }
