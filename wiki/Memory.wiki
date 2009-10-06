@@ -38,4 +38,9 @@ Finally, note that if your code has been called by the Cocoa event thread (as a 
 
 == Java weak references and Rococoa proxies ==
 
-TODO
+Always make sure to keep a strong reference in Java for an object that is exposed to the Obj-C runtime using the proxying mechanism in Rococoa. Otherwise when the Java reference is garbage collected, during finalization the proxy is released using `CFRelease` in `NSObjectInvocationHandler` This will cause the object to be potentially deallocated too early while it is still referenced from another object living in Obj-C runtime.
+
+Some examples where this applies are:
+ * Delegates and datasource protocols implemented in Java.
+ * Return values from datasource methods.
+ * Observers and its notification senders you register as a target in `NSNotficationCenter`.
