@@ -101,4 +101,4 @@ In fact, the only use I've yet found for objc_msgSend_fpret is allowing me to in
 
 == And Some Answers ==
 
-Pending a re-write of this page, some very helpful answers can be found on the [http://lists.apple.com/archives/cocoa-dev/2008/Feb/msg02335.html  Cocoa-dev Mailing List].
+Pending a re-write of this page, some very helpful answers can be found on the [http://lists.apple.com/archives/cocoa-dev/2008/Feb/msg02338.html  Cocoa-dev Mailing List].
