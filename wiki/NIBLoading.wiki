@@ -46,9 +46,9 @@ Make sure to register this class with the key in the Info.plist dictionary of yo
 }}}
 The event processing on the AppKit thread should then work after invoking `NSApplication.run()` as expected.
 
- * Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`. Create a new outlet in the NIB file owner named `mainWindow` and connect it the the `NSWindow` instance. Define an action named `buttonClicked:` on the file owner of type `NSObject` and control drag from the `NSButton` instance to the file owner to connect the action.
+ * Create a NIB file in _InterfaceBuilder_ with a `NSWindow` instance and a `NSButton`. Create a new outlet in the NIB file owner named `mainWindow` and connect it the the `NSWindow` instance. Define an action named `buttonClicked:` on the file owner and control drag from the `NSButton` instance to the file owner to connect the action. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject` as is.
 
- * Implement the window controller to load your first NIB and become the file owner. All outlets and actions in the NIB should have Objective-C syntax. Leave the file owner in the NIB file of type `NSObject`as is.
+ * Implement the window controller to load your first NIB and become the file owner. 
 
 {{{
 import org.rococoa.ID;
@@ -59,6 +59,7 @@ public class WindowController {
 
     public WindowController() {
         String bundleName = "MyNib"
+        // Load the NIB file and pass it our Rococoa proxy as the file owner.
         if(!NSBundle.loadNibNamed(bundleName, this.id())) {
             System.err.println("Couldn't load " + bundleName + ".nib");
             return;
