@@ -26,8 +26,11 @@ import static org.junit.Assert.assertTrue;
 import java.lang.ref.WeakReference;
 
 import org.junit.Test;
+import org.rococoa.ID;
 import org.rococoa.NSObject;
 import org.rococoa.cocoa.foundation.NSData;
+import org.rococoa.cocoa.foundation.NSDictionary;
+import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 
 /**
@@ -84,4 +87,13 @@ public static abstract class NSImage implements NSObject {
         }
     }
 
+    @Test
+    public void testIDReturnsNull() {
+        NSDictionary dict = NSDictionary.dictionaryWithObjectsAndKeys(
+                NSString.stringWithString("Value"), NSString.stringWithString("Key")
+        );
+        ID id = dict.objectForKey((ID) null);
+        assertNull(id);
+        assertNotNull(dict.objectForKey(NSString.stringWithString("Key")));
+    }
 }

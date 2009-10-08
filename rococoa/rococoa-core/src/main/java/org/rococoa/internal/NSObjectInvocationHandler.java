@@ -228,8 +228,10 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         if (result instanceof Pointer && method.getReturnType().equals(String.class))
             // special case for return char*
             return ((Pointer) result).getString(0);
-        else
-            return result;
+        if (result instanceof ID)
+            if (((ID) result).isNull())
+                return null;
+        return result;
     }
 
     private void handleInitMethod(Object result) {        
