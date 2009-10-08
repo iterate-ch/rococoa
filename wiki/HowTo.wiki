@@ -12,7 +12,7 @@ Download your choice of archive from
 Unarchive your download. Add `dist/rococoa-n.n.n.jar` and 
 the jars in `lib` to your classpath.
 
-Add `bin` to your `java.library.path`.
+Add `bin` to your `jna.library.path`.
 
 
 ==Create a Java class representation of an Objective-C class==
