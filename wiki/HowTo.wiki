@@ -29,7 +29,7 @@ For now, see the WhistlestopTour.
 
 ==Manage Memory==
 
-See MemoryManagement.
+See [Memory  Memory Management].
 
 ==Call methods with more than one parameter==
 
