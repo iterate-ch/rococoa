@@ -156,7 +156,10 @@ public class NSInvocationMapperLookup {
         });
         addToLookup(new NSInvocationMapper("@", ID.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
-                return ID.fromLong(buffer.getNativeLong(0).longValue());
+                ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
+                if (id.isNull())
+                    return null;
+                return id;
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(NATIVE_POINTER_SIZE);
