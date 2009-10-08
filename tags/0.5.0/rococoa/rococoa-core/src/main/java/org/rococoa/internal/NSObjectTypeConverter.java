@@ -60,26 +60,26 @@ class NSObjectTypeConverter<T extends NSObject> implements TypeConverter {
     
     // For tests only
     boolean convertsJavaType(Class<?> javaType) {
-	return this.javaType == javaType;
+        return this.javaType == javaType;
     }
     
     private boolean shouldRetainFor(FromNativeContext context) {
-	// Generally we should default to retaining, as by default NSObjects that
-	// are returned from methods are owned by the current autorelease pool and
-	// unless we retain will be dealloc'ed when is is drained.	
-	if (context == null || !(context instanceof FunctionResultContext))
-	    return true;
+        // Generally we should default to retaining, as by default NSObjects that
+        // are returned from methods are owned by the current autorelease pool and
+        // unless we retain will be dealloc'ed when is is drained.
+        if (context == null || !(context instanceof FunctionResultContext))
+            return true;
 
-	// The exception is if this conversion is for an object that we own, because
-	// the selector name matches those
-	FunctionResultContext resultContext = (FunctionResultContext) context;
-	Object[] arguments = resultContext.getArguments();
-	if (arguments.length < 2)
-	    return true;
-	if (!(arguments[1] instanceof Selector))
-	    return true;
-	
-	boolean dontRetain = Foundation.selectorNameMeansWeOwnReturnedObject(((Selector) arguments[1]).getName());
-	return !dontRetain; // OK Smartarse, you express it better.
+        // The exception is if this conversion is for an object that we own, because
+        // the selector name matches those
+        FunctionResultContext resultContext = (FunctionResultContext) context;
+        Object[] arguments = resultContext.getArguments();
+        if (arguments.length < 2)
+            return true;
+        if (!(arguments[1] instanceof Selector))
+            return true;
+
+        boolean dontRetain = Foundation.selectorNameMeansWeOwnReturnedObject(((Selector) arguments[1]).getName());
+        return !dontRetain; // OK Smartarse, you express it better.
     }
 }
