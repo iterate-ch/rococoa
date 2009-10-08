@@ -40,8 +40,7 @@ public class NSOpenPanelTest extends RococoaTestCase {
             assertTrue(filenameAsNSString.toString().startsWith("/Users"));
         } else {
             assertEquals(NSOpenPanel.NSCancelButton, button);
-            assertTrue(filenameAsNSString.id().isNull());
+            assertNull(filenameAsNSString);
         }
-
     }
 }
