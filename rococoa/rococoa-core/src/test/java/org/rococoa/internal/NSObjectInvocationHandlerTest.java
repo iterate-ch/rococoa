@@ -88,12 +88,24 @@ public static abstract class NSImage implements NSObject {
     }
 
     @Test
-    public void testIDReturnsNull() {
+    public void testNilReturnValues() {
         NSDictionary dict = NSDictionary.dictionaryWithObjectsAndKeys(
                 NSString.stringWithString("Value"), NSString.stringWithString("Key")
         );
         ID id = dict.objectForKey((ID) null);
         assertNull(id);
-        assertNotNull(dict.objectForKey(NSString.stringWithString("Key")));
+        NSObject nsObject = dict.objectForKey((NSObject) null);
+        assertNull(nsObject);
+    }
+
+    @Test
+    public void testReturnValues() {
+        NSDictionary dict = NSDictionary.dictionaryWithObjectsAndKeys(
+                NSString.stringWithString("Value"), NSString.stringWithString("Key")
+        );
+        ID id = dict.objectForKey(NSString.stringWithString("Key").id());
+        assertNotNull(id);
+        NSObject nsObject = dict.objectForKey(NSString.stringWithString("Key"));
+        assertNotNull(nsObject);
     }
 }
