@@ -16,27 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package org.rococoa.quicktime;
 
-import static org.junit.Assert.assertTrue;
+package org.rococoa.cocoa.qtkit;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import javax.swing.*;
 import java.io.File;
-import java.util.concurrent.CyclicBarrier;
 
-import javax.swing.JFrame;
+public class PlayMovieExample {
 
-import org.junit.Test;
-import org.rococoa.cocoa.qtkit.MovieComponent;
-import org.rococoa.cocoa.qtkit.QTKit;
-import org.rococoa.cocoa.qtkit.QTMovie;
-import org.rococoa.cocoa.qtkit.QTMovieView;
-import org.rococoa.test.RococoaTestCase;
-
-public class MovieComponentTest extends RococoaTestCase {
-    
     static final File FILE = new File("testdata/DrWho.mov");
 
     static {
@@ -45,40 +32,21 @@ public class MovieComponentTest extends RococoaTestCase {
         QTKit instance = QTKit.instance;
     }
 
-    @Test
-    public void testShow() throws Exception {
-        assertTrue(FILE.exists());
-
+    public static void main(String[] args) {
         QTMovieView movieView = QTMovieView.CLASS.create();
         movieView.setControllerVisible(true);
         movieView.setPreservesAspectRatio(true);
 
         MovieComponent component = new MovieComponent(movieView);
         JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(component);
 
         QTMovie movie = QTMovie.movieWithFile_error(FILE.getPath(), null);
         movieView.setMovie(movie);                
-        movie.gotoEnd();
-        showAndWaitUntilClosed(frame);
-    }
-
-    private void showAndWaitUntilClosed(JFrame frame) throws Exception {
+        movie.gotoBeginning();
         frame.pack();
         frame.setVisible(true);
-
-        final CyclicBarrier done = new CyclicBarrier(2);
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                try {
-                    done.await();
-                } catch (Exception x) {
-                    throw new RuntimeException(x);
-                }
-            }
-        });
-
-        done.await();
     }
 
 }
