@@ -5,6 +5,7 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import static org.junit.Assert .*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rococoa.ID;
 import org.rococoa.NSObject;
@@ -17,6 +18,7 @@ public class NSOpenPanelTest extends RococoaTestCase {
 
     // Requires user to select a text file somewhere downtree from ~
     @Test
+    @Ignore
     public void testShow() {
         new JFrame().setVisible(true); // otherwise no panel
         NSOpenPanel panel = NSOpenPanel.CLASS.openPanel();
