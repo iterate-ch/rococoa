@@ -8,3 +8,5 @@ Rococoa owes much to the following people and organisations
   * Richard Care, Matt Bowers, Andy Collins and Morgan David let it go.
   * [http://www.apple.com Apple Inc] produced Quicktime, Java on Mac OS, the Cocoa-Java Bridge and Quicktime for Java, then killed at least 2 of them.
 If you know Java and Cocoa your name could be on this list! [rococoa-help-wanted.html Get involved!]
+
+<wiki:gadget url="http://www.ohloh.net/p/324115/widgets/project_partner_badge.xml" height="53"  border="0" />
