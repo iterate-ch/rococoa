@@ -1,4 +1,5 @@
 #import <Cocoa/Cocoa.h>
+#include <objc/objc-runtime.h>
 
 void callOnMainThread(void (*fn)(), BOOL waitUntilDone);
 

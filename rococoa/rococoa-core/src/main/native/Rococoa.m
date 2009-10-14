@@ -1,5 +1,4 @@
 #include "Rococoa.h"
-#include <objc/objc-runtime.h>
 
 void callOnMainThread(void (*fn)(), BOOL waitUntilDone) {
 	// NSLog(@"callOnMainThread function at address %p", fn);
