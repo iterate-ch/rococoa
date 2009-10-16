@@ -92,6 +92,8 @@ class MsgSendHandler implements InvocationHandler {
     private final Pair<Method, Function> objc_msgSend_stret_Pair;
     private final Pair<Method, Function> objc_msgSend_Pair;
 
+    private RococoaTypeMapper rococoaTypeMapper = new RococoaTypeMapper();
+
     public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_stret_Function) {
         this.objc_msgSend_Pair = new Pair<Method, Function>(OBJC_MSGSEND, objc_msgSend_Function);
         this.objc_msgSend_stret_Pair = new Pair<Method, Function>(OBJC_MSGSEND_STRET, objc_msgSend_stret_Function);
@@ -101,8 +103,8 @@ class MsgSendHandler implements InvocationHandler {
         Class<?> returnTypeForThisCall = (Class<?>) args[0];
         Object[] argsWithoutReturnType = this.removeReturnTypeFrom(args);
         
-        Map<String, Object> options = new HashMap<String, Object>(1);    
-        options.put(Library.OPTION_TYPE_MAPPER, new RococoaTypeMapper());
+        Map<String, Object> options = new HashMap<String, Object>(1);
+        options.put(Library.OPTION_TYPE_MAPPER, rococoaTypeMapper);
         
         Pair<Method, Function> invocation = this.invocationFor(returnTypeForThisCall);
         options.put(OPTION_INVOKING_METHOD, invocation.a);
