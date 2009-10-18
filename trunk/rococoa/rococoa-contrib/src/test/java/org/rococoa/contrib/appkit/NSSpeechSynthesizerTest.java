@@ -228,7 +228,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.continueSpeaking();
         sd.waitForNextWord(2500);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         status = ss.getStatus();   
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
