@@ -133,3 +133,5 @@ See also [Memory#Java_weak_references_and_Rococoa_proxies Memory Management].
  * A good part of the Foundation and AppKit classes can be found in the [http://cyberduck.ch Cyberduck] source code repository ([http://svn.cyberduck.ch/branches/rococoa/source/ch/cyberduck/ui/cocoa/application/ AppKit] GPL, [http://svn.cyberduck.ch/branches/rococoa/source/ch/cyberduck/ui/cocoa/foundation/ Foundation], GPL). These are generated using JNAerator and edited to fix generation errors. 
 
  * You might want to take a look at the state of the [http://code.google.com/p/nativelibs4java/wiki/MacOSXFrameworks Nativelibs4java] project which aims to cover all major OS X frameworks with auto-generated classes.
+
+ * See the ticket [http://code.google.com/p/rococoa/issues/detail?id=4 Foundation and AppKit framework coverage	].
