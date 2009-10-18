@@ -264,7 +264,7 @@ public class GCDExecutorService extends AbstractExecutorService {
             if ( state == State.SHUTDOWN && queueEmpty ) {
                 shutdownCondition.signalAll();
                 queue.setSuspended(true);
-                state = state.TERMINATED;
+                state = State.TERMINATED;
             }
         } finally {
             shutdownLock.unlock();
