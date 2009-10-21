@@ -7,6 +7,7 @@ import java.lang.ref.WeakReference;
 import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSDate;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.test.RococoaTestCase;
 
 public class RococoaObjectOwnershipTest extends RococoaTestCase {

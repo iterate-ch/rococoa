@@ -35,8 +35,8 @@ public class NSClassTest extends RococoaTestCase {
         assertTrue(fortyTwo.isKindOfClass(idOfNSNumber));
         assertFalse(fortyTwo.isKindOfClass(idOfNSString));
         
-        assertTrue(fortyTwo.isKindOfClass(NSClass.CLASS.classWithName("NSNumber")));
-        assertFalse(fortyTwo.isKindOfClass(NSClass.CLASS.classWithName("NSString")));
+        assertTrue(fortyTwo.isKindOfClass(ObjCClass.CLASS.classWithName("NSNumber")));
+        assertFalse(fortyTwo.isKindOfClass(ObjCClass.CLASS.classWithName("NSString")));
     }
 
 }

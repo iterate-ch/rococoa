@@ -23,15 +23,14 @@ package org.rococoa.cocoa.foundation;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
-public abstract class NSString implements NSObject {
+public abstract class NSString extends NSObject {
 
     public static _Class CLASS = Rococoa.createClass("NSString", _Class.class);         //$NON-NLS-1$
 
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         NSString stringWithString(String string);
         NSString stringWithFormat(String string, NSObject...objects);
     }

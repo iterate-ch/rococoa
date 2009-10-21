@@ -23,15 +23,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.test.RococoaTestCase;
 
 
 public class RococoaAbstractClassTest extends RococoaTestCase {
     
-public static abstract class NSNumberAsClass implements NSObject {
+public static abstract class NSNumberAsClass extends NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSNumber", _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSNumberAsClass numberWithInt(int value);
     }
     

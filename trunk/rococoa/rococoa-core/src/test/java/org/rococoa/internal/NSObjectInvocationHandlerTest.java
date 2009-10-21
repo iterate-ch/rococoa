@@ -27,9 +27,9 @@ import java.lang.ref.WeakReference;
 
 import org.junit.Test;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
 import org.rococoa.cocoa.foundation.NSData;
 import org.rococoa.cocoa.foundation.NSDictionary;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 
@@ -38,9 +38,9 @@ import org.rococoa.test.RococoaTestCase;
  */
 public class NSObjectInvocationHandlerTest extends RococoaTestCase {
 
-public static abstract class NSImage implements NSObject {
+public static abstract class NSImage extends NSObject {
     private static final _Class CLASS = org.rococoa.Rococoa.createClass("NSImage", _Class.class);
-    public interface _Class extends org.rococoa.NSClass {
+    public interface _Class extends org.rococoa.ObjCClass {
         NSImage alloc();
     }
     public abstract NSImage initWithData(NSData data);
@@ -66,7 +66,7 @@ public static abstract class NSImage implements NSObject {
      * <p/>
      * Summary: If nil is returned from a initializer, one must assume the object is already released
      *
-     * @see org.rococoa.internal.NSObjectInvocationHandler#invokeCocoa(java.lang.reflect.Method, Object[])
+     * @see org.rococoa.internal.ObjCObjectInvocationHandler#invokeCocoa(java.lang.reflect.Method, Object[])
      * @see "http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/ObjectiveC/Articles/ocAllocInit.html#//apple_ref/doc/uid/TP30001163-CH22-105952"
      */
     @Test

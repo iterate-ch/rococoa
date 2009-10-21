@@ -1,6 +1,7 @@
 package org.rococoa.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;

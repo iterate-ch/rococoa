@@ -30,8 +30,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

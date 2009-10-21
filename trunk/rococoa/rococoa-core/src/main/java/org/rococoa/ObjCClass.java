@@ -19,24 +19,24 @@
  
 package org.rococoa;
 
-public interface NSObject {
-    
-    public static _Class CLASS = Rococoa.createClass("NSObject", _Class.class);
 
-    public interface _Class extends NSClass {
-    	NSObject alloc();
-	}
 
-    // synthesised
-    ID id();
+/**
+ * Marker interface that an OCObject represents a Class.
+ * 
+ * Note that in Objective-C Class is a struct, so there are no methods to call.
+ * 
+ * @author duncan
+ *
+ */
+public interface ObjCClass extends ObjCObject {
+
+    public static final _Class CLASS = new _Class();
     
-    NSObject retain();
-    void release();
-    int retainCount();
-    
-    boolean isKindOfClass(NSClass nsClass);
-    boolean isKindOfClass(ID nsClass);
-    
-    public String description();
+    public static class _Class {
+        public ObjCClass classWithName(String className) {
+            return Rococoa.createClass(className, ObjCClass.class);
+        }
+    }
     
 }

@@ -20,14 +20,13 @@
 package org.rococoa.cocoa.foundation;
 
 import org.rococoa.ID;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
-public abstract class NSDictionary implements NSObject {
+public abstract class NSDictionary extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSDictionary", _Class.class); //$NON-NLS-1$
 
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         NSDictionary dictionaryWithObjects_forKeys(NSArray objects, NSArray keys);
         NSDictionary dictionaryWithObjectsAndKeys(NSObject...objects);
     }

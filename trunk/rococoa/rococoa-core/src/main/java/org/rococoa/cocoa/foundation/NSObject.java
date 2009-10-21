@@ -17,25 +17,28 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa;
+package org.rococoa.cocoa.foundation;
 
+import org.rococoa.ID;
+import org.rococoa.ObjCClass;
+import org.rococoa.ObjCObject;
+import org.rococoa.Rococoa;
 
-/**
- * Marker interface that an OCObject represents a Class.
- * 
- * Note that in Objective-C Class is a struct, so there are no methods to call.
- * 
- * @author duncan
- *
- */
-public interface NSClass extends NSObject {
-
-    public static final _Class CLASS = new _Class();
+public abstract class NSObject implements ObjCObject {
     
-    public static class _Class {
-        public NSClass classWithName(String className) {
-            return Rococoa.createClass(className, NSClass.class);
-        }
-    }
+    public static _Class CLASS = Rococoa.createClass("NSObject", _Class.class);
+
+    public interface _Class extends ObjCClass {
+    	NSObject alloc();
+	}
+
+    public abstract NSObject retain();
+    public abstract void release();
+    public abstract int retainCount();
+    
+    public abstract boolean isKindOfClass(ObjCClass nsClass);
+    public abstract boolean isKindOfClass(ID nsClass);
+    
+    public abstract String description();
     
 }

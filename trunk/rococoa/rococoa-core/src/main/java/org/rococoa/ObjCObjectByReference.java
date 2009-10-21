@@ -17,21 +17,30 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package org.rococoa.cocoa.foundation;
+package org.rococoa;
 
-import org.rococoa.ObjCClass;
-import org.rococoa.Rococoa;
+import com.sun.jna.NativeLong;
+import com.sun.jna.ptr.ByReference;
 
-public abstract class NSMutableArray extends NSObject {
+/**
+ * Used to retrieve an NSObject as an out param.
+ * 
+ * @author duncan
+ *
+ */
+public class ObjCObjectByReference extends ByReference {
 
-    public static final _Class CLASS = Rococoa.createClass("NSMutableArray", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends ObjCClass {
-        NSMutableArray arrayWithCapacity(int numItems);
+    private ObjCObject object;
+
+    public ObjCObjectByReference() {
+        super(NativeLong.SIZE);
     }
     
-    public abstract int count();
-    public abstract void addObject(NSObject anObject);
-    public abstract void addObject(String string);
+    public <T extends ObjCObject> T getValueAs(Class<T> javaClass) {
+        return Rococoa.cast(object, javaClass);
+    }
     
-    public abstract NSObject objectAtIndex(int index);
+    public void setObject(ObjCObject object) {
+        this.object = object;
+    }
 }

@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import org.rococoa.ID;
 import org.rococoa.Selector;
 
-
 import com.sun.jna.InvocationMapper;
 import com.sun.jna.NativeLibrary;
 

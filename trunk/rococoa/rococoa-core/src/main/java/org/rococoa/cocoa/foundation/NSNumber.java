@@ -22,14 +22,13 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
 
-public interface NSNumber extends NSObject {
+public abstract class NSNumber extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSNumber", _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSNumber numberWithBool(boolean value);
         public NSNumber numberWithInt(int value);
         public NSNumber numberWithDouble(double e);
@@ -37,10 +36,10 @@ public interface NSNumber extends NSObject {
         public NSNumber numberWithFloat(float value);
     }
     
-    public short shortValue();
-    public int intValue();
-    public long longValue();
-    public float floatValue();
-    public double doubleValue();
-    public int compare(NSNumber another);
+    public abstract short shortValue();
+    public abstract int intValue();
+    public abstract long longValue();
+    public abstract float floatValue();
+    public abstract double doubleValue();
+    public abstract int compare(NSNumber another);
 }

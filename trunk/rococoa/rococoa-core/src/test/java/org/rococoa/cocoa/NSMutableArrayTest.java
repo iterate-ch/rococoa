@@ -22,9 +22,9 @@ package org.rococoa.cocoa;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSMutableArray;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 

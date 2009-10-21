@@ -19,11 +19,13 @@
  
 package org.rococoa.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
 import org.rococoa.TestStruct;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 
 import com.sun.jna.Native;
