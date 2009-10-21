@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;
@@ -40,8 +40,8 @@ public class NSInvocationMapperLookup {
             return directMatch;
         
         // Now if it is any subclass of NSObject, then the generic mapper will do
-        if (NSOBJECT.type.isAssignableFrom(type))
-            return NSOBJECT;
+        if (OCOBJECT.type.isAssignableFrom(type))
+            return OCOBJECT;
 
         // Now if it is any subclass of NSObject, then the generic mapper will do
         if (NATIVE_LONG.type.isAssignableFrom(type))
@@ -222,17 +222,17 @@ public class NSInvocationMapperLookup {
         });
     }
     
-    static NSInvocationMapper NSOBJECT = new NSInvocationMapper("@", NSObject.class) {
+    static NSInvocationMapper OCOBJECT = new NSInvocationMapper("@", ObjCObject.class) {
         @SuppressWarnings("unchecked")
         @Override public Object readFrom(Memory buffer, Class<?> type) {
             ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
             if (id.isNull())
                 return null;
-            return Rococoa.wrap(id, (Class<? extends NSObject>) type);
+            return Rococoa.wrap(id, (Class<? extends ObjCObject>) type);
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
             Memory buffer = new Memory(NATIVE_POINTER_SIZE);
-            buffer.setNativeLong(0, ((NSObject) methodCallResult).id());
+            buffer.setNativeLong(0, ((ObjCObject) methodCallResult).id());
             return buffer;
         }};
     

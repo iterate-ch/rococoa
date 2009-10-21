@@ -19,14 +19,13 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
 
-public interface NSNotification extends NSObject {
+public abstract class NSNotification extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSNotification",  _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         NSNotification notificationWithName_object(String notificationName, NSObject object);
     }
   

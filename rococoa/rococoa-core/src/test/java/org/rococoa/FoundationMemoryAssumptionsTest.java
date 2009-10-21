@@ -1,10 +1,10 @@
 package org.rococoa;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.rococoa.test.RococoaTestCase.assertRetainCount;
-import static org.junit.Assert.*;
-
-import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.Ignore;
 import org.junit.Test;

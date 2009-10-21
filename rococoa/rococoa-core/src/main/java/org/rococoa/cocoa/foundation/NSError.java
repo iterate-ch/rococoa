@@ -19,31 +19,30 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
-public interface NSError extends NSObject {
+public abstract class NSError extends NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSError", _Class.class); //$NON-NLS-1$
 
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         NSError alloc();
         NSError errorWithDomain_code_userInfo(String domain, NSInteger code, NSDictionary userInfo);
     }
     
-    public NSError initWithDomain_code_userInfo(String domain, NSInteger code, NSDictionary userInfo);
+    public abstract NSError initWithDomain_code_userInfo(String domain, NSInteger code, NSDictionary userInfo);
 
-    public NSInteger code();
+    public abstract NSInteger code();
 
-    public String domain();
+    public abstract String domain();
 
-    public String localizedDescription();
-    public String localizedRecoverySuggestion();
-    public NSArray localizedRecoveryOptions();
-    public String localizedFailureReason();
+    public abstract String localizedDescription();
+    public abstract String localizedRecoverySuggestion();
+    public abstract NSArray localizedRecoveryOptions();
+    public abstract String localizedFailureReason();
     
-    public NSObject recoveryAttempter();
+    public abstract NSObject recoveryAttempter();
     
-    public NSDictionary userInfo();
+    public abstract NSDictionary userInfo();
 }

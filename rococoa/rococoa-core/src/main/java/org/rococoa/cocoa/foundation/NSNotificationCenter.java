@@ -20,29 +20,28 @@
 package org.rococoa.cocoa.foundation;
 
 import org.rococoa.ID;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.Selector;
 
 
-public interface NSNotificationCenter extends NSObject {
+public abstract class NSNotificationCenter extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSNotificationCenter", _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSNotificationCenter defaultCenter();
     }
     
     @Deprecated
-    void addObserver_selector_name_object(ID notificationObserver,
+    public abstract void addObserver_selector_name_object(ID notificationObserver,
             Selector notificationSelector,
             String notificationName,
             NSObject notificationSender);
 
-    void addObserver_selector_name_object(NSObject notificationObserver,
+    public abstract void addObserver_selector_name_object(NSObject notificationObserver,
             Selector notificationSelector,
             String notificationName,
             NSObject notificationSender);
 
-    void postNotification(NSNotification notification);
+    public abstract void postNotification(NSNotification notification);
 
 }

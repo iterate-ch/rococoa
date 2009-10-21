@@ -22,7 +22,7 @@ package org.rococoa.internal;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCObject;
 import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.test.RococoaTestCase;
 
@@ -38,13 +38,13 @@ public class RococoaTypeMapperTest extends RococoaTestCase {
 	assertTrue(typeMapper.getFromNativeConverter(String.class) instanceof StringTypeConverter);
     }
     
-    @Test public void testNSObject() {
-	// ToNative only has to get the ID, so it only has to know about NSObject
-	NSObjectTypeConverter toNativeConverter = (NSObjectTypeConverter) typeMapper.getToNativeConverter(NSNumber.class);
-	assertTrue(toNativeConverter.convertsJavaType(NSObject.class));
+    @Test public void testObjCObject() {
+	// ToNative only has to get the ID, so it only has to know about ObjCObject
+        ObjCObjectTypeConverter toNativeConverter = (ObjCObjectTypeConverter) typeMapper.getToNativeConverter(NSNumber.class);
+	assertTrue(toNativeConverter.convertsJavaType(ObjCObject.class));
 
-	// FromNative needs to know the actual type so that it can create the right Java subclass of NSObject
-	NSObjectTypeConverter fromNativeConverter = (NSObjectTypeConverter) typeMapper.getFromNativeConverter(NSNumber.class);
+	// FromNative needs to know the actual type so that it can create the right Java subclass of ObjCObject
+	ObjCObjectTypeConverter fromNativeConverter = (ObjCObjectTypeConverter) typeMapper.getFromNativeConverter(NSNumber.class);
 	assertTrue(fromNativeConverter.convertsJavaType(NSNumber.class));
     }
 

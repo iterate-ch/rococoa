@@ -34,8 +34,8 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.IDByReference;
-import org.rococoa.NSObject;
-import org.rococoa.NSObjectByReference;
+import org.rococoa.ObjCObject;
+import org.rococoa.ObjCObjectByReference;
 import org.rococoa.ReleaseInFinalize;
 import org.rococoa.ReturnType;
 import org.rococoa.Rococoa;
@@ -54,7 +54,7 @@ import com.sun.jna.Pointer;
  *
  */
 @SuppressWarnings("nls")
-public class NSObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
+public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
 
     private static final int FINALIZE_AUTORELEASE_BATCH_SIZE = 1000;
 
@@ -70,7 +70,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             OBJECT_TOSTRING = Object.class.getMethod("toString");
             OBJECT_HASHCODE = Object.class.getMethod("hashCode");
             OBJECT_EQUALS = Object.class.getMethod("equals", Object.class);
-            OCOBJECT_ID = NSObject.class.getMethod("id");
+            OCOBJECT_ID = ObjCObject.class.getMethod("id");
         }
         catch (Exception x) {
             throw new RococoaException("Error retrieving method", x);
@@ -84,7 +84,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
     private final boolean releaseOnFinalize;
     private volatile boolean finalized;
 
-    public NSObjectInvocationHandler(final ID ocInstance, Class<? extends NSObject> javaClass, boolean retain) {
+    public ObjCObjectInvocationHandler(final ID ocInstance, Class<? extends ObjCObject> javaClass, boolean retain) {
         this.ocInstance = ocInstance;
         javaClassName = javaClass.getSimpleName();
         invokeAllMethodsOnMainThread = shouldInvokeMethodsOnMainThread(javaClass);
@@ -112,7 +112,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         }
     }
 
-    private boolean shouldReleaseInFinalize(Class<? extends NSObject> javaClass) {
+    private boolean shouldReleaseInFinalize(Class<? extends ObjCObject> javaClass) {
         // Almost everything should be released in finalize, except wrappers for
         // NSAutoreleasePool.
         ReleaseInFinalize annotation = javaClass.getAnnotation(ReleaseInFinalize.class);
@@ -197,8 +197,8 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         if (OBJECT_EQUALS.equals(method)) {
             if (args[0] == null)
                 return false;
-            if (args[0] instanceof NSObject)
-                return invokeIsEqual(((NSObject) args[0]).id());
+            if (args[0] instanceof ObjCObject)
+                return invokeIsEqual(((ObjCObject) args[0]).id());
             return false;
         }
         if (OCOBJECT_ID.equals(method))
@@ -266,12 +266,12 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
             Object original = args[i];
             Object marshalled = marshalledArgs[i];
             if (marshalled instanceof IDByReference) {
-                if (!(original instanceof NSObjectByReference)) {
+                if (!(original instanceof ObjCObjectByReference)) {
                     logging.error("Bad marshalling");
                     continue;
                 }
-                ((NSObjectByReference) original).setObject(
-                   Rococoa.wrap(((IDByReference) marshalled).getValue(), NSObject.class));
+                ((ObjCObjectByReference) original).setObject(
+                   Rococoa.wrap(((IDByReference) marshalled).getValue(), ObjCObject.class));
             }
         }
     }
@@ -304,7 +304,7 @@ public class NSObjectInvocationHandler implements InvocationHandler, MethodInter
         // RococoaTypeMapper also gets involved.
         if (arg == null)
             return null;
-        if (arg instanceof NSObjectByReference)
+        if (arg instanceof ObjCObjectByReference)
             return new IDByReference(); // this will be filled in with an id by
                 // the called code, and then marshalled to an NSObject by fillInReferences
             // TODO - passing existing inout, not just out

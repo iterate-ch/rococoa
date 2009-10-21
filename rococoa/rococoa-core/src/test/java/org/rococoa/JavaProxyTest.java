@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSNotification;
 import org.rococoa.cocoa.foundation.NSNotificationCenter;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 
@@ -233,7 +234,7 @@ public class JavaProxyTest extends RococoaTestCase {
         // registered was always the one called!
         // @see https://rococoa.dev.java.net/issues/show_bug.cgi?id=9
         JavaImplementor implementor2 = new JavaImplementor();
-        NSObject proxy2 = Rococoa.proxy(implementor2);
+        ObjCObject proxy2 = Rococoa.proxy(implementor2);
         
         Foundation.sendReturnsVoid(proxy.id(), "testTakesIDReturnsID:", ID.fromLong(42));
         assertEquals(ID.fromLong(42), implementor.arg);        

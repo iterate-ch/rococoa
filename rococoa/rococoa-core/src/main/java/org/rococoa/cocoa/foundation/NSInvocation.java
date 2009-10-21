@@ -19,14 +19,13 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSObject;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
-public interface  NSInvocation extends NSObject {
+public abstract class NSInvocation extends NSObject {
 
-    NSMethodSignature methodSignature();
-    void getArgument_atIndex(Pointer receiver, int index);
-    void setReturnValue(Memory buffer);
+    public abstract NSMethodSignature methodSignature();
+    public abstract void getArgument_atIndex(Pointer receiver, int index);
+    public abstract void setReturnValue(Memory buffer);
 }

@@ -19,16 +19,15 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSObject;
 import org.rococoa.ReturnType;
 
 import com.sun.jna.Pointer;
 
-public interface NSMethodSignature extends NSObject {
+public abstract class NSMethodSignature extends NSObject {
     
-    int numberOfArguments();
+    public abstract int numberOfArguments();
 
-    @ReturnType(Pointer.class) String getArgumentTypeAtIndex(int index);
-    @ReturnType(Pointer.class) String methodReturnType();
+    public abstract @ReturnType(Pointer.class) String getArgumentTypeAtIndex(int index);
+    public abstract @ReturnType(Pointer.class) String methodReturnType();
 
 }

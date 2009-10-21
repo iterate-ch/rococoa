@@ -25,9 +25,10 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.test.RococoaTestCase;
 
 import com.sun.jna.FromNativeConverter;
@@ -35,13 +36,13 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.ToNativeConverter;
 
 @SuppressWarnings({ "nls", "unchecked", "cast" })
-public class NSObjectTypeConverterTest extends RococoaTestCase {
+public class ObjCObjectTypeConverterTest extends RococoaTestCase {
     
     private static Class<? extends Number> primitiveTypeOfID = 
         (Class<? extends Number>) new ID().nativeType();
         
     @Test public void convertsNSObjectAsArgumentToID() {	
-	ToNativeConverter converter = new NSObjectTypeConverter(NSObject.class);
+	ToNativeConverter converter = new ObjCObjectTypeConverter(ObjCObject.class);
 	    // We treat all NSObject's equally in toNative, see RococoaTypeMapper
         assertEquals(primitiveTypeOfID, converter.nativeType());
         
@@ -55,12 +56,12 @@ public class NSObjectTypeConverterTest extends RococoaTestCase {
     @Test public void convertsNullAsArgumentToNull() {
         // Not entirely sure about this, maybe 0 would be better than null, 
         // but JNA seems to interpret it properly
-	ToNativeConverter converter = new NSObjectTypeConverter(NSObject.class);
+	ToNativeConverter converter = new ObjCObjectTypeConverter(ObjCObject.class);
         assertEquals(null, converter.toNative(null, null));
     }
     
     @Test public void convertsReturnedIDToNSObjectSubclass() {
-        FromNativeConverter converter = new NSObjectTypeConverter(NSNumber.class);
+        FromNativeConverter converter = new ObjCObjectTypeConverter(NSNumber.class);
             // returning is based on declared type, see RococoaTypeMapper
 
 	NSNumber number = Rococoa.create("NSNumber", NSNumber.class, "numberWithInt:", 45);
@@ -81,13 +82,13 @@ public class NSObjectTypeConverterTest extends RococoaTestCase {
     
     @Test public void convertsReturnedNilToNull() {
 	// Again I'm not sure that this is desirable, but it is what happens.
-        FromNativeConverter converter = new NSObjectTypeConverter(NSNumber.class);
+        FromNativeConverter converter = new ObjCObjectTypeConverter(NSNumber.class);
         Number nativeValue = new Long(0);
         assertNull(converter.fromNative(nativeValue, null));
     }
     
     @Test public void returnedNSObjectIsNormallyRetained() {
-        FromNativeConverter converter = new NSObjectTypeConverter(NSNumber.class);
+        FromNativeConverter converter = new ObjCObjectTypeConverter(NSNumber.class);
 
 	NSNumber number = Rococoa.create("NSNumber", NSNumber.class, "numberWithInt:", 45);
 	assertRetainCount(2, number); // one for the pool, one for Java

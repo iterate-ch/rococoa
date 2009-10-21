@@ -19,18 +19,17 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
-public interface NSData extends NSObject {
+public abstract class NSData extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSData", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         NSData dataWithBytes_length(byte[] bytes, int length);
     }
     
-    int length();
-    void getBytes(byte[] bytes);
-    void getBytes_length(byte[] bytes, int length);
+    public abstract int length();
+    public abstract void getBytes(byte[] bytes);
+    public abstract void getBytes_length(byte[] bytes, int length);
     
 }

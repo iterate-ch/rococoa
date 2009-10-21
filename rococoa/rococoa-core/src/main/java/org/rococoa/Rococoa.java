@@ -21,16 +21,15 @@ package org.rococoa;
 
 import java.lang.reflect.Proxy;
 
-import org.rococoa.internal.NSObjectInvocationHandler;
-import org.rococoa.internal.OCInvocationCallbacks;
-import org.rococoa.internal.VarArgsUnpacker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 import net.sf.cglib.core.DefaultNamingPolicy;
 import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
+
+import org.rococoa.internal.OCInvocationCallbacks;
+import org.rococoa.internal.ObjCObjectInvocationHandler;
+import org.rococoa.internal.VarArgsUnpacker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Static factory for creating Java wrappers for Objective-C instances, and Objective-C
@@ -46,7 +45,7 @@ public abstract class Rococoa  {
     /**
      * Create a Java NSClass representing the Objective-C class with ocClassName
      */
-    public static <T extends NSClass> T createClass(String ocClassName, Class<T> type) {
+    public static <T extends ObjCClass> T createClass(String ocClassName, Class<T> type) {
         return wrap(Foundation.getClass(ocClassName), type, false);
     }
     
@@ -55,7 +54,7 @@ public abstract class Rococoa  {
      * ocClassName. The Objective-C instance is created by calling the static 
      * factory method named ocMethodName, passing args.
      */
-    public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass, String ocMethodName, Object... args) {
+    public static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass, String ocMethodName, Object... args) {
         boolean weOwnObject = Foundation.selectorNameMeansWeOwnReturnedObject(ocMethodName);
         
         // If we don't own the object we know that it has been autorelease'd
@@ -71,11 +70,11 @@ public abstract class Rococoa  {
      * Create a Java NSObject representing an instance of the Objective-C class
      * ocClassName, created with the class method <code>+new</code>.
      */
-    public static <T extends NSObject> T create(String ocClassName, Class<T> javaClass) {
+    public static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass) {
         return create(ocClassName, javaClass, "new");
     }
 
-    private static <T extends NSObject> T create(String ocClassName, Class<T> javaClass,
+    private static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass,
             String ocFactoryName, 
             boolean retain,
             Object... args) {
@@ -98,7 +97,7 @@ public abstract class Rococoa  {
      * 
      * The NSObject is retained, and released when the object is GC'd.
      */
-    public static <T extends NSObject> T wrap(ID id, Class<T> javaClass) {
+    public static <T extends ObjCObject> T wrap(ID id, Class<T> javaClass) {
         return wrap(id, javaClass, true);
     }
 
@@ -106,15 +105,15 @@ public abstract class Rococoa  {
      * Create a Java NSObject down-casting an existing NSObject to a more derived
      * type.
      */
-    public static <T extends NSObject> T cast(NSObject object, Class<T> desiredType) {
+    public static <T extends ObjCObject> T cast(ObjCObject object, Class<T> desiredType) {
         return wrap(object.id(), desiredType, true);
     }
 
-    public static <T extends NSObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
+    public static <T extends ObjCObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
         // Why would we not want to retain? Well if we are wrapping a Core Foundation
         // created object, or one created with new (alloc init), it will not
         // have been autorelease'd. 
-        NSObjectInvocationHandler invocationHandler = new NSObjectInvocationHandler(id, javaClass, retain);
+        ObjCObjectInvocationHandler invocationHandler = new ObjCObjectInvocationHandler(id, javaClass, retain);
         return createProxy(javaClass, invocationHandler);        
     }
     
@@ -143,11 +142,11 @@ public abstract class Rococoa  {
      * You need to keep a reference to the returned value for as long as it is
      * active. When it is GC'd, it will release the Objective-C proxy.
      */
-    public static NSObject proxy(Object javaObject) {
-        return proxy(javaObject, NSObject.class);
+    public static ObjCObject proxy(Object javaObject) {
+        return proxy(javaObject, ObjCObject.class);
     }
     
-    public static <T extends NSObject> T proxy(Object javaObject, Class<T> javaType) {
+    public static <T extends ObjCObject> T proxy(Object javaObject, Class<T> javaType) {
         ID proxyID = wrap(javaObject);
         // we own the proxyID, so by wrapping it as NSObject, we can arrange for
         // it to be release'd when the NSObject is finalized
@@ -159,7 +158,7 @@ public abstract class Rococoa  {
      * invocations to invococationHandler.
      */
     @SuppressWarnings("unchecked")
-    private static <T> T createProxy(final Class<T> type, NSObjectInvocationHandler invocationHandler) {
+    private static <T> T createProxy(final Class<T> type, ObjCObjectInvocationHandler invocationHandler) {
         if (type.isInterface()) {
             return (T) Proxy.newProxyInstance(
                 invocationHandler.getClass().getClassLoader(), 

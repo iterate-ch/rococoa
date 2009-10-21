@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSDate;
 import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
 
@@ -106,7 +107,7 @@ public class RococoaTest extends RococoaTestCase {
         assertEquals(nsNumberClass.id(), Foundation.getClass("NSNumber"));
     }
     
-    public interface OddClass extends NSClass {
+    public interface OddClass extends ObjCClass {
         public NSObject numberWithInt(int value);
     }
 

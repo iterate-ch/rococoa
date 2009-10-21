@@ -4,7 +4,7 @@
 package org.rococoa.internal;
 
 import org.rococoa.IDByReference;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCObject;
 
 import com.sun.jna.FromNativeContext;
 import com.sun.jna.ToNativeContext;
@@ -13,7 +13,7 @@ import com.sun.jna.TypeConverter;
 /**
  * Work in progress. I think that this needs a bit of JNA help to get off the ground.
  */
-class NSObjectByReferenceTypeConverter<T extends NSObject> implements TypeConverter {
+class ObjCObjectByReferenceTypeConverter<T extends ObjCObject> implements TypeConverter {
     
 
     public Object fromNative(Object nativeValue, FromNativeContext context) {

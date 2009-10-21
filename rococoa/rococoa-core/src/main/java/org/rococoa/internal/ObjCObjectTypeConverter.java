@@ -5,7 +5,7 @@ package org.rococoa.internal;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
 import org.rococoa.Selector;
 
@@ -20,13 +20,13 @@ import com.sun.jna.TypeConverter;
  * native code, and creates an instance of subclass of NSObject to wrap an id
  * when receiving one from native code.
  */
-class NSObjectTypeConverter<T extends NSObject> implements TypeConverter {
+class ObjCObjectTypeConverter<T extends ObjCObject> implements TypeConverter {
     
     private static final NativeMapped nativeLongConverter = new ID();
 
     private final Class<T> javaType;
 
-    public NSObjectTypeConverter(Class<T> javaType) {
+    public ObjCObjectTypeConverter(Class<T> javaType) {
         this.javaType = javaType;
     }
 
@@ -53,7 +53,7 @@ class NSObjectTypeConverter<T extends NSObject> implements TypeConverter {
     public Object toNative(Object value, ToNativeContext context) {
         if (value == null)
             return null;
-        NSObject valueAsNSObject = (NSObject) value;
+        ObjCObject valueAsNSObject = (ObjCObject) value;
         ID idToReturn = valueAsNSObject.id();
         return idToReturn.toNative();
     }

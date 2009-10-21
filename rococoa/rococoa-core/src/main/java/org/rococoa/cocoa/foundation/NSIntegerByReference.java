@@ -1,16 +1,10 @@
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.ID;
-
-import com.sun.jna.FromNativeContext;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.ByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 
 public class NSIntegerByReference extends NativeLongByReference {
 	
-	public NSIntegerByReference() {
+    public NSIntegerByReference() {
         this(new NSInteger(0L));
     }
     

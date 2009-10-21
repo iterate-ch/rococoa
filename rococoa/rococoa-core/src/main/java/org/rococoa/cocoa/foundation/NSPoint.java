@@ -19,10 +19,11 @@
 
 package org.rococoa.cocoa.foundation;
 
-import com.sun.jna.Structure;
+import java.awt.geom.Point2D;
+
 import org.rococoa.cocoa.CGFloat;
 
-import java.awt.geom.Point2D;
+import com.sun.jna.Structure;
 
 /**
  * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>

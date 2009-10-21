@@ -19,15 +19,14 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSObject;
 
 
-public interface NSImage extends NSObject {
+public abstract class NSImage extends NSObject {
     
-    void setScalesWhenResized(boolean scaleWhenResizing);
+    public abstract void setScalesWhenResized(boolean scaleWhenResizing);
     
-    void setSize(NSSize size);
+    public abstract void setSize(NSSize size);
     
-    NSData TIFFRepresentation();
+    public abstract NSData TIFFRepresentation();
 
 }

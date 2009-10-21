@@ -19,16 +19,15 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
-public interface NSURL extends NSObject  {
+public abstract class NSURL extends NSObject  {
     public static final _Class CLASS = Rococoa.createClass("NSURL", _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSURL URLWithString(String value);
         public NSURL fileURLWithPath(String path);
     }
-    public NSURL absoluteURL();
-    public String path();
+    public abstract NSURL absoluteURL();
+    public abstract String path();
 }

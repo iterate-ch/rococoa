@@ -19,8 +19,7 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
 /**
@@ -32,7 +31,7 @@ public abstract class NSMutableDictionary extends NSDictionary {
     
     public static final _Class CLASS = Rococoa.createClass("NSMutableDictionary", _Class.class); //$NON-NLS-1$
 
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         NSMutableDictionary dictionaryWithCapacity(int numItems);
         NSMutableDictionary dictionaryWithObjects_forKeys(NSArray objects, NSArray keys);
         NSMutableDictionary dictionaryWithObjectsAndKeys(NSObject...objects);

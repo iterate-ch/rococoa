@@ -19,16 +19,15 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
 import com.sun.jna.Structure;
 
-public abstract class NSValue implements NSObject {
+public abstract class NSValue extends NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSValue", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSClass {        
+    public interface _Class extends ObjCClass {        
         NSValue valueWithSize(NSSize size);    
     }
     

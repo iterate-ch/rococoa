@@ -19,23 +19,22 @@
  
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 
-public interface NSArray extends NSObject {
+public abstract class NSArray extends NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSArray", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         /**
          * @param objects Contents and then a trailing null
          */
         NSArray arrayWithObjects(NSObject...objects);
     }
     
-    int count();
+    public abstract int count();
 
-    NSObject lastObject();
-    NSObject objectAtIndex(int zeroOffsetIndex);
+    public abstract NSObject lastObject();
+    public abstract NSObject objectAtIndex(int zeroOffsetIndex);
     
 }

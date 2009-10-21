@@ -22,23 +22,23 @@ package org.rococoa.internal;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.rococoa.NSObject;
-import org.rococoa.NSObjectByReference;
+import org.rococoa.ObjCObject;
+import org.rococoa.ObjCObjectByReference;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.test.RococoaTestCase;
 
 @SuppressWarnings("nls")
-public class RococoaNSObjectByReferenceTest extends RococoaTestCase {
-    private interface TestShunt extends NSObject {
-        void testNSNumberByReference_with(NSObjectByReference reference, int value);
+public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
+    private interface TestShunt extends ObjCObject {
+        void testNSNumberByReference_with(ObjCObjectByReference reference, int value);
     };
     
     @Test public void test() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
         TestShunt shunt = Rococoa.create("TestShunt", TestShunt.class);
-        NSObjectByReference reference = new NSObjectByReference();
+        ObjCObjectByReference reference = new ObjCObjectByReference();
         shunt.testNSNumberByReference_with(reference, 42);
         NSNumber value = reference.getValueAs(NSNumber.class);
         assertEquals(42, value.intValue());
