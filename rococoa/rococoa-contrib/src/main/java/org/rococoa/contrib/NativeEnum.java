@@ -18,7 +18,7 @@
  */
 package org.rococoa.contrib;
 
-import org.rococoa.*;
+import org.rococoa.cocoa.foundation.NSObject;
 
 /** An interface for Enumerations that derive their actual values from native code.
  *  e.g. many header files contain groups of related String or Integer

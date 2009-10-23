@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.rococoa.NSObject;
 import org.rococoa.cocoa.NSApplication;
 import org.rococoa.cocoa.NSDistributedNotificationCenter;
 import org.rococoa.cocoa.foundation.NSArray;
@@ -12,6 +11,7 @@ import org.rococoa.cocoa.foundation.NSDictionary;
 import org.rococoa.cocoa.foundation.NSImage;
 import org.rococoa.cocoa.foundation.NSMutableDictionary;
 import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 
 /**

@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
 import org.rococoa.Selector;
 import org.rococoa.cocoa.foundation.NSArray;
@@ -184,7 +184,7 @@ public class GCDExecutorService extends AbstractExecutorService {
          *  will occur if the Java proxy is collected and Objective-C attempts
          *  to use it.
          */
-        private final NSObject proxy;
+        private final ObjCObject proxy;
         /**The original runnable submitted by the caller of the ExecutorService, when a method
          * that takes a Runnable is used. Conversely, if a Callable is submitted for execution
          * then this is simply set to <code>this</code>.
@@ -215,7 +215,7 @@ public class GCDExecutorService extends AbstractExecutorService {
             invocation = createInvocation(proxy);
             tasks.put(invocation.id(), this);
         }
-        private NSInvocationOperation createInvocation(final NSObject toInvoke) {
+        private NSInvocationOperation createInvocation(final ObjCObject toInvoke) {
             return doWithAutoreleasePool(new Callable<NSInvocationOperation> () {
                 public NSInvocationOperation call() {
                     NSInvocationOperation result = NSInvocationOperation.CLASS.alloc();

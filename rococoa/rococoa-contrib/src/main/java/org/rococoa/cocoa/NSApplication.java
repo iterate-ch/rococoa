@@ -1,12 +1,12 @@
 package org.rococoa.cocoa;
 
 import org.rococoa.ID;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.RunOnMainThread;
 import org.rococoa.cocoa.foundation.NSImage;
 import org.rococoa.cocoa.foundation.NSInteger;
+import org.rococoa.cocoa.foundation.NSObject;
 
 /**
  * NSApplication
@@ -16,12 +16,12 @@ import org.rococoa.cocoa.foundation.NSInteger;
  * @version $Id: NSApplication.java,v 1.0 Mar 21, 2008 11:12:34 PM haraldk Exp$
  */
 @RunOnMainThread
-public abstract class NSApplication implements NSObject {
+public abstract class NSApplication extends NSObject {
 
     private static final _Class CLASS = Rococoa.createClass("NSApplication", _Class.class);  //$NON-NLS-1$
 
     // NOTE: This class should not run on main thread (deadlocks?)
-    private interface _Class extends NSClass {
+    private interface _Class extends ObjCClass {
         NSApplication sharedApplication();
     }
 

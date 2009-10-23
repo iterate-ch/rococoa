@@ -20,20 +20,20 @@
 package org.rococoa.contrib.appkit;
 
 import org.rococoa.ID;
-import org.rococoa.NSClass;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.Selector;
 
 /** NSInvocationOperation from Cocoa.
  *
  */
-public interface NSInvocationOperation extends NSOperation {
+public abstract class NSInvocationOperation extends NSOperation {
     public static final _Class CLASS = Rococoa.createClass(NSInvocationOperation.class.getSimpleName(), _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSInvocationOperation alloc();
     }
 
-    NSInvocationOperation initWithTarget_selector_object(ID target, Selector sel, ID arg);
+    public abstract NSInvocationOperation initWithTarget_selector_object(ID target, Selector sel, ID arg);
 
-    ID result();
+    public abstract ID result();
 }

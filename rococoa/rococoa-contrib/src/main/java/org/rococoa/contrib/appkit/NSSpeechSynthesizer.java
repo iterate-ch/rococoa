@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.rococoa.contrib.AbstractPropertyDictionary;
 import org.rococoa.ID;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.NSObjectByReference;
+import org.rococoa.ObjCClass;
+import org.rococoa.ObjCObject;
+import org.rococoa.ObjCObjectByReference;
 import org.rococoa.contrib.NativeEnum;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSArray;
@@ -36,6 +36,7 @@ import org.rococoa.cocoa.foundation.NSDictionary;
 import org.rococoa.cocoa.foundation.NSError;
 import org.rococoa.cocoa.foundation.NSMutableDictionary;
 import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSRange;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.cocoa.foundation.NSUInteger;
@@ -47,7 +48,7 @@ import org.rococoa.cocoa.foundation.NSURL;
  *  Convenience methods and wrapper classes have been implemented for property and NSDictionary based datastructures.
  */
 //@RunOnMainThread
-public abstract class NSSpeechSynthesizer implements NSObject {
+public abstract class NSSpeechSynthesizer extends NSObject {
     /** Defines the properties associated with a speech synthesizer. Getters and setters have been provided for most of these,
      *  so using the properties directly will not usually be necessary.
      *  @see NSSpeechSynthesizer#getProperty(org.rococoa.contrib.appkit.NSSpeechSynthesizer.SpeechProperty)
@@ -84,13 +85,13 @@ public abstract class NSSpeechSynthesizer implements NSObject {
     /**Represents the Objective C class for NSSpeechSynthesizer*/
     public static final _Class CLASS = Rococoa.createClass("NSSpeechSynthesizer", _Class.class);
     /** Synthesizers have an associated delegate. This is the Objective C delegate object acting as the delegate*/
-    private NSObject delegateWrapper = null;
+    private ObjCObject delegateProxy = null;
     /** Synthesizers have an associated delegate. This is the Java object provided by the user of this class
         that allows Java code to receive delegate related callbacks.*/
     private NSSpeechSynthesizerDelegate delegate = null;
 
     /** Represents the Objective C class of the speech synthesizer*/
-    public static abstract class _Class implements NSClass {
+    public static abstract class _Class implements ObjCClass {
         public _Class() {}
         public abstract NSSpeechSynthesizer alloc();
         public abstract NSDictionary attributesForVoice(String voiceIdentifier);
@@ -158,9 +159,11 @@ public abstract class NSSpeechSynthesizer implements NSObject {
      *  @param delegate the delegate to set, replacing any existing one
      */
     public synchronized void setDelegate(final NSSpeechSynthesizerDelegate delegate) {
-        this.delegate = delegate;
-        delegateWrapper = Rococoa.proxy(delegate);
-        setDelegate(this.delegateWrapper.id());
+        if ( delegate != null ) {
+            this.delegate = delegate;
+            delegateProxy = Rococoa.proxy(delegate);
+            setDelegate(this.delegateProxy.id());
+        }
     }
 
     /** Get the current delegate
@@ -198,7 +201,7 @@ public abstract class NSSpeechSynthesizer implements NSObject {
      *  @throws IllegalArgumentException if an error occurs while reading the property
      */
     public NSObject getProperty(SpeechProperty property) throws IllegalArgumentException {
-         NSObjectByReference errorPtr = new NSObjectByReference();
+         ObjCObjectByReference errorPtr = new ObjCObjectByReference();
          NSObject result = objectForProperty_error(property.getNativeValue(), errorPtr);
          NSError error = errorPtr.getValueAs(NSError.class);
          //objectForProperty:error isn't well documented, so be very conservative
@@ -215,7 +218,7 @@ public abstract class NSSpeechSynthesizer implements NSObject {
      *  @throws IllegalArgumentException if an error occurs while setting the property
      */
     public void setProperty(SpeechProperty property, NSObject value) throws IllegalArgumentException {
-        NSObjectByReference errorPtr = new NSObjectByReference();
+        ObjCObjectByReference errorPtr = new ObjCObjectByReference();
         if ( !setObject_forProperty_error(value, property.getNativeValue(), errorPtr) ) {
             NSError error = errorPtr.getValueAs(NSError.class);
             throw new IllegalArgumentException("Could not set property: " + property + " to value " + value + ", error: " + error.localizedDescription());
@@ -621,8 +624,8 @@ public abstract class NSSpeechSynthesizer implements NSObject {
      *  @return true if the current application is speaking
      */
     public abstract boolean isSpeaking();
-    abstract NSObject objectForProperty_error(NSString speechProperty, NSObjectByReference out_error);
-    abstract boolean setObject_forProperty_error(NSObject object, NSString speechProperty, NSObjectByReference out_error);
+    abstract NSObject objectForProperty_error(NSString speechProperty, ObjCObjectByReference out_error);
+    abstract boolean setObject_forProperty_error(NSObject object, NSString speechProperty, ObjCObjectByReference out_error);
     /** Pause speech at the indicated boundary
      *  @param boundary the place to stop speech
      */
