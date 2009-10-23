@@ -1,10 +1,10 @@
 package org.rococoa.cocoa;
 
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 
 /**
  * @author Paul Loy
  */
 //TODO: flesh this out
-public abstract class NSDockTile implements NSObject {
+public abstract class NSDockTile extends NSObject {
 }

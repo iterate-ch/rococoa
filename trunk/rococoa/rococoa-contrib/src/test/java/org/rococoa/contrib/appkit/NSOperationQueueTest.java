@@ -24,8 +24,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.rococoa.Foundation;
+import org.rococoa.ObjCObject;
 import static org.junit.Assert.*;
-import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSInteger;
@@ -48,11 +48,11 @@ public class NSOperationQueueTest extends RococoaTestCase {
 
     private static class RunnableHolder {
         final boolean[] results;
-        final NSObject[] runnables;
+        final ObjCObject[] runnables;
         final NSInvocationOperation[] ops;
         public RunnableHolder(int numItems) {
             this.results = new boolean[numItems];
-            runnables = new NSObject[numItems];
+            runnables = new ObjCObject[numItems];
             ops = new NSInvocationOperation[numItems];
             for(int i=0; i < ops.length; i++) {
                 final int j = i;

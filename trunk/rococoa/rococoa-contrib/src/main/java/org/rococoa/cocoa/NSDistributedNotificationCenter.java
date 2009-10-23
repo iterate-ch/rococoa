@@ -1,9 +1,9 @@
 package org.rococoa.cocoa;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSDictionary;
+import org.rococoa.cocoa.foundation.NSObject;
 
 /**
  * NSDistributedNotificationCenter
@@ -12,10 +12,10 @@ import org.rococoa.cocoa.foundation.NSDictionary;
  * @author last modified by $Author: haraldk$
  * @version $Id: NSDistributedNotificationCenter.java,v 1.0 Mar 26, 2009 5:47:51 PM haraldk Exp$
  */
-public abstract class NSDistributedNotificationCenter implements NSObject {
+public abstract class NSDistributedNotificationCenter extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSDistributedNotificationCenter", _Class.class);  //$NON-NLS-1$
 
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
          NSDistributedNotificationCenter defaultCenter();
      }
 

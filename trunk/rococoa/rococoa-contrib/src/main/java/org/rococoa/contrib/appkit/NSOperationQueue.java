@@ -18,36 +18,36 @@
  */
 package org.rococoa.contrib.appkit;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSInteger;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSUInteger;
 
 /** NSOperationQueue from Cocoa;
  *
  */
-public interface NSOperationQueue extends NSObject {
+public abstract class NSOperationQueue extends NSObject {
     public static final _Class CLASS = Rococoa.createClass(NSOperationQueue.class.getSimpleName(), _Class.class); //$NON-NLS-1$
     public static final int NSOperationQueueDefaultMaxConcurrentOperationCount = -1;
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSOperationQueue alloc();
         public NSOperationQueue currentQueue();
         public NSOperationQueue mainQueue();
     }
 
-    NSOperationQueue init();
-    void addOperation(NSOperation operation);
-    void addOperations_waitUntilFinished(NSArray ops, boolean wait);
-    void cancelAllOperations();
-    boolean isSuspended();
-    NSInteger maxConcurrentOperationCount();
-    String name();
-    NSUInteger operationCount();
-    NSArray operations();
-    void setMaxConcurrentOperationCount(NSInteger count);
-    void setName(String name);
-    void setSuspended(boolean suspend);
-    void waitUntilAllOperationsAreFinished();
+    public abstract NSOperationQueue init();
+    public abstract void addOperation(NSOperation operation);
+    public abstract void addOperations_waitUntilFinished(NSArray ops, boolean wait);
+    public abstract void cancelAllOperations();
+    public abstract boolean isSuspended();
+    public abstract NSInteger maxConcurrentOperationCount();
+    public abstract String name();
+    public abstract NSUInteger operationCount();
+    public abstract NSArray operations();
+    public abstract void setMaxConcurrentOperationCount(NSInteger count);
+    public abstract void setName(String name);
+    public abstract void setSuspended(boolean suspend);
+    public abstract void waitUntilAllOperationsAreFinished();
 }

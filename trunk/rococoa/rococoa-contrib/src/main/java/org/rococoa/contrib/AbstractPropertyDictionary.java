@@ -19,14 +19,15 @@
 
 package org.rococoa.contrib;
 
-import org.rococoa.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSDictionary;
 import org.rococoa.cocoa.foundation.NSMutableDictionary;
 import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 
 /** Wraps an <code>NSMutableDictionary</code> with a set of keys defined by

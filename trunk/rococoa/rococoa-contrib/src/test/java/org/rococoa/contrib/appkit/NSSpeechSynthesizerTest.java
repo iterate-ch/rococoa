@@ -29,21 +29,33 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.After;
+import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 
-import org.rococoa.test.RococoaTestCase;
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.contrib.appkit.NSSpeechSynthesizer.NSSpeechStatus;
 import org.rococoa.cocoa.foundation.NSRange;
 
 
 /** Exercise the speech synthesizer.
- *  Where the comments below indicate a test doesn't work, it means that as of OS X 10.5.6 the underlying Cocoa functions appear to be
- *  buggy.
  */
-public class NSSpeechSynthesizerTest extends RococoaTestCase { 
-  
+public class NSSpeechSynthesizerTest { 
+    private static final int TIME_TO_WAIT = 5000;
+    private NSAutoreleasePool pool;
+
+    @Before
+    public void preSetup() {
+        pool = NSAutoreleasePool.new_();
+    }
+
+    @After
+    public void postTeardown() {
+        pool.drain();
+    }
+
     @Test
     public void testDefaultVoice() {
         assertNotNull(NSSpeechSynthesizer.CLASS.defaultVoice()); //System preference, so no way of knowing actual value
@@ -72,16 +84,17 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         dict.addPronounciation(new NSSpeechDictionary.Entry("about", "AXbUWt")); //en_GB_geordie!
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
+        ss.setDelegate(sd);
         ss.addSpeechDictionary(dict);
         ss.startSpeakingString("about");
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
         String[] expected = new String[] {"%", "AX", "b", "UW", "t", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
         
         //Normally the synth falls into the SQL = 'S' 'Q' 'L' camp
         sd.reset();
         ss.startSpeakingString("SQL");
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
         expected = new String[] {"%", "EH", "s", "k", "y", "UW", "EH", "l", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
         
@@ -92,7 +105,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
 
         sd.reset();
         ss.startSpeakingString("SQL");
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
         expected = new String[] {"%", "s", "IY", "k", "w", "AX", "l", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
     }
@@ -102,7 +115,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.startSpeakingString("Hello world");
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
 
     @Test
@@ -112,7 +125,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertTrue(!ss.isSpeaking());
         ss.startSpeakingString("Hello world");
         assertTrue(ss.isSpeaking());
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
 
     @Test
@@ -123,7 +136,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertTrue(!NSSpeechSynthesizer.isAnyApplicationSpeaking());
         ss.startSpeakingString("Hello world");
         assertTrue(NSSpeechSynthesizer.isAnyApplicationSpeaking());
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
 
     @Test
@@ -132,7 +145,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         ss.startSpeakingString("hello doctor");
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
 
     @Test
@@ -153,7 +166,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.setDelegate(sd);
         String toSpeak = "blue daisy";
         ss.startSpeakingString(toSpeak);
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
         //every so often some of the phonemes get flipped around, which isn't important to this test
         List<String> expected = new ArrayList<String>(Arrays.asList(new String[] {"%", "b", "l", "UW", "d", "EY", "z", "IY", "%"}));
         Collections.sort(expected);
@@ -171,7 +184,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.startSpeakingString(toSpeak);
         Thread.sleep(50);
         ss.stopSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.WordBoundary);
-        sd.waitForSpeechDone(1000, false);
+        sd.waitForSpeechDone(TIME_TO_WAIT, false);
         //don't want test case to be too timing dependent
         assertTrue("Expected less than 3 words but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() < 3);
         assertTrue("Expected at least one word but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() >= 1);
@@ -179,17 +192,17 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         //near as I can tell, SentenceBoundary just doesn't work!
         sd.reset();
         ss.startSpeakingString(toSpeak);
-        sd.waitForNextWord(1000);
+        sd.waitForNextWord(TIME_TO_WAIT);
         ss.stopSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.SentenceBoundary);
-        sd.waitForWord(10000, "now");
-        sd.waitForSpeechDone(5000, false);
+        sd.waitForWord(TIME_TO_WAIT, "now");
+        sd.waitForSpeechDone(TIME_TO_WAIT, false);
         assertTrue("Expected 6 word sentence but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() == 6);        
 
         sd.reset();
         ss.startSpeakingString(toSpeak);
-        sd.waitForWord(1000, "are");
+        sd.waitForWord(TIME_TO_WAIT, "are");
         ss.stopSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
-        sd.waitForSpeechDone(1000, false);
+        sd.waitForSpeechDone(TIME_TO_WAIT, false);
         assertTrue("Expected less than 3 words but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() < 3);
         assertTrue("Expected at least one word but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() >= 0);
     }
@@ -210,7 +223,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         assertFalse(status.isOutputPaused());
         assertTrue("Should have characters left", status.getNumberOfCharactersLeft() > 0);
         //assertTrue("Opcode should not be zero", status.getPhonemeCode() != 0); always zero... seems to have word granularity
-        sd.waitForSpeechDone(2000, true);
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
     
     @Test
@@ -228,13 +241,13 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
         ss.continueSpeaking();
         sd.waitForNextWord(2500);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
-        Thread.sleep(2000);
+        Thread.sleep(TIME_TO_WAIT);
         status = ss.getStatus();   
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
         assertEquals("Check number of characters left failed", 10, status.getNumberOfCharactersLeft());
         ss.continueSpeaking();
-        sd.waitForSpeechDone(2000, true);        
+        sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
 
     @Test
@@ -463,7 +476,7 @@ public class NSSpeechSynthesizerTest extends RococoaTestCase {
 
     private static class SynthesizerDelegate implements NSSpeechSynthesizer.NSSpeechSynthesizerDelegate {
 
-        private boolean success = false;
+        private volatile boolean success = false;
         private List<String> wordsSpoken = new ArrayList<String>();
         private List<String> phonemesSpoken = new ArrayList<String>();
         private String wordWaitingFor;

@@ -19,22 +19,22 @@
 
 package org.rococoa.contrib.appkit;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
+import org.rococoa.cocoa.foundation.NSObject;
 
 /** NSOperation from Cocoa.
  *
  */
-public interface NSOperation extends NSObject {
+public abstract class NSOperation extends NSObject {
     public static final _Class CLASS = Rococoa.createClass(NSOperation.class.getSimpleName(), _Class.class); //$NON-NLS-1$
-    public interface _Class extends NSClass {
+    public interface _Class extends ObjCClass {
         public NSOperation alloc();
     }
 
     public abstract NSOperation init();
-    public void start();
-    public void main();
+    public abstract void start();
+    public abstract void main();
 
     public abstract void cancel();
     public abstract void waitUntilFinished();
