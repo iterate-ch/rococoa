@@ -2,3 +2,4 @@
 = Projects using Rococoa =
 
 * [http://www.theescapers.com/stor Stor] - a MySQL editor.
+* [http://www.kalexo.com/ Kalexo] - a communication, filing & work co-ordination system.
