@@ -4,4 +4,4 @@
  * [http://www.theescapers.com/stor Stor] - a MySQL editor.
  * [http://www.kalexo.com/ Kalexo] - a communication, filing & work co-ordination system.
  * [http://flyingmac.com/farfinder FarFinder] - remote access to your Mac's files by web browser and iPhone.
- * [http://flyingmac.com/webjimbo ebjimbo] - remote access to Yojimbo by web browser and iPhone.
+ * [http://flyingmac.com/webjimbo Webjimbo] - remote access to Yojimbo by web browser and iPhone.
