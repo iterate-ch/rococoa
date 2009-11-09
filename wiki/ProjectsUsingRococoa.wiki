@@ -3,6 +3,7 @@
 
 _Make sure you comply with the GNU Lesser General Public License when releasing an application that uses Rococoa._
 
+ * [http://cyberduck.ch Cyberduck] - a FTP, SFTP, WebDAV, Cloud Files & Amazon S3 Browser.
  * [http://www.theescapers.com/stor Stor] - a MySQL editor.
  * [http://www.kalexo.com/ Kalexo] - a communication, filing & work co-ordination system.
  * [http://flyingmac.com/farfinder FarFinder] - remote access to your Mac's files by web browser and iPhone.
