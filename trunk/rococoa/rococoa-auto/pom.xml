@@ -98,7 +98,6 @@
 				<quiet>true</quiet>
 				<source>1.6</source>
 				<verbose>false</verbose>
-				<linksource>true</linksource>
 				<show>public</show>
 				<links>
 					<link>http://java.sun.com/javase/6/docs/api/</link>
