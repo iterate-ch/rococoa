@@ -9,8 +9,9 @@
   
   <parent>
     <groupId>org.rococoa</groupId>
-    <artifactId>rococoa</artifactId>
+    <artifactId>rococoa-parent</artifactId>
     <version>1</version>
+	<relativePath>../rococoa-parent</relativePath>
   </parent>
   
   <dependencies>
@@ -74,7 +75,7 @@
                 <artifactItem>
                   <groupId>org.rococoa</groupId>
                   <artifactId>rococoa-core</artifactId>
-                  <version>0.3.1-snapshot</version>
+                  <version>${rococoa.version}</version>
                   <type>dylib</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${basedir}</outputDirectory>

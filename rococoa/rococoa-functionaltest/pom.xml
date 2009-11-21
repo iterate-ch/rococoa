@@ -1,30 +1,31 @@
 <?xml version="1.0"?><project>
   <parent>
-    <artifactId>rococoa</artifactId>
     <groupId>org.rococoa</groupId>
-    <version>0.3.1-snapshot</version>
+    <artifactId>rococoa-parent</artifactId>
+    <version>1</version>
+	<relativePath>../rococoa-parent</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-functionaltest</artifactId>
   <name>Rococoa Functional Test</name>
-  <version>0.3.1-snapshot</version>
+  <version>${rococoa.version}</version>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-core</artifactId>
-      <version>0.3.1-snapshot</version>
+      <version>${rococoa.version}</version>
     </dependency>
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-cocoa</artifactId>
-      <version>0.3.1-snapshot</version>
+      <version>${rococoa.version}</version>
     </dependency>
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-contrib</artifactId>
-      <version>0.3.1-snapshot</version>
+      <version>${rococoa.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -82,7 +83,7 @@
                 <artifactItem>
                   <groupId>org.rococoa</groupId>
                   <artifactId>rococoa-core</artifactId>
-                  <version>0.3.1-snapshot</version>
+                  <version>${rococoa.version}</version>
                   <type>dylib</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${basedir}</outputDirectory>

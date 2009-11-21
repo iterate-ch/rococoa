@@ -3,14 +3,15 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-core</artifactId>
   <packaging>jar</packaging>
-  <version>${rococoa.version}</version>
+  <version>${parent.version}</version>
   <name>Rococoa Core</name>
   <url>http://www.rococoa.org</url>
   
   <parent>
     <groupId>org.rococoa</groupId>
-    <artifactId>rococoa</artifactId>
-    <version>1</version>
+    <artifactId>rococoa-parent</artifactId>
+    <version>0.5</version>
+	<relativePath>../rococoa-parent</relativePath>
   </parent>
   
   <build>  
@@ -104,7 +105,7 @@
             <configuration>
               <groupId>org.rococoa</groupId>
               <artifactId>rococoa-core</artifactId>
-              <version>${rococoa.version}</version>
+              <version>${parent.version}</version>
               <packaging>dylib</packaging>
               <file>${basedir}/build/Release/librococoa.dylib</file>
             </configuration>
