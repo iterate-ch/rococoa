@@ -1,0 +1,11 @@
+-framework Foundation 
+-framework AppKit 
+//-framework CoreFoundation 
+//-framework CoreGraphics 
+
+-root org.rococoa.cocoa
+
+//-o "$(DIR)/../java" // overwrite versioned files instead of writing to target/generated-sources/java
+
+//-v	
+//-choicesOut "$(DIR)/rococoa.choices"
