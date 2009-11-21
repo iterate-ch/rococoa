@@ -1,3 +1,1 @@
-MAVEN_OPTS=-Xmx2g 
-
-mvn com.jnaerator:maven-jnaerator-plugin:jnaerate && mvn package
+MAVEN_OPTS=-Xmx2g mvn com.jnaerator:maven-jnaerator-plugin:jnaerate && MAVEN_OPTS=-Xmx1g mvn package

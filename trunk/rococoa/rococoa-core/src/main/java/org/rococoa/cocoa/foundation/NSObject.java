@@ -31,6 +31,10 @@ public abstract class NSObject implements ObjCObject {
     public interface _Class extends ObjCClass {
     	NSObject alloc();
 	}
+	// used by JNAerator :
+	public static abstract class _class_ implements ObjCClass {
+    	public abstract NSObject alloc();
+	}
 
     public abstract NSObject retain();
     public abstract void release();
