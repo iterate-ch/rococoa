@@ -1,11 +1,11 @@
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.Rococoa;
 
 public abstract class NSDateFormatter extends NSFormatter {
 	public static final _Class CLASS = Rococoa.createClass("NSDateFormatter", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSObject._Class {
+    public abstract class _Class extends NSObject._class_ {
     }
     
     public static final int NSDateFormatterNoStyle = 0;

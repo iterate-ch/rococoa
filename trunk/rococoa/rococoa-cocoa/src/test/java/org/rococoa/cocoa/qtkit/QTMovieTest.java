@@ -19,6 +19,7 @@
  
 package org.rococoa.cocoa.qtkit;
 
+import com.sun.jna.Platform;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,9 +29,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.junit.Test;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.NSObjectByReference;
+import org.rococoa.cocoa.foundation.NSObject;
+import org.rococoa.ObjCObjectByReference;
+import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSError;
@@ -43,52 +44,55 @@ import org.rococoa.test.RococoaTestCase;
 @SuppressWarnings("nls")
 public class QTMovieTest extends RococoaTestCase {
 
-    private QTMovie movie;
-
-    static {
+	static String testMovieFile = "testdata/DrWho.mov";
+    static int testMovieTimeScale = 1000;
+	static {
         @SuppressWarnings("unused")
         QTKit instance = QTKit.instance;
+
+		if (!new File(testMovieFile).exists()) {
+			testMovieFile = "src/test/resources/test.mov";
+			testMovieTimeScale = 600;
+		}
     }
     
     @Test public void test() {
-        File file = new File("testdata/DrWho.mov");
-        NSObjectByReference errorReference = new NSObjectByReference();
+		File file = new File(testMovieFile);
+        ObjCObjectByReference errorReference = new ObjCObjectByReference();
         QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
 
         assertNotNull(movie);
-        assertTrue(errorReference.getValueAs(NSError.class).id().isNull());
-        
+        assertNull(errorReference.getValueAs(NSError.class));//.id().isNull());
         QTTime time3 =  movie.currentTime();
-        assertEquals(1000, time3.timeScale.intValue());     
+        assertEquals(testMovieTimeScale, time3.timeScale.intValue());
         
-        movie.setSelection(new QTTimeRange(new QTTime(50, 1000), new QTTime(750, 1000)));
-        assertEquals(new QTTime(50, 1000), movie.selectionStart());
-        assertEquals(new QTTime(750, 1000), movie.selectionDuration());
-        assertEquals(new QTTime(800, 1000), movie.selectionEnd());
+        movie.setSelection(new QTTimeRange(new QTTime(50, testMovieTimeScale), new QTTime(100, testMovieTimeScale)));
+		assertEquals(new QTTime(50, testMovieTimeScale), movie.selectionStart());
+        assertEquals(new QTTime(100, testMovieTimeScale), movie.selectionDuration());
+		assertEquals(new QTTime(150, testMovieTimeScale), movie.selectionEnd());
     }
-    
-    
+	
     @Test public void testError() {
         File file = new File("NOSUCH");
-        NSObjectByReference errorReference = new NSObjectByReference();
-        QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
+        ObjCObjectByReference errorReference = new ObjCObjectByReference();
+		QTMovie movie = QTMovie.movieWithFile_error(file, errorReference);
         assertNull(movie);
         NSError error = errorReference.getValueAs(NSError.class);
-        assertEquals(-2000, error.code().intValue());
+		assertEquals(-2000, error.code().intValue());
     }
 
-    @Test public void testAttributeForKey() throws Exception {
-        loadMovie("testdata/DrWho.mov");
+	@Test public void testAttributeForKey() throws Exception {
+        QTMovie movie = loadMovie(testMovieFile);
         NSObject attribute = movie.attributeForKey(QTMovie.QTMovieTimeScaleAttribute);
         
-        assertTrue(attribute.isKindOfClass(NSClass.CLASS.classWithName("NSNumber")));
-        assertFalse(attribute.isKindOfClass(NSClass.CLASS.classWithName("NSString")));
+        assertTrue(attribute.isKindOfClass(ObjCClass.CLASS.classWithName("NSNumber")));
+        assertFalse(attribute.isKindOfClass(ObjCClass.CLASS.classWithName("NSString")));
         
         //need to cast 'rococoa style'
-        assertEquals(1000, Rococoa.cast(attribute, NSNumber.class).intValue());
+        assertEquals(testMovieTimeScale, Rococoa.cast(attribute, NSNumber.class).intValue());
     }
 
-    private void loadMovie(String filename) {
+    private QTMovie loadMovie(String filename) {
 //        NSDictionary attributes = NSDictionary.CLASS.dictionaryWithObjectsAndKeys(
 //                NSString.CLASS.stringWithString(filename),
 //                NSString.CLASS.stringWithString(QTMovie.QTMovieFileNameAttribute),
@@ -104,14 +108,15 @@ public class QTMovieTest extends RococoaTestCase {
         attributes.setValue_forKey(NSNumber.CLASS.numberWithBool(false),
                 QTMovie.QTMovieOpenAsyncOKAttribute);
         
-        movie = QTMovie.movieWithAttributes_error(attributes, null);
+        QTMovie movie = QTMovie.movieWithAttributes_error(attributes, null);
         
         assertNotNull(movie);
         assertNotNull(movie.id());
+		return movie;
     }
     
     @Test public void testGetTracks() throws Exception {
-        loadMovie("testdata/DrWho.mov");
+        QTMovie movie = loadMovie(testMovieFile);
         NSArray tracks = movie.tracks();
         assertEquals(2, tracks.count());
         
@@ -126,9 +131,10 @@ public class QTMovieTest extends RococoaTestCase {
     }
     
     @Test public void testGetQTMedia() throws Exception {
-        loadMovie("testdata/DrWho.mov");
+        QTMovie movie = loadMovie(testMovieFile);
         QTTrack track = Rococoa.cast(movie.tracksOfMediaType(QTMedia.QTMediaTypeVideo).objectAtIndex(0), QTTrack.class);
         QTMedia media = track.media();
-        media.quickTimeMedia();
+		if (!Platform.is64Bit()) // quickTimeMedia is in a "#if !__LP64__" block
+			media.quickTimeMedia();
     }
 }

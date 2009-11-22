@@ -287,7 +287,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     private Object[] marshallArgsFor(Method method, Object[] args) {
         if (args == null)
             return null;
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<Object>(args.length);
         for (int i = 0; i < args.length; i++) {
             Object marshalled = marshall(args[i]);
             if (marshalled instanceof Object[])
@@ -304,10 +304,15 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         // RococoaTypeMapper also gets involved.
         if (arg == null)
             return null;
-        if (arg instanceof ObjCObjectByReference)
-            return new IDByReference(); // this will be filled in with an id by
-                // the called code, and then marshalled to an NSObject by fillInReferences
-            // TODO - passing existing inout, not just out
+        if (arg instanceof ObjCObjectByReference) {
+			// Forward conversion (another backwards conversion will take place in fillInReferences)
+            IDByReference idref = new IDByReference();
+			ObjCObject ob = ((ObjCObjectByReference)arg).getValueAs(ObjCObject.class);
+			if (ob != null)
+				idref.setValue(ob.id());
+			
+			return idref;
+		}
         return arg;
     }
 

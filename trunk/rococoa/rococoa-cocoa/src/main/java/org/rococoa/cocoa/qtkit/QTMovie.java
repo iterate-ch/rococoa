@@ -24,9 +24,9 @@ import java.util.concurrent.Callable;
 
 import org.rococoa.Foundation;
 import org.rococoa.ID;
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
-import org.rococoa.NSObjectByReference;
+
+import org.rococoa.cocoa.foundation.NSObject;
+import org.rococoa.ObjCObjectByReference;
 import org.rococoa.Rococoa;
 import org.rococoa.RunOnMainThread;
 import org.rococoa.cocoa.foundation.NSArray;
@@ -45,21 +45,22 @@ import com.sun.jna.Pointer;
  * @author duncan
  *
  */
-public @RunOnMainThread abstract class QTMovie implements NSObject {
+public @RunOnMainThread abstract class QTMovie extends NSObject {
     
     // Loading the QTMovie class has to happen on the main thread
     private static final _Class CLASS = 
-        Foundation.callOnMainThread(new Callable<_Class>() {
+		Foundation.callOnMainThread(new Callable<_Class>() {
             public _Class call() throws Exception {
                 return Rococoa.wrap(Foundation.getClass("QTMovie"), _Class.class); //$NON-NLS-1$
-            }});
+			}
+		});
     
-    // Creating instances has to happen on the main thread
-    private @RunOnMainThread interface _Class extends NSClass {
-        QTMovie movie();
-        QTMovie movieWithFile_error(String fileName, NSObjectByReference errorReference);        
-        QTMovie movieWithAttributes_error(NSDictionary attributes, NSObjectByReference errorReference);
-        QTMovie movieWithQuickTimeMovie_disposeWhenDone_error(Pointer movie, boolean b, NSObjectByReference errorReference);
+	// Creating instances has to happen on the main thread
+    public static @RunOnMainThread abstract class _Class implements org.rococoa.ObjCClass {//extends NSObject._class_ {
+		public abstract QTMovie movie();
+        public abstract QTMovie movieWithFile_error(String fileName, ObjCObjectByReference errorReference);        
+        public abstract QTMovie movieWithAttributes_error(NSDictionary attributes, ObjCObjectByReference errorReference);
+        public abstract QTMovie movieWithQuickTimeMovie_disposeWhenDone_error(Pointer movie, boolean b, ObjCObjectByReference errorReference);
     }
 
     public static final String QTMovieTimeScaleAttribute = "QTMovieTimeScaleAttribute"; //$NON-NLS-1$
@@ -80,16 +81,16 @@ public @RunOnMainThread abstract class QTMovie implements NSObject {
         return CLASS.movie();
     }
 
-    public static QTMovie movieWithFile_error(File file, NSObjectByReference errorReference) {
+    public static QTMovie movieWithFile_error(File file, ObjCObjectByReference errorReference) {
         return movieWithFile_error(file.getAbsolutePath(), errorReference);
     }
-    public static QTMovie movieWithFile_error(String fileName, NSObjectByReference errorReference) {
+    public static QTMovie movieWithFile_error(String fileName, ObjCObjectByReference errorReference) {
         return CLASS.movieWithFile_error(fileName, errorReference);
     }
-    public static QTMovie movieWithAttributes_error(NSDictionary attributes, NSObjectByReference errorReference) {
+    public static QTMovie movieWithAttributes_error(NSDictionary attributes, ObjCObjectByReference errorReference) {
         return CLASS.movieWithAttributes_error(attributes, errorReference);
     }
-    public static QTMovie movieWithQuickTimeMovie_disposeWhenDone_error(Pointer movie, boolean b, NSObjectByReference errorReference) {
+    public static QTMovie movieWithQuickTimeMovie_disposeWhenDone_error(Pointer movie, boolean b, ObjCObjectByReference errorReference) {
         return CLASS.movieWithQuickTimeMovie_disposeWhenDone_error(movie, b, errorReference);
     }
 

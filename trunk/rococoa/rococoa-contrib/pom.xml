@@ -3,14 +3,14 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-contrib</artifactId>
   <packaging>jar</packaging>
-  <version>0.5</version>
+  <version>${rococoa.version}</version>
   <name>Rococoa Contrib</name>
   <url>http://www.rococoa.org</url>
   
   <parent>
     <groupId>org.rococoa</groupId>
     <artifactId>rococoa-parent</artifactId>
-    <version>1</version>
+    <version>0.5</version>
 	<relativePath>../rococoa-parent</relativePath>
   </parent>
   
@@ -18,20 +18,15 @@
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-core</artifactId>
-      <version>0.5</version>
+      <version>${rococoa.version}</version>
     </dependency>
     <dependency>
       <groupId>org.rococoa</groupId>
       <artifactId>rococoa-cocoa</artifactId>
-      <version>0.5</version>
+      <version>${rococoa.version}</version>
     </dependency>
   </dependencies>
   
-  <properties>
-  	<maven.compile.source>1.5</maven.compile.source>
-  	<maven.compile.target>1.5</maven.compile.target>
-  </properties>
-
   <build>
     
     <plugins>

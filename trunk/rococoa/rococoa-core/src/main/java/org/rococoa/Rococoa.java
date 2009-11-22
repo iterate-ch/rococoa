@@ -106,10 +106,16 @@ public abstract class Rococoa  {
      * type.
      */
     public static <T extends ObjCObject> T cast(ObjCObject object, Class<T> desiredType) {
+        if (object == null)
+			return null;
+
         return wrap(object.id(), desiredType, true);
     }
 
     public static <T extends ObjCObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
+		if (id == null || id.isNull())
+			return null;
+		
         // Why would we not want to retain? Well if we are wrapping a Core Foundation
         // created object, or one created with new (alloc init), it will not
         // have been autorelease'd. 

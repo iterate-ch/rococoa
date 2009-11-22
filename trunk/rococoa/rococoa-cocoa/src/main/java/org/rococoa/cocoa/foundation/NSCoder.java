@@ -1,13 +1,13 @@
 package org.rococoa.cocoa.foundation;
 
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 
 /**
  * @author paulloy
  */
-public interface NSCoder extends NSObject {
+public abstract class NSCoder extends NSObject {
 	
-	void encodeObject_forKey (NSObject objv, NSString key);
-	NSObject decodeObjectForKey(NSString mountainNameString);
+	public abstract void encodeObject_forKey (NSObject objv, NSString key);
+	public abstract NSObject decodeObjectForKey(NSString mountainNameString);
     
 }

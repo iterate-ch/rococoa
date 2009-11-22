@@ -25,13 +25,8 @@ import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
 
 public abstract class NSObject implements ObjCObject {
-    
-    public static _Class CLASS = Rococoa.createClass("NSObject", _Class.class);
-
-    public interface _Class extends ObjCClass {
-    	NSObject alloc();
-	}
-	// used by JNAerator :
+    public static _class_ CLASS = Rococoa.createClass("NSObject", _class_.class);
+	
 	public static abstract class _class_ implements ObjCClass {
     	public abstract NSObject alloc();
 	}
