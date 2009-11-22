@@ -22,12 +22,12 @@ package org.rococoa.cocoa.qtkit;
 import java.util.concurrent.Callable;
 
 import org.rococoa.Foundation;
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.Rococoa;
 import org.rococoa.RunOnMainThread;
 
 
-public @RunOnMainThread interface QTMovieView extends NSObject {
+public @RunOnMainThread abstract class QTMovieView extends NSObject {
     
     public static final _Class CLASS = new _Class();
     
@@ -40,14 +40,14 @@ public @RunOnMainThread interface QTMovieView extends NSObject {
         }
     }
     
-    public void setMovie(QTMovie movie);
+    public abstract void setMovie(QTMovie movie);
     
-    public void setControllerVisible(boolean isVisible);
-
-    public void setPreservesAspectRatio(boolean b);
-
-    public void play(NSObject sender);
-
-    public QTMovie movie();
+	public abstract void setControllerVisible(boolean isVisible);
+    
+	public abstract void setPreservesAspectRatio(boolean b);
+    
+	public abstract void play(NSObject sender);
+    
+	public abstract QTMovie movie();
 
 }

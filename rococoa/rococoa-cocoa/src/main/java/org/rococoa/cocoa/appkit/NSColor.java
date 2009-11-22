@@ -1,16 +1,16 @@
 package org.rococoa.cocoa.appkit;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.Rococoa;
 
 /**
  * @author paulloy
  */
-public abstract class NSColor implements NSObject {
+public abstract class NSColor extends NSObject {
 	public static final _Class CLASS = Rococoa.createClass("NSColor", _Class.class);  //$NON-NLS-1$
-    public interface _Class extends NSClass {
-        NSColor clearColor();
+    public abstract class _Class extends NSObject._class_ {
+        public abstract NSColor clearColor();
     }
 	
     public abstract void set();

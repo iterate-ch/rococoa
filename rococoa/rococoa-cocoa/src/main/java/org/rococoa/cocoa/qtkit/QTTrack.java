@@ -20,36 +20,33 @@
 package org.rococoa.cocoa.qtkit;
 
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.RunOnMainThread;
 import org.rococoa.cocoa.foundation.NSDictionary;
 
 import com.sun.jna.Pointer;
 
 @SuppressWarnings("nls")
-public @RunOnMainThread interface QTTrack extends NSObject {
+public @RunOnMainThread abstract class QTTrack extends NSObject {
 
     public static final String QTTrackTimeScaleAttribute = "QTTrackTimeScaleAttribute";
     public static final String QTTrackBoundsAttribute = "QTTrackBoundsAttribute";
     public static final String QTTrackDimensionsAttribute = "QTTrackDimensionsAttribute";
     
-    QTMovie movie();
+    public abstract QTMovie movie();
     
-    QTMedia media();
+    public abstract QTMedia media();
     
-    boolean isEnabled();
-    void setEnabled(boolean enabled);
+    public abstract boolean isEnabled();
+    public abstract void setEnabled(boolean enabled);
     
-    float volume();
-    void setVolume(float level);
-
-    NSObject attributeForKey(String key);
-    NSObject attributeForKey(ID key);
-    void setAttribute_forKey(NSObject attribute, String key);
-    
-    NSDictionary trackAttributes();
-    void setTrackAttributes(NSDictionary trackAttributes);
-    
-    Pointer quickTimeTrack();
+    public abstract float volume();
+    public abstract void setVolume(float level);
+    public abstract NSObject attributeForKey(String key);
+    public abstract NSObject attributeForKey(ID key);
+    public abstract void setAttribute_forKey(NSObject attribute, String key);
+    public abstract NSDictionary trackAttributes();
+    public abstract void setTrackAttributes(NSDictionary trackAttributes);
+    public abstract Pointer quickTimeTrack();
     
 }

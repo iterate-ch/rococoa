@@ -19,11 +19,10 @@
     <module>rococoa-parent</module>
     <module>rococoa-core</module>
     <module>rococoa-auto</module>
-	<!--
 	<module>rococoa-cocoa</module>
     <module>rococoa-contrib</module>
     <module>rococoa-functionaltest</module>
-	-->
+	
   </modules>
   
 </project>

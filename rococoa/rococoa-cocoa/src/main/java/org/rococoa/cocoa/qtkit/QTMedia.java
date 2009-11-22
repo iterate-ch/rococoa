@@ -20,14 +20,14 @@
 package org.rococoa.cocoa.qtkit;
 
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.RunOnMainThread;
 import org.rococoa.cocoa.foundation.NSDictionary;
 
 import com.sun.jna.Pointer;
 
 @SuppressWarnings("nls")
-public @RunOnMainThread interface QTMedia extends NSObject {
+public @RunOnMainThread abstract class QTMedia extends NSObject {
 
     public static final String QTMediaDurationAttribute = "QTMediaDurationAttribute";
     public static final String QTMediaTimeScaleAttribute = "QTMediaTimeScaleAttribute";
@@ -43,18 +43,18 @@ public @RunOnMainThread interface QTMedia extends NSObject {
     public static final String QTMediaTypeTimeCode = "tmcd";
     //etc...
 
-    QTTrack track();
+    public abstract QTTrack track();
 
-    boolean hasCharacteristic(String characteristic);
-    boolean hasCharacteristic(ID characteristic);
+    public abstract boolean hasCharacteristic(String characteristic);
+    public abstract boolean hasCharacteristic(ID characteristic);
 
-    NSObject attributeForKey(String key);
-    NSObject attributeForKey(ID key);
-    void setAttribute_forKey(NSObject attribute, String key);
-    void setAttribute_forKey(NSObject attribute, ID key);
+    public abstract NSObject attributeForKey(String key);
+    public abstract NSObject attributeForKey(ID key);
+    public abstract void setAttribute_forKey(NSObject attribute, String key);
+    public abstract void setAttribute_forKey(NSObject attribute, ID key);
     
-    NSDictionary mediaAttributes();
-    void setMediaAttributes(NSDictionary attributes);
+    public abstract NSDictionary mediaAttributes();
+    public abstract void setMediaAttributes(NSDictionary attributes);
     
-    Pointer quickTimeMedia();
+    public abstract Pointer quickTimeMedia();
 }

@@ -20,6 +20,7 @@
 package org.rococoa.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -84,6 +85,7 @@ public abstract class RococoaTestCase {
     @Before
     public void preSetup() {
         pool = NSAutoreleasePool.new_();
+		assertNotNull(pool);
     }
 
     @After

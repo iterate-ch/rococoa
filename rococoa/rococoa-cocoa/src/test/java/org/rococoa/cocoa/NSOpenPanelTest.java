@@ -8,8 +8,9 @@ import static org.junit.Assert .*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.rococoa.ID;
-import org.rococoa.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.Rococoa;
+import org.rococoa.ObjCObject;
 import org.rococoa.cocoa.appkit.NSOpenPanel;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
@@ -24,7 +25,7 @@ public class NSOpenPanelTest extends RococoaTestCase {
         NSOpenPanel panel = NSOpenPanel.CLASS.openPanel();
         
         // Keep this reference!
-        NSObject ocProxy = Rococoa.proxy(new Object() {
+        ObjCObject ocProxy = Rococoa.proxy(new Object() {
             @SuppressWarnings("unused")
             public boolean panel_shouldShowFilename(ID panel, String filename) {
                 char initialChar = new File(filename).getName().toLowerCase().charAt(0);
