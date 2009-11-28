@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 David Kocher
+ * Copyright 2007, 2008, 2009 Duncan McGregor
  *
  * This file is part of Rococoa, a library to allow Java to talk to Cocoa.
  *
