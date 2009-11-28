@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Duncan McGregor
+ * Copyright 2007, 2008, 2009 Duncan McGregor
  *
  * This file is part of Rococoa, a library to allow Java to talk to Cocoa.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 
 package org.rococoa.contrib.dispatch;
