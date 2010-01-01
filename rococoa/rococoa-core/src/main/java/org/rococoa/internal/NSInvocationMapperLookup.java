@@ -37,27 +37,27 @@ import com.sun.jna.Structure;
 
 /**
  * Look up how to map from and from NSInvocation and Java objects.
- * 
+ *
  * @author duncan
  *
  */
 public class NSInvocationMapperLookup {
     private static final int NATIVE_POINTER_SIZE = Native.POINTER_SIZE;
     private static final int NATIVE_LONG_SIZE = Native.LONG_SIZE;
-    
+
     private static final String NATIVE_LONG_ENCODING = NATIVE_LONG_SIZE == 4 ? "l" : "q";
     private static final String NSINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "i" : "q";
     private static final String NSUINTEGER_ENCODING = NATIVE_LONG_SIZE == 4 ? "I" : "Q";
     private static final String CGFLOAT_ENCODING = NATIVE_LONG_SIZE == 4 ? "f" : "d";
 
     private static final Map<Class<?>, NSInvocationMapper> classToMapperLookup = new HashMap<Class<?>, NSInvocationMapper>();
-        
+
     public static NSInvocationMapper mapperForType(Class<?> type) {
         // first check if we have a direct hit in the classToMapperLookup
         NSInvocationMapper directMatch = classToMapperLookup.get(type);
         if (directMatch != null)
             return directMatch;
-        
+
         // Now if it is any subclass of NSObject, then the generic mapper will do
         if (OCOBJECT.type.isAssignableFrom(type))
             return OCOBJECT;
@@ -73,10 +73,10 @@ public class NSInvocationMapperLookup {
             addToLookup(result);
             return result;
         }
-        
+
         return null;
     }
-    
+
     public static String stringForType(Class<?> type) {
         return mapperForType(type).typeString();
     }
@@ -231,16 +231,15 @@ public class NSInvocationMapperLookup {
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(NATIVE_LONG_SIZE);
-                
                 if (NATIVE_LONG_SIZE == 4)
-                	result.setFloat(0, ((Float) methodCallResult));
+                	result.setFloat(0, ((CGFloat) methodCallResult).floatValue());
                 if (NATIVE_LONG_SIZE == 8)
-                	result.setDouble(0, ((Double) methodCallResult));
+                	result.setDouble(0, ((CGFloat) methodCallResult).doubleValue());
                 return result;
             }
         });
     }
-    
+
     static NSInvocationMapper OCOBJECT = new NSInvocationMapper("@", ObjCObject.class) {
         @SuppressWarnings("unchecked")
         @Override public Object readFrom(Memory buffer, Class<?> type) {
@@ -254,7 +253,7 @@ public class NSInvocationMapperLookup {
             buffer.setNativeLong(0, ((ObjCObject) methodCallResult).id());
             return buffer;
         }};
-    
+
     static NSInvocationMapper NATIVE_LONG = new NSInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
             return buffer.getNativeLong(0);
@@ -264,14 +263,14 @@ public class NSInvocationMapperLookup {
             result.setNativeLong(0, ((NativeLong) methodCallResult));
             return result;
         }};
-    
+
     private static void addToLookup(NSInvocationMapper mapper) {
         Class<?> type = mapper.type;
         classToMapperLookup.put(type, mapper);
         if (type.isPrimitive())
             classToMapperLookup.put(boxTypeFor(type), mapper);
     }
-    
+
     private static Class<?> boxTypeFor(Class<?> type) {
         if (type == void.class)
             return null;
