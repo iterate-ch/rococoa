@@ -31,6 +31,7 @@ import com.sun.jna.FromNativeConverter;
  * <ul>
  *   <li>{@link NSObject} to and from an integer type with the right size to be an id.</li>
  *   <li>{@link String} to and from an integer type with the right size to be an id.</li>
+ *   <li>{@link boolean} to a byte with the right values for Mac.</li>
  * </ul>
  * 
  * Note that nativeType is never NativeLong, but the appropriate Java primitive
@@ -43,9 +44,10 @@ import com.sun.jna.FromNativeConverter;
  *
  */
 public class RococoaTypeMapper extends DefaultTypeMapper {
-        
+
     public RococoaTypeMapper() {        
         addToNativeConverter(ObjCObject.class, new ObjCObjectTypeConverter<ObjCObject>(ObjCObject.class));
+        addToNativeConverter(Boolean.class, new BoolConverter());
         addTypeConverter(String.class, new StringTypeConverter());
         // addToNativeConverter(NSObjectByReference.class, new ObjectByReferenceConverter());
         // not actually used at present because NSObjectInvocationHandler does marshalling

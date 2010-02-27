@@ -73,6 +73,14 @@ TestIntIntStruct createIntIntStruct(int a, int b) {
 	*fillMeIn = number;
 }
 
+- (BOOL) valueIsYES:(BOOL) a {
+	return a == YES;
+}
+
+- (BOOL) valueIsNO:(BOOL) a {
+	return a == NO;
+}
+
 - (bool) isMainThread {
 	return pthread_main_np();
 }
