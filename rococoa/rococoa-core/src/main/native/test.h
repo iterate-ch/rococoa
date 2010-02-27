@@ -55,6 +55,12 @@ double addFieldsOfStructByValue(TestIntDoubleStruct s);
 
 - (void) testNSNumberByReference: (NSNumber**) fillMeIn with: (int) aValue;
 
+- (BOOL) valueIsYES:(BOOL) a;
+
+- (BOOL) valueIsNO:(BOOL) a;
+	
 - (bool) isMainThread;
+
+
 
 @end
