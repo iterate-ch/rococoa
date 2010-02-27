@@ -93,6 +93,7 @@ public class StaticStructureReturnTest {
         }
     }
 
+    
     public interface TestLibrary extends Library {
         FloatFloatStruct createFloatFloatStruct(float a, float b);
         IntIntStruct createIntIntStruct(int a, int b);
@@ -101,36 +102,33 @@ public class StaticStructureReturnTest {
         IntDoubleStruct createIntDoubleStruct(int a, double b);
     }
 
+    private TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
+
     @Test public void testIntInt() {
-        TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
         IntIntStruct struct = library3.createIntIntStruct(42, -99);
         assertEquals(-99, struct.b);
         assertEquals(42, struct.a);
     }
 
     @Test public void testFloatFloat() {
-        TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
         FloatFloatStruct struct = library3.createFloatFloatStruct((float) Math.E, (float) Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(Math.E, struct.a, 0.001);
     }
 
     @Test public void testIntFloat() {
-        TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
         IntFloatStruct struct = library3.createIntFloatStruct(42, (float) Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(42, struct.a);
     }
     
     @Test public void testIntLong() {
-        TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
         IntLongStruct struct = library3.createIntLongStruct(42, -99);
         assertEquals(-99, struct.b);
         assertEquals(42, struct.a);
     }
 
     @Test public void testIntDouble() {
-        TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
         IntDoubleStruct struct = library3.createIntDoubleStruct(42, Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(42, struct.a);
