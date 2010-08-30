@@ -26,8 +26,8 @@ import org.rococoa.cocoa.CGFloat;
 import com.sun.jna.Structure;
 
 public class NSSize extends Structure implements Structure.ByValue {
-    public final CGFloat width;
-    public final CGFloat height;
+    public CGFloat width;
+    public CGFloat height;
 
     public NSSize() {
         this(0, 0);

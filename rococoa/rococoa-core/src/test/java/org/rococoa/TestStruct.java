@@ -22,8 +22,8 @@ package org.rococoa;
 import com.sun.jna.Structure;
 
 public class TestStruct extends Structure {
-    public final int anInt;
-    public final double aDouble;
+    public int anInt;
+    public double aDouble;
 
     public TestStruct() {
         this(0, 0);
