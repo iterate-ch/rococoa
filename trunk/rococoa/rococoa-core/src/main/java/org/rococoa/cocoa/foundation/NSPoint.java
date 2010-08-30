@@ -29,8 +29,8 @@ import com.sun.jna.Structure;
  * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>
  */
 public class NSPoint extends Structure implements Structure.ByValue {
-    public final CGFloat x;
-    public final CGFloat y;
+    public CGFloat x;
+    public CGFloat y;
 
     public NSPoint() {
         this(0, 0);
