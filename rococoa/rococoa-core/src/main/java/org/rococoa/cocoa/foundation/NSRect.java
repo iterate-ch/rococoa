@@ -29,8 +29,8 @@ import com.sun.jna.Structure;
  * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>
  */
 public class NSRect extends Structure implements Structure.ByValue {
-    public final NSPoint origin;
-    public final NSSize size;
+    public NSPoint origin;
+    public NSSize size;
 
     public NSRect() {
         this(new NSPoint(0, 0), new NSSize());
