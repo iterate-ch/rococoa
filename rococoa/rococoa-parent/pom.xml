@@ -12,7 +12,7 @@
   	<rococoa.version>0.5</rococoa.version>
   	<maven.compile.source>1.5</maven.compile.source>
   	<maven.compile.target>1.5</maven.compile.target>
-  	<jnaerator.version>0.9.3-SNAPSHOT</jnaerator.version>
+  	<jnaerator.version>0.9.4</jnaerator.version>
   </properties>
   
   <build>
