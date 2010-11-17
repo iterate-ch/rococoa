@@ -107,6 +107,7 @@ public class OCInvocationCallbacks {
                 if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount)
                     return method;
             }
+            logging.debug("No method for selector:" + selectorName);
             return null;
         } catch (Exception e) {
             logging.error("Exception finding methodForSelector", e);
