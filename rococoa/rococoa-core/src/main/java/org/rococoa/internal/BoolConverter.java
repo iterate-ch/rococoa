@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.internal;
 
+import com.sun.jna.FromNativeContext;
+import com.sun.jna.FromNativeConverter;
 import com.sun.jna.ToNativeContext;
 import com.sun.jna.ToNativeConverter;
 
 /**
- * Converts {@code java.lang.Boolean} to native by mapping to {@code java.lang.Integer} as defined by: 
+ * Converts {@code java.lang.Boolean} to native by mapping to {@code java.lang.Integer} as defined by:
  * <code>
  * #define YES (BOOL) 1
  * #define NO (BOOL) 0
@@ -33,10 +35,14 @@ import com.sun.jna.ToNativeConverter;
  * @author last modified by $Author: haraldk$
  * @version $Id: BoolConverter.java,v 1.0 Feb 19, 2010 8:44:39 PM haraldk Exp$
  */
-public class BoolConverter implements ToNativeConverter {
-    
+public class BoolConverter implements ToNativeConverter, FromNativeConverter {
+
     public Object toNative(final Object value, final ToNativeContext context) {
         return ((Boolean) value) ? 1 : 0;
+    }
+
+    public Object fromNative(final Object value, final FromNativeContext context) {
+        return ((Byte) value).intValue() == 1;
     }
 
     public Class<Byte> nativeType() {
