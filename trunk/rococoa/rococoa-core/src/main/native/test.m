@@ -73,6 +73,13 @@ TestIntIntStruct createIntIntStruct(int a, int b) {
 	*fillMeIn = number;
 }
 
+- (void) testCallbackWithReference:(id)delegate {
+	if ([delegate respondsToSelector:@selector(callback:)]) {
+		NSError* error = nil;
+		[delegate callback:&error];
+	}
+}
+
 - (BOOL) valueIsYES:(BOOL) a {
 	return a == YES;
 }
