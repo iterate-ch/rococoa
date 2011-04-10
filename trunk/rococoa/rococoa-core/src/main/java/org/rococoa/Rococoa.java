@@ -85,9 +85,9 @@ public abstract class Rococoa  {
 
         ID ocClass = Foundation.getClass(ocClassName);
         ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);
-        checkRetainCount(ocInstance, 1);
+        int initialRetainCount = Foundation.cfGetRetainCount(ocInstance);
         T result = wrap(ocInstance, javaClass, retain);
-        checkRetainCount(ocInstance, retain ? 2 : 1);
+        checkRetainCount(ocInstance, retain ? initialRetainCount + 1 : initialRetainCount);
         return result;
     }
     
