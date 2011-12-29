@@ -4,7 +4,6 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa</artifactId>
   <packaging>pom</packaging>
-  <version>0.5</version>
   <name>Rococoa</name>
   <url>http://www.rococoa.org</url>
   

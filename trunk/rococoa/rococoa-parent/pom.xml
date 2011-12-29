@@ -15,37 +15,51 @@
   </parent>
   
   <properties>
-  	<rococoa.version>0.5</rococoa.version>
-  	<maven.compile.source>1.5</maven.compile.source>
-  	<maven.compile.target>1.5</maven.compile.target>
-  	<jnaerator.version>0.9.5</jnaerator.version>
+  	<maven.compiler.source>1.5</maven.compiler.source>
+  	<maven.compiler.target>1.5</maven.compiler.target>
   </properties>
+  
   
   <developers>
   	<developer>
   		<id>oneeyedmen</id>
   		<name>Duncan McGregor</name>
   		<email>duncan@oneeyedmen.com</email>
+  		<roles>
+  			<role>Owner</role>
+  		</roles>
   	</developer>
   	<developer>
   		<id>lordpixel</id>
   		<name>Andrew Thompson</name>
   		<email>lordpixel@mac.com</email>
+  		<roles>
+  			<role>Owner</role>
+  		</roles>
   	</developer>
   	<developer>
   		<id>dkocher</id>
   		<name>David Vinzenz Kocher</name>
   		<email>davidvinzenzkocher@gmail.com</email>
+  		<roles>
+  			<role>Committer</role>
+  		</roles>
   	</developer>
   	<developer>
   		<id>keteracel</id>
   		<name>Paul Loy</name>
   		<email>keteracel@gmail.com</email>
+  		<roles>
+  			<role>Committer</role>
+  		</roles>
   	</developer>
   	<developer>
   		<id>ochafik</id>
   		<name>Olivier Chafik</name>
   		<email>olivier.chafik@gmail.com</email>
+  		<roles>
+  			<role>Committer</role>
+  		</roles>
   	</developer>
   </developers>
   
@@ -55,20 +69,18 @@
     <url>http://rococoa.googlecode.com/svn/trunk/</url>
   </scm>
   
-  
-	<licenses>
-		<license>
-			<name>LGPL 3</name>
-			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
-			<distribution>repo</distribution>
-			<comments></comments>
-		</license>
-	</licenses>
+  <licenses>
+  	<license>
+  		<name>LGPL 3</name>
+  		<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+  		<distribution>repo</distribution>
+  		<comments></comments>
+  	</license>
+  </licenses>
   
   <build>
 	<plugins>
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <inherited>true</inherited>
           <configuration>
@@ -76,81 +88,161 @@
           </configuration>
       </plugin>
 	</plugins>
-  </build>
-
-  	<distributionManagement>
-		<site>
-		   <id>jnaerator-sites</id>
-		   <name>JNAerator Sourceforge Sites</name>
-		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/sites</url>
-		</site>
-		<repository>
-		   <id>jnaerator-repo</id>
-		   <uniqueVersion>false</uniqueVersion>
-		   <name>JNAerator Sourceforge Maven Repository</name>
-		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/maven</url>
-		</repository>
-	</distributionManagement>
 	
-
-  <repositories>
-	<repository>
-	  <id>maven2-repository.dev.java.net</id>
-	  <name>Java.net Repository for Maven</name>
-	  <url>http://download.java.net/maven/2/</url>
-	  <layout>default</layout>
-	</repository>
-	<repository>
-	  <id>jnaerator</id>
-	  <url>http://jnaerator.sourceforge.net/maven</url>
-	</repository>
-  </repositories>
+	<pluginManagement>
+	  <plugins>
+	    <plugin>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.3.2</version>
+		</plugin>
+        <plugin>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>2.8</version>
+		</plugin>
+		<plugin>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<version>1.7</version>
+		</plugin>
+		<plugin>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.3.2</version>
+		</plugin>
+		<plugin>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>2.11</version>
+		</plugin>
+		<plugin>
+			<artifactId>maven-install-plugin</artifactId>
+			<version>2.3.1</version>
+		</plugin>
+		<plugin>
+			<artifactId>maven-shade-plugin</artifactId>
+			<version>1.5</version>
+			<executions>
+			  <execution>
+				<phase>package</phase>
+				<goals>
+				  <goal>shade</goal>
+				</goals>
+			  </execution>
+			</executions>
+		</plugin>
+	    <plugin>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>2.2.2</version>
+			<configuration>
+			  <descriptor>src/main/assembly/dist.xml</descriptor>
+			</configuration>
+			<executions>
+			  <execution>
+				<goals>
+				  <goal>attached</goal>
+				</goals>
+				<phase>package</phase>
+			  </execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<executions>
+			  <execution>
+				<id>copy</id>
+				<phase>generate-resources</phase>
+				<goals>
+				  <goal>copy</goal>
+				</goals>
+				<configuration>
+				  <artifactItems>
+					<artifactItem>
+					  <groupId>org.rococoa</groupId>
+					  <artifactId>rococoa-core</artifactId>
+					  <type>dylib</type>
+					  <overWrite>false</overWrite>
+					  <outputDirectory>${basedir}</outputDirectory>
+					  <destFileName>librococoa.dylib</destFileName>
+					</artifactItem>
+				  </artifactItems>
+				</configuration>
+			  </execution>
+			</executions>
+	    </plugin>
+	  </plugins>
+	</pluginManagement>
+  </build>
   
   <dependencies>
     <dependency>
-      <groupId>net.java.dev.jna</groupId>
-      <artifactId>jna</artifactId>
-      <version>3.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.5.8</version>
+      <version>1.6.4</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
-      <version>1.5.8</version>
+      <version>1.6.4</version>
+      <!-- 
+      	Don't impose any particular slf4j implementation to Rococoa users.
+      	slf4j 1.6+ comes with a default no-op implementation if none is detected.
+      -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.7</version>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>2.2</version>
+      <version>4.10</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>3.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>2.2.2</version>
+      </dependency>
+      
+  	  <dependency>
+	  	<groupId>org.rococoa</groupId>
+	  	<artifactId>rococoa</artifactId>
+	  	<version>${project.version}</version>
+	  </dependency>
+  	  <dependency>
+	  	<groupId>org.rococoa</groupId>
+	  	<artifactId>rococoa-core</artifactId>
+	  	<version>${project.version}</version>
+	  </dependency>
+  	  <dependency>
+	  	<groupId>org.rococoa</groupId>
+	  	<artifactId>rococoa-cocoa</artifactId>
+	  	<version>${project.version}</version>
+	  </dependency>
+  	  <dependency>
+        <groupId>org.rococoa</groupId>
+        <artifactId>rococoa-core</artifactId>
+	    <type>test-jar</type>
+      	<version>${project.version}</version>
+      </dependency>
+      <dependency>
+	  	<groupId>org.rococoa</groupId>
+	  	<artifactId>rococoa-contrib</artifactId>
+	  	<version>${project.version}</version>
+	  </dependency>
+  	  <dependency>
+	  	<groupId>org.rococoa</groupId>
+	  	<artifactId>rococoa-functionaltest</artifactId>
+	  	<version>${project.version}</version>
+	  </dependency>
+	</dependencies>
+  </dependencyManagement>
+  
   <profiles>
   	<profile>
-  		<!--
-  			To upload to Maven Central via Sonatype (see http://docs.sonatype.org/x/vgBl) :
-  			
-  			mvn clean install -DskipTests -Pgpg
-  			mkdir bundles
-  			cd rococoa-parent/target
-  			jar -cvf ../../bundles/rococoa-parent-0.5.jar rococoa-parent-0.5.pom rococoa-parent-0.5.pom.asc
-  			cd ../..
-  			cd rococoa-parent/target
-  			jar -cvf ../../bundles/rococoa-core-0.5.jar rococoa-core-0.5.pom rococoa-core-0.5.pom.asc rococoa-core-0.5.jar rococoa-core-0.5.jar.asc rococoa-core-0.5-sources.jar rococoa-core-0.5-sources.jar.asc rococoa-core-0.5-javadoc.jar rococoa-core-0.5-javadoc.jar.asc
-  			cd ../..
-  			open bundles
-  			
-  			
-  		-->
   		<id>gpg</id>
 		<activation>
 			<activeByDefault>false</activeByDefault>
@@ -158,7 +250,6 @@
 		<build>
 			<plugins>
 			  <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.4</version>
 				<executions>
