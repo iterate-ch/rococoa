@@ -15,16 +15,31 @@ fi
 
 cd $BASE_DIR
 
-mvn install -DskipTests -Pgpg
+#mvn install -DskipTests -Pgpg
 
+rm -fR $OUT_DIR
 mkdir -p $OUT_DIR
 
-for P in rococoa-core rococoa-parent ; do
+#PROJECTS="rococoa-parent rococoa-core rococoa-cocoa rococoa-contrib"
+PROJECTS="rococoa-parent rococoa-core"
+
+for P in $PROJECTS ; do
 	cd $BASE_DIR/$P/target
-	jar -cvf $OUT_DIR/$P-$MVN_VERSION.jar `ls $P-$MVN_VERSION.pom* $P-$MVN_VERSION.jar*  $P-$MVN_VERSION-sources.* $P-$MVN_VERSION-javadoc.*` 
 	
-	echo "Contents of $OUT_DIR/$P-$MVN_VERSION.jar : " 
-	unzip -l $OUT_DIR/$P-$MVN_VERSION.jar ;
+	PREFIX="mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=$P-$MVN_VERSION.pom"
+	
+	if [[ ! -f "$P-$MVN_VERSION.jar" ]] ; then
+		$PREFIX -Dfile=$P-$MVN_VERSION.pom ;
+	else 
+		$PREFIX -Dfile=$P-$MVN_VERSION.jar
+		$PREFIX -Dfile=$P-$MVN_VERSION-sources.jar -Dclassifier=sources
+		$PREFIX -Dfile=$P-$MVN_VERSION-javadoc.jar -Dclassifier=javadoc ;
+	fi
+	# jar -cvf $OUT_DIR/$P-$MVN_VERSION.jar `ls *$P-$MVN_VERSION.pom* *$P-$MVN_VERSION.jar*  *$P-$MVN_VERSION-sources.* *$P-$MVN_VERSION-javadoc.*` 
+	
+	# echo "Contents of $OUT_DIR/$P-$MVN_VERSION.jar : " 
+	# unzip -l $OUT_DIR/$P-$MVN_VERSION.jar 
+	echo "done for $P" ;
 done
 
 open $OUT_DIR
