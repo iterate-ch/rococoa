@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# To upload to Maven Central via Sonatype 
+# (see http://docs.sonatype.org/x/vgBl) :
+  
+BASE_DIR="`pwd`"
+OUT_DIR="`pwd`/target/bundles"
+MVN_VERSION=$1
+
+if [[ -z "$MVN_VERSION" ]]
+then
+	echo "Usage: $0 mavenVersion"
+	exit 1
+fi
+
+cd $BASE_DIR
+
+mvn install -DskipTests -Pgpg
+
+mkdir -p $OUT_DIR
+
+for P in rococoa-core rococoa-parent ; do
+	cd $BASE_DIR/$P/target
+	jar -cvf $OUT_DIR/$P-$MVN_VERSION.jar `ls $P-$MVN_VERSION.pom* $P-$MVN_VERSION.jar*  $P-$MVN_VERSION-sources.* $P-$MVN_VERSION-javadoc.*` 
+	
+	echo "Contents of $OUT_DIR/$P-$MVN_VERSION.jar : " 
+	unzip -l $OUT_DIR/$P-$MVN_VERSION.jar ;
+done
+
+open $OUT_DIR

@@ -8,12 +8,62 @@
   <name>Rococoa Abstract Parent Project</name>
   <url>http://www.rococoa.org</url>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+  
   <properties>
   	<rococoa.version>0.5</rococoa.version>
   	<maven.compile.source>1.5</maven.compile.source>
   	<maven.compile.target>1.5</maven.compile.target>
   	<jnaerator.version>0.9.5</jnaerator.version>
   </properties>
+  
+  <developers>
+  	<developer>
+  		<id>oneeyedmen</id>
+  		<name>Duncan McGregor</name>
+  		<email>duncan@oneeyedmen.com</email>
+  	</developer>
+  	<developer>
+  		<id>lordpixel</id>
+  		<name>Andrew Thompson</name>
+  		<email>lordpixel@mac.com</email>
+  	</developer>
+  	<developer>
+  		<id>dkocher</id>
+  		<name>David Vinzenz Kocher</name>
+  		<email>davidvinzenzkocher@gmail.com</email>
+  	</developer>
+  	<developer>
+  		<id>keteracel</id>
+  		<name>Paul Loy</name>
+  		<email>keteracel@gmail.com</email>
+  	</developer>
+  	<developer>
+  		<id>ochafik</id>
+  		<name>Olivier Chafik</name>
+  		<email>olivier.chafik@gmail.com</email>
+  	</developer>
+  </developers>
+  
+  <scm>
+    <connection>scm:svn:http://rococoa.googlecode.com/svn/trunk/</connection>
+    <developerConnection>scm:svn:https://rococoa.googlecode.com/svn/trunk/</developerConnection>
+    <url>http://rococoa.googlecode.com/svn/trunk/</url>
+  </scm>
+  
+  
+	<licenses>
+		<license>
+			<name>LGPL 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+			<distribution>repo</distribution>
+			<comments></comments>
+		</license>
+	</licenses>
   
   <build>
 	<plugins>
@@ -84,4 +134,45 @@
     </dependency>
   </dependencies>
   
+  <profiles>
+  	<profile>
+  		<!--
+  			To upload to Maven Central via Sonatype (see http://docs.sonatype.org/x/vgBl) :
+  			
+  			mvn clean install -DskipTests -Pgpg
+  			mkdir bundles
+  			cd rococoa-parent/target
+  			jar -cvf ../../bundles/rococoa-parent-0.5.jar rococoa-parent-0.5.pom rococoa-parent-0.5.pom.asc
+  			cd ../..
+  			cd rococoa-parent/target
+  			jar -cvf ../../bundles/rococoa-core-0.5.jar rococoa-core-0.5.pom rococoa-core-0.5.pom.asc rococoa-core-0.5.jar rococoa-core-0.5.jar.asc rococoa-core-0.5-sources.jar rococoa-core-0.5-sources.jar.asc rococoa-core-0.5-javadoc.jar rococoa-core-0.5-javadoc.jar.asc
+  			cd ../..
+  			open bundles
+  			
+  			
+  		-->
+  		<id>gpg</id>
+		<activation>
+			<activeByDefault>false</activeByDefault>
+		</activation>
+		<build>
+			<plugins>
+			  <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+				  <execution>
+					<id>sign-artifacts</id>
+					<phase>verify</phase>
+					<goals>
+					  <goal>sign</goal>
+					</goals>
+				  </execution>
+				</executions>
+			  </plugin>
+			</plugins>
+		</build>
+  	</profile>
+  </profiles>
 </project>
