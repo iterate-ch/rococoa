@@ -3,7 +3,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-core</artifactId>
   <packaging>jar</packaging>
-  <version>${parent.version}</version>
+  <version>0.5</version>
   <name>Rococoa Core</name>
   <url>http://www.rococoa.org</url>
   
