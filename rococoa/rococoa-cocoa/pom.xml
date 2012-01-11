@@ -11,7 +11,7 @@
     <groupId>org.rococoa</groupId>
     <artifactId>rococoa-parent</artifactId>
     <version>0.5</version>
-	<relativePath>../rococoa-parent</relativePath>
+	<relativePath>..</relativePath>
   </parent>
   
   <dependencies>
