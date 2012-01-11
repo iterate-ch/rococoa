@@ -4,6 +4,8 @@
 //-framework CoreGraphics 
 
 -root org.rococoa.cocoa
+//-parseInOneChunk
+-runtime JNAerator
 
 //-o "$(DIR)/../java" // overwrite versioned files instead of writing to target/generated-sources/java
 
