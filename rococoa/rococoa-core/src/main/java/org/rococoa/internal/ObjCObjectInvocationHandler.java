@@ -140,6 +140,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         } finally {
             finalized = true;
         }
+        super.finalize();
     }
 
     // must be run on appropriate thread
