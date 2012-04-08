@@ -37,8 +37,9 @@ public class VarArgsUnpacker {
         for (int i = 0; i < args.length; i++) {
             result.append(String.valueOf(args[i])).append(SEPERATOR);
         }
-        if (result.length() > 0)
+        if (result.length() > 0) {
             result.setLength(result.length() - SEPERATOR.length());
+        }
         return result.toString();
     }
 

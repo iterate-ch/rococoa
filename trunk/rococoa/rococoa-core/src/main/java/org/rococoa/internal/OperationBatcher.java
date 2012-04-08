@@ -35,18 +35,21 @@ public abstract class OperationBatcher {
     }
 
     public void operate() {
-        if (closed)
+        if (closed) {
             throw new IllegalStateException("Batcher closed");
-        if (++count < batchSize) 
+        }
+        if (++count < batchSize) {
             return;
+        }
         operation();
         reset();
         count = 0;
     }
 
     public void close() {
-        if (closed)
+        if (closed) {
             throw new IllegalStateException("Batcher closed");
+        }
         operation();
         closed = true;
     }

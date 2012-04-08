@@ -25,6 +25,7 @@ package org.rococoa.internal;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.rococoa.RococoaException;
@@ -44,9 +45,9 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
 
     private static String encodeStruct(Class<? extends Structure> clas) {
         StringBuilder result = new StringBuilder();
-        if (!(Structure.ByValue.class.isAssignableFrom(clas)))
+        if (!(Structure.ByValue.class.isAssignableFrom(clas))) {
             result.append('^'); // pointer to
-            
+        }
         result.append('{').append(clas.getSimpleName()).append('=');
         for (Field f : collectStructFields(clas, new ArrayList<Field>())) {
             result.append(NSInvocationMapperLookup.stringForType(f.getType()));
@@ -56,27 +57,30 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
 
     @SuppressWarnings("unchecked")
     private static List<Field> collectStructFields(Class<? extends Structure> clas, List<Field> list) {
-        if (clas == Structure.class)
+        if (clas == Structure.class) {
             return list;
-        for (Field f : clas.getDeclaredFields()) {
-            list.add(f);
         }
+        Collections.addAll(list, clas.getDeclaredFields());
         return collectStructFields((Class<? extends Structure>) clas.getSuperclass(), list);
     }
     
     @SuppressWarnings("unchecked")
     @Override public Object readArgumentFrom(NSInvocation invocation, int index, Class<?> type) {
-        if (Structure.ByValue.class.isAssignableFrom(type))
+        if (Structure.ByValue.class.isAssignableFrom(type)) {
             return readStructureByValue(invocation, index, (Class<? extends Structure>) type);
-        else
+        }
+        else {
             return readStructureByReference(invocation, index, (Class<? extends Structure>) type);
+        }
     }
     
     @Override public Memory bufferForResult(Object methodCallResult) {
-        if (methodCallResult instanceof Structure.ByValue)
+        if (methodCallResult instanceof Structure.ByValue) {
             return bufferForStructureByValue((Structure) methodCallResult);
-        else
+        }
+        else {
             return bufferForStructureByReference((Structure) methodCallResult);
+        }
     }
     
     private Structure readStructureByValue(NSInvocation invocation, int index, 

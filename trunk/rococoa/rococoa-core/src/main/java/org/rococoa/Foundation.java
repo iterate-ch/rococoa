@@ -77,6 +77,10 @@ public abstract class Foundation {
         logging.trace("exit initializing Foundation");
     }
 
+    private Foundation() {
+        //
+    }
+
     public static void nsLog(String format, Object thing) {
         ID formatAsCFString = cfString(format);
         try {
@@ -140,8 +144,9 @@ public abstract class Foundation {
 
             byte[] buffer = new byte[potentialLengthInBytes];
             byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF16LE.value);
-            if (ok == 0)
+            if (ok == 0) {
                 throw new RococoaException("Could not convert string");
+            }
             return new String(buffer, "UTF-16LE").substring(0, lengthInChars);
         } catch (UnsupportedEncodingException e) {
             throw new RococoaException(e);
@@ -154,8 +159,9 @@ public abstract class Foundation {
 
         byte[] buffer = new byte[potentialLengthInBytes];
         byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF8.value);
-        if (ok == 0)
+        if (ok == 0) {
             throw new RococoaException("Could not convert string");
+        }
         return Native.toString(buffer);
     }
 
@@ -171,8 +177,9 @@ public abstract class Foundation {
 
     public static Selector selector(String selectorName) {
         Selector cached = selectorCache.get(selectorName);
-        if (cached != null)
+        if (cached != null) {
             return cached;
+        }
         Selector result = foundationLibrary.sel_registerName(selectorName).initName(selectorName);
         selectorCache.put(selectorName, result);
         return result;
@@ -194,9 +201,10 @@ public abstract class Foundation {
      */
     @SuppressWarnings("unchecked")
     public static <T> T send(ID receiver, Selector selector, Class<T> returnType, Object... args) {
-        if (logging.isTraceEnabled())
+        if (logging.isTraceEnabled()) {
             logging.trace("sending ({}) {}.{}({})",
                     new Object[] {returnType.getSimpleName(), receiver, selector.getName(), new VarArgsUnpacker(args)});
+        }
         return (T) messageSendLibrary.syntheticSendMessage(returnType, receiver, selector, args);
     }
 

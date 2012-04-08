@@ -48,7 +48,7 @@ public interface RococoaLibrary extends Library {
      * Return an Obj-C object that will callback on methodSignature required and
      * selector invoked, so that we can use a Java object to implement.
      */
-    public ID proxyForJavaObject(SelectorInvokedCallback selectorInvokedCallback, 
+    ID proxyForJavaObject(SelectorInvokedCallback selectorInvokedCallback,
             MethodSignatureCallback methodSignatureCallback);
 
     /**
@@ -61,6 +61,5 @@ public interface RococoaLibrary extends Library {
     /**
      * Call callback on the main Cococa event thread
      */
-    public void callOnMainThread(RococoaLibrary.VoidCallback callback, boolean waitUntilDone);
-    
+    void callOnMainThread(RococoaLibrary.VoidCallback callback, boolean waitUntilDone);
 }

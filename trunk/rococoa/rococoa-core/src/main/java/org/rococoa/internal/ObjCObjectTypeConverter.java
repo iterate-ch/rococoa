@@ -59,19 +59,22 @@ class ObjCObjectTypeConverter<T extends ObjCObject> implements TypeConverter {
     // and returns an NSObject of javaType with that id.
     public T fromNative(Object nativeValue, FromNativeContext context) {
         Number nativeValueAsNumber = (Number) nativeValue;
-        if (nativeValueAsNumber == null)
+        if (nativeValueAsNumber == null) {
             return null;
+        }
         ID id = ID.fromLong(nativeValueAsNumber.longValue());
-        if (id.isNull())
-            return null;            
+        if (id.isNull()) {
+            return null;
+        }
         boolean shouldRetain = shouldRetainFor(context);        
         return Rococoa.wrap(id, javaType, shouldRetain);
     }
     
     // Takes an NSObject and returns its id as Integer or Long
     public Object toNative(Object value, ToNativeContext context) {
-        if (value == null)
+        if (value == null) {
             return null;
+        }
         ObjCObject valueAsNSObject = (ObjCObject) value;
         ID idToReturn = valueAsNSObject.id();
         return idToReturn.toNative();
@@ -86,18 +89,19 @@ class ObjCObjectTypeConverter<T extends ObjCObject> implements TypeConverter {
         // Generally we should default to retaining, as by default NSObjects that
         // are returned from methods are owned by the current autorelease pool and
         // unless we retain will be dealloc'ed when is is drained.
-        if (context == null || !(context instanceof FunctionResultContext))
+        if (!(context instanceof FunctionResultContext)) {
             return true;
-
+        }
         // The exception is if this conversion is for an object that we own, because
         // the selector name matches those
         FunctionResultContext resultContext = (FunctionResultContext) context;
         Object[] arguments = resultContext.getArguments();
-        if (arguments.length < 2)
+        if (arguments.length < 2) {
             return true;
-        if (!(arguments[1] instanceof Selector))
+        }
+        if (!(arguments[1] instanceof Selector)) {
             return true;
-
+        }
         boolean dontRetain = Foundation.selectorNameMeansWeOwnReturnedObject(((Selector) arguments[1]).getName());
         return !dontRetain; // OK Smartarse, you express it better.
     }

@@ -48,7 +48,11 @@ public abstract class MainThreadUtils {
             return nsThreadSaysIsMainThread();
         }
     };
-    
+
+    private MainThreadUtils() {
+        //
+    }
+
     // References to callbacks that must live longer than the method invocation because they are called asynchronously
     private static final Set<RococoaLibrary.VoidCallback> asynchronousCallbacks = new HashSet<RococoaLibrary.VoidCallback>();
     
@@ -63,7 +67,7 @@ public abstract class MainThreadUtils {
             public void callback() {
                 try {
                     result[0] = callable.call();
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     thrown[0] = t;
                 }
             }};
@@ -84,17 +88,23 @@ public abstract class MainThreadUtils {
             public void callback() {
                 try {
                     runnable.run();
-                } catch (Throwable t) {
-                    if (waitUntilDone)
+                } catch (Exception t) {
+                    if (waitUntilDone) {
                         thrown[0] = t;
-                    else
+                    }
+                    else {
                         logging.error("Lost exception on main thread", t);
+                    }
                 } finally {
-                    if (!waitUntilDone) asynchronousCallbacks.remove(this);
+                    if (!waitUntilDone) {
+                        asynchronousCallbacks.remove(this);
+                    }
                 }
             }};
 
-        if (!waitUntilDone) asynchronousCallbacks.add(callback);
+        if (!waitUntilDone) {
+            asynchronousCallbacks.add(callback);
+        }
         rococoaLibrary.callOnMainThread(callback, waitUntilDone);
         rethrow(thrown[0]);
     }
@@ -108,12 +118,15 @@ public abstract class MainThreadUtils {
     }
     
     private static void rethrow(Throwable t) {
-        if (t == null)
+        if (t == null) {
             return;
-        if (t instanceof Error)
+        }
+        if (t instanceof Error) {
             throw (Error) t;
-        if (t instanceof RuntimeException)
+        }
+        if (t instanceof RuntimeException) {
             throw (RuntimeException) t;
+        }
         throw new RococoaException(t);
     }
 }

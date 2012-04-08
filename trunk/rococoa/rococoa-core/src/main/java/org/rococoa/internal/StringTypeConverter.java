@@ -43,18 +43,21 @@ class StringTypeConverter implements TypeConverter {
     // and returns a java.lang.String
     public String fromNative(Object nativeValue, FromNativeContext context) {
         Number nativeValueAsNumber = (Number) nativeValue;
-        if (nativeValueAsNumber == null)
+        if (nativeValueAsNumber == null) {
             return null;
+        }
         ID id = ID.fromLong(nativeValueAsNumber.longValue());
-        if (id.isNull())
-            return null;            
+        if (id.isNull()) {
+            return null;
+        }
         return Foundation.toString(id);
     }
 
     // Takes java.lang.String and returns value of an id as Integer or Long
     public Object toNative(Object value, ToNativeContext context) {
-        if (value == null)
+        if (value == null) {
             return null;
+        }
         String valueAsString = (String) value;
         ID valueAsID = Foundation.cfString(valueAsString);
         Foundation.sendReturnsID(valueAsID, "autorelease");

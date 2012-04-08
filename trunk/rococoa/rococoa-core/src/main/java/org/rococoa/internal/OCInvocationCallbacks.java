@@ -104,8 +104,9 @@ public class OCInvocationCallbacks {
         try {
             Method[] methods = javaObject.getClass().getMethods();
             for (Method method : methods) {
-                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount)
+                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount) {
                     return method;
+                }
             }
             logging.debug("No method for selector:" + selectorName);
             return null;
@@ -135,21 +136,21 @@ public class OCInvocationCallbacks {
             NSMethodSignature nsMethodSignature = invocation.methodSignature();
             String typeToReturnToObjC = nsMethodSignature.methodReturnType();
 
-            if (nsMethodSignature.numberOfArguments() - method.getParameterTypes().length != 2) // self, _cmd
+            if (nsMethodSignature.numberOfArguments() - method.getParameterTypes().length != 2) { // self, _cmd
                 throw new NoSuchMethodException(String.format(
                         "Number of arguments mismatch for invocation  of selector %s (%s arguments supplied), method %s expects %s",
                         selectorName, nsMethodSignature.numberOfArguments(), method.getName(), method.getParameterTypes().length));
-
-            if (typeToReturnToObjC.equals("v") && method.getReturnType() != void.class)
+            }
+            if (typeToReturnToObjC.equals("v") && method.getReturnType() != void.class) {
                 throw new NoSuchMethodException(String.format(
                         "Selector %s expects void return, but method %s returns %s",
                         selectorName, method.getName(), method.getReturnType()));
-
-            if (method.getReturnType() == void.class && !(typeToReturnToObjC.equals("v")))
+            }
+            if (method.getReturnType() == void.class && !(typeToReturnToObjC.equals("v"))) {
                 throw new NoSuchMethodException(String.format(
                         "Method %s returns void, but selector %s expects %s",
                         method.getName(), selectorName, typeToReturnToObjC));
-
+            }
             Object[] marshalledArgs = argsForFrom(method, invocation, nsMethodSignature);
             method.setAccessible(true); // needed if implementation is an anonymous subclass of Object
             Object result  = method.invoke(o, marshalledArgs);
@@ -193,27 +194,29 @@ public class OCInvocationCallbacks {
     private Object javaObjectForOCArgument(NSInvocation invocation,
             int indexInInvocation, String objCArgumentTypeAsString, Class<?> javaParameterType) {
         NSInvocationMapper mapper = NSInvocationMapperLookup.mapperForType(javaParameterType);
-        if (mapper == null)
+        if (mapper == null) {
             throw new IllegalStateException(
                 String.format("Don't (yet) know how to marshall argument Objective-C type %s as %s",
                         objCArgumentTypeAsString, javaParameterType));
+        }
         return mapper.readArgumentFrom(invocation, indexInInvocation, javaParameterType);
     }
 
     private void putResultIntoInvocation(NSInvocation invocation, String typeToReturnToObjC, Object result) {
         if (typeToReturnToObjC.equals("v")) {
-            if (result != null)
+            if (result != null) {
                 throw new IllegalStateException("Java method returned a result, but expected void");// void
+            }
             return;
         }
         if (null == result) {
             return;
         }
         Memory buffer = bufferForReturn(typeToReturnToObjC, result);
-        if (buffer == null)
+        if (buffer == null) {
             throw new IllegalStateException(
                     String.format("Don't (yet) know how to marshall result %s as Objective-C type %s", result, typeToReturnToObjC));
-
+        }
         invocation.setReturnValue(buffer);
     }
 
@@ -225,16 +228,18 @@ public class OCInvocationCallbacks {
     private int countColons(String selectorName) {
         int result = 0;
         for (int i = 0; i < selectorName.length(); i++) {
-            if (selectorName.charAt(i) == ':')
+            if (selectorName.charAt(i) == ':') {
                 result++;
+            }
         }
         return result;
     }
 
     private String stringForType(Class<?> clas) {
         NSInvocationMapper result = NSInvocationMapperLookup.mapperForType(clas);
-        if (result == null)
+        if (result == null) {
             throw new RococoaException("Unable to give Objective-C type string for Java type " + clas);
+        }
         return result.typeString();
     }
 
@@ -251,5 +256,4 @@ public class OCInvocationCallbacks {
      * parameters, while the values of the parameters at runtime are the
      * arguments.
      */
-
 }
