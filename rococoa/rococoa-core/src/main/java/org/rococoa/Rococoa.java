@@ -82,7 +82,6 @@ public abstract class Rococoa  {
             logging.trace("creating [{} ({})].{}({})", 
                     new Object[] {ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)});
         }
-
         ID ocClass = Foundation.getClass(ocClassName);
         ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);
         int initialRetainCount = Foundation.cfGetRetainCount(ocInstance);
@@ -106,16 +105,16 @@ public abstract class Rococoa  {
      * type.
      */
     public static <T extends ObjCObject> T cast(ObjCObject object, Class<T> desiredType) {
-        if (object == null)
+        if (object == null) {
 			return null;
-
+        }
         return wrap(object.id(), desiredType, true);
     }
 
     public static <T extends ObjCObject> T wrap(ID id, Class<T> javaClass, boolean retain) {
-		if (id == null || id.isNull())
+		if (id == null || id.isNull()) {
 			return null;
-		
+        }
         // Why would we not want to retain? Well if we are wrapping a Core Foundation
         // created object, or one created with new (alloc init), it will not
         // have been autorelease'd. 
@@ -137,7 +136,7 @@ public abstract class Rococoa  {
     public static ID wrap(Object javaObject) {
         OCInvocationCallbacks callbacks = new OCInvocationCallbacks(javaObject);
         ID idOfOCProxy = Foundation.newOCProxy(callbacks);
-            // idOfOCProxy is owned by us, and we have to release it at some stage 
+        // idOfOCProxy is owned by us, and we have to release it at some stage
         return new ProxyID(idOfOCProxy, callbacks);
     }
     
@@ -174,10 +173,12 @@ public abstract class Rococoa  {
             e.setUseCache(true); // make sure that we reuse if we've already defined
             e.setNamingPolicy(new DefaultNamingPolicy() {
                 public String getClassName(String prefix, String source, Object key, Predicate names) {
-                    if (source.equals(net.sf.cglib.proxy.Enhancer.class.getName()))
+                    if (source.equals(net.sf.cglib.proxy.Enhancer.class.getName())) {
                         return type.getName() + "$$ByRococoa";
-                    else 
+                    }
+                    else {
                         return super.getClassName(prefix, source, key, names);
+                    }
                 }});
             e.setSuperclass(type);
             e.setCallback(invocationHandler);
@@ -203,8 +204,9 @@ public abstract class Rococoa  {
     
     private static void checkRetainCount(ID ocInstance, int expected) {
         int retainCount = Foundation.cfGetRetainCount(ocInstance);
-        if (retainCount != expected)
+        if (retainCount != expected) {
             throw new IllegalStateException("Created an object which had a retain count of " + retainCount + " not " + expected);
+        }
     }
 
     /**
@@ -212,5 +214,4 @@ public abstract class Rococoa  {
      */
     private Rococoa() {
     }
-
 }

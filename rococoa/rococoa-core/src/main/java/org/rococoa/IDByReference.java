@@ -19,9 +19,7 @@
  
 package org.rococoa;
 
-import com.sun.jna.FromNativeContext;
 import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByReference;
 
 /**
@@ -45,15 +43,6 @@ public class IDByReference extends ByReference {
     
     public ID getValue() {
         return ID.fromLong(getPointer().getNativeLong(0).longValue());
-    }
-    
-    public Object fromNative(Object nativeValue, FromNativeContext context) {
-        return super.fromNative(nativeValue, context);
-    }
-    
-    /** Convert this object to its native type (a {@link Pointer}). */
-    public Object toNative() {
-        return super.toNative();
     }
 }
 

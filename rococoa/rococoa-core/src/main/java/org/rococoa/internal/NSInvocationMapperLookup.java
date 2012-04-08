@@ -41,7 +41,7 @@ import com.sun.jna.Structure;
  * @author duncan
  *
  */
-public class NSInvocationMapperLookup {
+public final class NSInvocationMapperLookup {
     private static final int NATIVE_POINTER_SIZE = Native.POINTER_SIZE;
     private static final int NATIVE_LONG_SIZE = Native.LONG_SIZE;
 
@@ -52,20 +52,24 @@ public class NSInvocationMapperLookup {
 
     private static final Map<Class<?>, NSInvocationMapper> classToMapperLookup = new HashMap<Class<?>, NSInvocationMapper>();
 
+    private NSInvocationMapperLookup() {
+        //
+    }
+
     public static NSInvocationMapper mapperForType(Class<?> type) {
         // first check if we have a direct hit in the classToMapperLookup
         NSInvocationMapper directMatch = classToMapperLookup.get(type);
-        if (directMatch != null)
+        if (directMatch != null) {
             return directMatch;
-
+        }
         // Now if it is any subclass of NSObject, then the generic mapper will do
-        if (OCOBJECT.type.isAssignableFrom(type))
+        if (OCOBJECT.type.isAssignableFrom(type)) {
             return OCOBJECT;
-
+        }
         // Now if it is any subclass of NSObject, then the generic mapper will do
-        if (NATIVE_LONG.type.isAssignableFrom(type))
+        if (NATIVE_LONG.type.isAssignableFrom(type)) {
             return NATIVE_LONG;
-
+        }
         // finally if it's a structure (that wasn't found in classToMapperLookup)
         // create a mapper for the actual type and add it for next time
         if (Structure.class.isAssignableFrom(type)) {
@@ -73,7 +77,6 @@ public class NSInvocationMapperLookup {
             addToLookup(result);
             return result;
         }
-
         return null;
     }
 
@@ -176,8 +179,9 @@ public class NSInvocationMapperLookup {
         addToLookup(new NSInvocationMapper("@", ID.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
                 ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
-                if (id.isNull())
+                if (id.isNull()) {
                     return null;
+                }
                 return id;
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
@@ -189,8 +193,9 @@ public class NSInvocationMapperLookup {
         addToLookup(new NSInvocationMapper("@", String.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
                 ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
-                if (id.isNull())
+                if (id.isNull()) {
                     return null;
+                }
                 return Foundation.toString(id);
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
@@ -223,29 +228,34 @@ public class NSInvocationMapperLookup {
         });
         addToLookup(new NSInvocationMapper(CGFLOAT_ENCODING, CGFloat.class) {
             @Override public Object readFrom(Memory buffer, Class<?> type) {
-            	if (NATIVE_LONG_SIZE == 4)
+            	if (NATIVE_LONG_SIZE == 4) {
             		return new CGFloat(buffer.getFloat(0));
-            	if (NATIVE_LONG_SIZE == 8)
+                }
+            	if (NATIVE_LONG_SIZE == 8) {
             		return new CGFloat(buffer.getDouble(0));
+                }
             	throw new IllegalStateException();
             }
             @Override public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(NATIVE_LONG_SIZE);
-                if (NATIVE_LONG_SIZE == 4)
+                if (NATIVE_LONG_SIZE == 4) {
                 	result.setFloat(0, ((CGFloat) methodCallResult).floatValue());
-                if (NATIVE_LONG_SIZE == 8)
+                }
+                if (NATIVE_LONG_SIZE == 8) {
                 	result.setDouble(0, ((CGFloat) methodCallResult).doubleValue());
+                }
                 return result;
             }
         });
     }
 
-    static NSInvocationMapper OCOBJECT = new NSInvocationMapper("@", ObjCObject.class) {
+    static final NSInvocationMapper OCOBJECT = new NSInvocationMapper("@", ObjCObject.class) {
         @SuppressWarnings("unchecked")
         @Override public Object readFrom(Memory buffer, Class<?> type) {
             ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
-            if (id.isNull())
+            if (id.isNull()) {
                 return null;
+            }
             return Rococoa.wrap(id, (Class<? extends ObjCObject>) type);
         }
         @Override public Memory bufferForResult(Object methodCallResult) {
@@ -254,7 +264,7 @@ public class NSInvocationMapperLookup {
             return buffer;
         }};
 
-    static NSInvocationMapper NATIVE_LONG = new NSInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
+    static final NSInvocationMapper NATIVE_LONG = new NSInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
         @Override public Object readFrom(Memory buffer, Class<?> type) {
             return buffer.getNativeLong(0);
         }
@@ -267,29 +277,39 @@ public class NSInvocationMapperLookup {
     private static void addToLookup(NSInvocationMapper mapper) {
         Class<?> type = mapper.type;
         classToMapperLookup.put(type, mapper);
-        if (type.isPrimitive())
+        if (type.isPrimitive()) {
             classToMapperLookup.put(boxTypeFor(type), mapper);
+        }
     }
 
     private static Class<?> boxTypeFor(Class<?> type) {
-        if (type == void.class)
+        if (type == void.class) {
             return null;
-        if (type == boolean.class)
+        }
+        if (type == boolean.class) {
             return Boolean.class;
-        if (type == byte.class)
+        }
+        if (type == byte.class) {
             return Byte.class;
-        if (type == short.class)
+        }
+        if (type == short.class) {
             return Short.class;
-        if (type == char.class)
+        }
+        if (type == char.class) {
             return Character.class;
-        if (type == int.class)
+        }
+        if (type == int.class) {
             return Integer.class;
-        if (type == long.class)
+        }
+        if (type == long.class) {
             return Long.class;
-        if (type == float.class)
+        }
+        if (type == float.class) {
             return Float.class;
-        if (type == double.class)
+        }
+        if (type == double.class) {
             return Double.class;
+        }
         throw new IllegalArgumentException("Not a primitive class " + type);
     }
 }

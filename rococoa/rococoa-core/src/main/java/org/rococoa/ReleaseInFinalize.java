@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa;
 
 import java.lang.annotation.ElementType;
@@ -26,12 +26,11 @@ import java.lang.annotation.Target;
 
 /**
  * Marker to allow us to disable CFRelease'ing an id when its Java proxy is finalized.
- * 
+ * <p/>
  * Only NSAutoreleasePool applies at the time of writing.
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ReleaseInFinalize {
-    public boolean value();
+    boolean value();
 }

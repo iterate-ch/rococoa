@@ -41,8 +41,9 @@ public class AutoreleaseBatcher extends OperationBatcher {
     private NSAutoreleasePool pool;
 
     public static AutoreleaseBatcher forThread(int batchSize) {
-        if (threadLocal.get() == null)
+        if (threadLocal.get() == null) {
             threadLocal.set(new AutoreleaseBatcher(batchSize));
+        }
         return threadLocal.get();
     }
     

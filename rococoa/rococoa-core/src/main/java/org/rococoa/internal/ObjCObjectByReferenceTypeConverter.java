@@ -33,19 +33,19 @@ import com.sun.jna.TypeConverter;
  * Work in progress. I think that this needs a bit of JNA help to get off the ground.
  */
 class ObjCObjectByReferenceTypeConverter<T extends ObjCObject> implements TypeConverter {
-    
 
     public Object fromNative(Object nativeValue, FromNativeContext context) {
-	throw new UnsupportedOperationException();
+	    throw new UnsupportedOperationException();
     }
 
     public Class<?> nativeType() {
-	return IDByReference.class;
+	    return IDByReference.class;
     }
 
     public Object toNative(Object value, ToNativeContext context) {
-	if (value == null)
+	if (value == null) {
 	    return null;
+    }
 	return new IDByReference();
     }
     

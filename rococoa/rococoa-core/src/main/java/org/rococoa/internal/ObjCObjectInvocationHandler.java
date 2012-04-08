@@ -116,15 +116,17 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         // Almost everything should be released in finalize, except wrappers for
         // NSAutoreleasePool.
         ReleaseInFinalize annotation = javaClass.getAnnotation(ReleaseInFinalize.class);
-        if (annotation == null)
+        if (annotation == null) {
             return true;
+        }
         return annotation.value();
     }
 
     @Override
     protected void finalize() throws Throwable {
-        if (finalized || !releaseOnFinalize)
+        if (finalized || !releaseOnFinalize) {
             return;
+        }
         try {
             if (callAcrossToMainThread()) {
                 Foundation.runOnMainThread(new Runnable() {
@@ -145,8 +147,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
 
     // must be run on appropriate thread
     private void release() {
-        if (ocInstance.isNull())
+        if (ocInstance.isNull()) {
             return;
+        }
         if (logging.isTraceEnabled()) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
             logging.trace("finalizing [{} {}], releasing with retain count = {}",
@@ -158,13 +161,14 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     /**
      * Callback from java.lang.reflect proxy
      */
-    public Object invoke(Object proxy, Method method, Object[] args)  throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)  throws Exception {
         if (logging.isTraceEnabled()) {
             logging.trace("invoking [{} {}].{}({})",
                     new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
         }
-        if (isSpecialMethod(method))
+        if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
+        }
         return invokeCocoa(method, args);
     }
 
@@ -176,8 +180,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
             logging.trace("invoking [{} {}].{}({})",
                     new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
         }
-        if (isSpecialMethod(method))
+        if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
+        }
         if (!Modifier.isAbstract(method.getModifiers())) {
             // method is not abstract, so a Java override has been provided, which we call
             return methodProxy.invokeSuper(proxy, args);
@@ -193,17 +198,21 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     }
 
     private Object invokeSpecialMethod(final Method method, final Object[] args) {
-        if (OBJECT_TOSTRING.equals(method))
+        if (OBJECT_TOSTRING.equals(method)) {
             return invokeDescription();
+        }
         if (OBJECT_EQUALS.equals(method)) {
-            if (args[0] == null)
+            if (args[0] == null) {
                 return false;
-            if (args[0] instanceof ObjCObject)
+            }
+            if (args[0] instanceof ObjCObject) {
                 return invokeIsEqual(((ObjCObject) args[0]).id());
+            }
             return false;
         }
-        if (OCOBJECT_ID.equals(method))
+        if (OCOBJECT_ID.equals(method)) {
             return ocInstance;
+        }
         throw new IllegalArgumentException("Not a special method " + method);
     }
 
@@ -218,7 +227,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     private Object invokeCocoa(final Method method, Object[] args) {
         String selectorName = selectorNameFor(method);
         Class<?> returnType = returnTypeFor(method);
-        Object[] marshalledArgs = marshallArgsFor(method, args);
+        Object[] marshalledArgs = marshallArgsFor(args);
 
         Object result = sendOnThisOrMainThread(method, ocInstance, selectorName, returnType, marshalledArgs);
         if (method.getName().startsWith("init")) {
@@ -226,12 +235,15 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         }
         fillInReferences(args, marshalledArgs);
 
-        if (result instanceof Pointer && method.getReturnType().equals(String.class))
+        if (result instanceof Pointer && method.getReturnType().equals(String.class)) {
             // special case for return char*
             return ((Pointer) result).getString(0);
-        if (result instanceof ID)
-            if (((ID) result).isNull())
+        }
+        if (result instanceof ID) {
+            if (((ID) result).isNull()) {
                 return null;
+            }
+        }
         return result;
     }
 
@@ -239,8 +251,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         // Normally init methods return self, but on error they may return nil.
         // In this case the ObjC object for which this is the handler is considered
         // freed and should not be released when we are finalized.
-        if (result != null) 
+        if (result != null) {
             return;
+        }
         ocInstance = ID.fromLong(0);        
     }
 
@@ -251,7 +264,8 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
                     public Object call() {
                         return Foundation.send(id, selectorName, returnType, args);
                     }});
-        } else {
+        }
+        else {
             return Foundation.send(id, selectorName, returnType, args);
         }
     }
@@ -261,8 +275,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
      * so that they are retained.
      */
     private void fillInReferences(Object[] args, Object[] marshalledArgs) {
-        if (args == null)
+        if (args == null) {
             return;
+        }
         for (int i = 0; i < args.length; i++) {
             Object original = args[i];
             Object marshalled = marshalledArgs[i];
@@ -279,23 +294,28 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
 
     private Class<?> returnTypeFor(final Method method) {
         ReturnType annotation = method.getAnnotation(ReturnType.class);
-        if (annotation == null)
+        if (annotation == null) {
             return method.getReturnType();
-        else
+        }
+        else {
             return annotation.value();
+        }
     }
 
-    private Object[] marshallArgsFor(Method method, Object[] args) {
-        if (args == null)
+    private Object[] marshallArgsFor(Object[] args) {
+        if (args == null) {
             return null;
+        }
         List<Object> result = new ArrayList<Object>(args.length);
         for (int i = 0; i < args.length; i++) {
             Object marshalled = marshall(args[i]);
-            if (marshalled instanceof Object[])
+            if (marshalled instanceof Object[]) {
                 // flatten varags, it would never(?) make sense to pass Object[] to Cococoa
                 result.addAll(Arrays.asList((Object[]) marshalled));
-            else
+            }
+            else {
                 result.add(marshalled);
+            }
         }
         return result.toArray(new Object[result.size()]);
     }
@@ -303,15 +323,16 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     private Object marshall(Object arg) {
         // Note that this is not the only marshalling that is done.
         // RococoaTypeMapper also gets involved.
-        if (arg == null)
+        if (arg == null) {
             return null;
+        }
         if (arg instanceof ObjCObjectByReference) {
 			// Forward conversion (another backwards conversion will take place in fillInReferences)
             IDByReference idref = new IDByReference();
 			ObjCObject ob = ((ObjCObjectByReference)arg).getValueAs(ObjCObject.class);
-			if (ob != null)
+			if (ob != null) {
 				idref.setValue(ob.id());
-			
+            }
 			return idref;
 		}
         return arg;
@@ -319,10 +340,13 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
 
     private String selectorNameFor(Method method) {
         String methodName = method.getName();
-        if (methodName.endsWith("_")) // lets us append _ to allow Java keywords as method names
+        if (methodName.endsWith("_")) {
+            // lets us append _ to allow Java keywords as method names
             methodName = methodName.substring(0, methodName.length() - 1);
-        if (method.getParameterTypes().length == 0)
+        }
+        if (method.getParameterTypes().length == 0) {
             return methodName;
+        }
         String[] parts = methodName.split("_");
         StringBuilder result = new StringBuilder();
         for (String part : parts) {
@@ -342,5 +366,4 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     private boolean callAcrossToMainThreadFor(Method m) {
         return (invokeAllMethodsOnMainThread || shouldInvokeMethodsOnMainThread(m) ) && !Foundation.isMainThread() ;
     }
-
 }
