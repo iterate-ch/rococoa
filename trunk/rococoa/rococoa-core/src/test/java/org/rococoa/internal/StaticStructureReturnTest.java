@@ -16,119 +16,160 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Diagnosing a JNA bug (introduced in JNA 3.0.6) when returning small structures.
- * 
  */
 public class StaticStructureReturnTest {
-      
+
     public static class IntIntStruct extends Structure implements Structure.ByValue {
         public int a;
         public int b;
-        
-        public IntIntStruct() {}
-        
+
+        public IntIntStruct() {
+        }
+
         public IntIntStruct(int a, int b) {
             this.a = a;
             this.b = b;
+        }
+
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("a", "b");
         }
     }
 
     public static class FloatFloatStruct extends Structure implements Structure.ByValue {
         public float a;
         public float b;
-        
-        public FloatFloatStruct() {}
-        
+
+        public FloatFloatStruct() {
+        }
+
         public FloatFloatStruct(float a, float b) {
             this.a = a;
             this.b = b;
+        }
+
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("a", "b");
         }
     }
 
     public static class IntFloatStruct extends Structure implements Structure.ByValue {
         public int a;
         public float b;
-        
-        public IntFloatStruct() {}
-        
+
+        public IntFloatStruct() {
+        }
+
         public IntFloatStruct(int a, float b) {
             this.a = a;
             this.b = b;
+        }
+
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("a", "b");
         }
     }
 
     public static class IntLongStruct extends Structure implements Structure.ByValue {
         public int a;
         public long b;
-        
-        public IntLongStruct() {}
-        
+
+        public IntLongStruct() {
+        }
+
         public IntLongStruct(int a, long b) {
             this.a = a;
             this.b = b;
+        }
+
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("a", "b");
         }
     }
 
     public static class IntDoubleStruct extends Structure implements Structure.ByValue {
         public int a;
         public double b;
-        
-        public IntDoubleStruct() {}
-        
+
+        public IntDoubleStruct() {
+        }
+
         public IntDoubleStruct(int a, double b) {
             this.a = a;
             this.b = b;
         }
+
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("a", "b");
+        }
     }
 
-    
+
     public interface TestLibrary extends Library {
         FloatFloatStruct createFloatFloatStruct(float a, float b);
+
         IntIntStruct createIntIntStruct(int a, int b);
+
         IntFloatStruct createIntFloatStruct(int a, float b);
+
         IntLongStruct createIntLongStruct(int a, long b);
+
         IntDoubleStruct createIntDoubleStruct(int a, double b);
     }
 
     private TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
 
-    @Test public void testIntInt() {
+    @Test
+    public void testIntInt() {
         IntIntStruct struct = library3.createIntIntStruct(42, -99);
         assertEquals(-99, struct.b);
         assertEquals(42, struct.a);
     }
 
-    @Test public void testFloatFloat() {
+    @Test
+    public void testFloatFloat() {
         FloatFloatStruct struct = library3.createFloatFloatStruct((float) Math.E, (float) Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(Math.E, struct.a, 0.001);
     }
 
-    @Test public void testIntFloat() {
+    @Test
+    public void testIntFloat() {
         IntFloatStruct struct = library3.createIntFloatStruct(42, (float) Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(42, struct.a);
     }
-    
-    @Test public void testIntLong() {
+
+    @Test
+    public void testIntLong() {
         IntLongStruct struct = library3.createIntLongStruct(42, -99);
         assertEquals(-99, struct.b);
         assertEquals(42, struct.a);
     }
 
-    @Test public void testIntDouble() {
+    @Test
+    public void testIntDouble() {
         IntDoubleStruct struct = library3.createIntDoubleStruct(42, Math.PI);
         assertEquals(Math.PI, struct.b, 0.001);
         assertEquals(42, struct.a);

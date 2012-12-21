@@ -22,6 +22,8 @@ package org.rococoa.cocoa.foundation;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+import java.util.List;
 
 import com.sun.jna.Structure;
 
@@ -58,5 +60,10 @@ public class NSRect extends Structure implements Structure.ByValue {
 
     public Rectangle2D getBounds() {
         return new Rectangle2D.Double(origin.x.doubleValue(), origin.y.doubleValue(), size.width.doubleValue(), size.height.doubleValue());
+    }
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList("origin", "size");
     }
 }

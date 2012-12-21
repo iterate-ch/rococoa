@@ -16,14 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.cocoa.qtkit;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.sun.jna.Structure;
 
 public class QTTimeRange extends Structure implements Structure.ByValue {
 
-    public QTTime time;     
+    public QTTime time;
     public QTTime duration;
 
     public QTTimeRange() {
@@ -32,6 +35,11 @@ public class QTTimeRange extends Structure implements Structure.ByValue {
     public QTTimeRange(QTTime time, QTTime duration) {
         this.time = time;
         this.duration = duration;
+    }
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList("time", "duration");
     }
 
     @Override
@@ -46,24 +54,33 @@ public class QTTimeRange extends Structure implements Structure.ByValue {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if(this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if(!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if(getClass() != obj.getClass()) {
             return false;
+        }
         final QTTimeRange other = (QTTimeRange) obj;
-        if (duration == null) {
-            if (other.duration != null)
+        if(duration == null) {
+            if(other.duration != null) {
                 return false;
-        } else if (!duration.equals(other.duration))
+            }
+        }
+        else if(!duration.equals(other.duration)) {
             return false;
-        if (time == null) {
-            if (other.time != null)
+        }
+        if(time == null) {
+            if(other.time != null) {
                 return false;
-        } else if (!time.equals(other.time))
+            }
+        }
+        else if(!time.equals(other.time)) {
             return false;
+        }
         return true;
     }
-    
+
 }

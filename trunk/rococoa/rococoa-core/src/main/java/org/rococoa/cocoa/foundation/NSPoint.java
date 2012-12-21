@@ -19,9 +19,11 @@
 
 package org.rococoa.cocoa.foundation;
 
-import java.awt.geom.Point2D;
-
 import org.rococoa.cocoa.CGFloat;
+
+import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.List;
 
 import com.sun.jna.Structure;
 
@@ -35,7 +37,7 @@ public class NSPoint extends Structure implements Structure.ByValue {
     public NSPoint() {
         this(0, 0);
     }
-    
+
     public NSPoint(double x, double y) {
         this.x = new CGFloat(x);
         this.y = new CGFloat(y);
@@ -47,5 +49,9 @@ public class NSPoint extends Structure implements Structure.ByValue {
 
     public Point2D getPoint() {
         return new Point2D.Double(x.doubleValue(), y.doubleValue());
+    }
+
+    protected List getFieldOrder() {
+        return Arrays.asList("x", "y");
     }
 }
