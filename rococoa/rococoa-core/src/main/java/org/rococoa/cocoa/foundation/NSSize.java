@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.cocoa.foundation;
 
-import java.awt.geom.Dimension2D;
-
 import org.rococoa.cocoa.CGFloat;
+
+import java.awt.geom.Dimension2D;
+import java.util.Arrays;
+import java.util.List;
 
 import com.sun.jna.Structure;
 
@@ -32,7 +34,7 @@ public class NSSize extends Structure implements Structure.ByValue {
     public NSSize() {
         this(0, 0);
     }
-    
+
     public NSSize(double width, double height) {
         this.width = new CGFloat(width);
         this.height = new CGFloat(height);
@@ -40,5 +42,10 @@ public class NSSize extends Structure implements Structure.ByValue {
 
     public NSSize(Dimension2D pSize) {
         this(pSize.getWidth(), pSize.getHeight());
+    }
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList("width", "height");
     }
 }

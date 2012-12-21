@@ -19,19 +19,21 @@
 
 package org.rococoa.cocoa;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.Structure;
 
 /**
- *
  * @author pixel
  */
 public class CFRange extends Structure implements Structure.ByValue {
     public CFIndex location;
     public CFIndex length;
-    
+
     public CFRange() {
     }
-    
+
     public CFRange(final CFIndex location, final CFIndex length) {
         this.location = location;
         this.length = length;
@@ -44,8 +46,13 @@ public class CFRange extends Structure implements Structure.ByValue {
     public long getLocation() {
         return location.longValue();
     }
-    
+
     public long getEndLocation() {
         return getLocation() + getLength();
-    }       
+    }
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList("location", "length");
+    }
 }

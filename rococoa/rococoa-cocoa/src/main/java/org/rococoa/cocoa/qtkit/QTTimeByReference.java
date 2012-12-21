@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.cocoa.qtkit;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
@@ -53,20 +56,30 @@ public class QTTimeByReference extends Structure {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if(this == obj) {
             return true;
-        if (obj == null)
+        }
+        if(obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if(getClass() != obj.getClass()) {
             return false;
+        }
         final QTTime other = (QTTime) obj;
-        if (!flags.equals(other.flags))
+        if(!flags.equals(other.flags)) {
             return false;
-        if (!timeScale.equals(other.timeScale))
+        }
+        if(!timeScale.equals(other.timeScale)) {
             return false;
-        if (timeValue != other.timeValue)
+        }
+        if(timeValue != other.timeValue) {
             return false;
+        }
         return true;
     }
-    
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList("timeValue", "timeScale", "flags");
+    }
 }
