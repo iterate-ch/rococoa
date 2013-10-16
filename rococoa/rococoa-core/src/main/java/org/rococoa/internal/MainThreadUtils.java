@@ -67,7 +67,7 @@ public abstract class MainThreadUtils {
             public void callback() {
                 try {
                     result[0] = callable.call();
-                } catch (Exception t) {
+                } catch (Throwable t) {
                     thrown[0] = t;
                 }
             }};
@@ -88,7 +88,7 @@ public abstract class MainThreadUtils {
             public void callback() {
                 try {
                     runnable.run();
-                } catch (Exception t) {
+                } catch (Throwable t) {
                     if (waitUntilDone) {
                         thrown[0] = t;
                     }
