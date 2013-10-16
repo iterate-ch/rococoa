@@ -31,7 +31,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>com.nativelibs4java</groupId>
                 <artifactId>maven-jnaerator-plugin</artifactId>
@@ -40,11 +39,16 @@
                     <javaOutputDirectory>src/main/java</javaOutputDirectory>
                 </configuration>
             </plugin>
-
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
