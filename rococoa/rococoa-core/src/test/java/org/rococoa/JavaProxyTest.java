@@ -245,8 +245,9 @@ public class JavaProxyTest extends RococoaTestCase {
     
     @Test public void testNotifications() {
         NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
+        final ID observer = proxy.id();
         notificationCentre.addObserver_selector_name_object(
-                proxy.id(),
+                observer,
                 Foundation.selector("notify:"),
                 "MyNotification",
                 null);
@@ -256,13 +257,15 @@ public class JavaProxyTest extends RococoaTestCase {
         assertNull(implementor.arg);
         notificationCentre.postNotification(notification);             
         assertEquals(notification, implementor.arg);
+        notificationCentre.removeObserver(observer);
     }
     
     @Test public void testMemoryManagement() {
         // we were autorelease'ing the proxy - so that this failed
         NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
+        final ID observer = proxy.id();
         notificationCentre.addObserver_selector_name_object(
-                proxy.id(),
+                observer,
                 Foundation.selector("notify:"),
                 "MyNotification",
                 null);
@@ -270,7 +273,8 @@ public class JavaProxyTest extends RococoaTestCase {
         pool = NSAutoreleasePool.new_();
 
         NSNotification notification = NSNotification.CLASS.notificationWithName_object("MyNotification", null);        
-        notificationCentre.postNotification(notification);             
+        notificationCentre.postNotification(notification);
+        notificationCentre.removeObserver(observer);
     }
     
 }
