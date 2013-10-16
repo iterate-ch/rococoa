@@ -31,13 +31,7 @@ public abstract class NSNotificationCenter extends NSObject {
         public NSNotificationCenter defaultCenter();
     }
     
-    @Deprecated
     public abstract void addObserver_selector_name_object(ID notificationObserver,
-            Selector notificationSelector,
-            String notificationName,
-            NSObject notificationSender);
-
-    public abstract void addObserver_selector_name_object(NSObject notificationObserver,
             Selector notificationSelector,
             String notificationName,
             NSObject notificationSender);

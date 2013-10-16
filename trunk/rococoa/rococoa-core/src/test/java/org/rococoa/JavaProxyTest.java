@@ -246,7 +246,7 @@ public class JavaProxyTest extends RococoaTestCase {
     @Test public void testNotifications() {
         NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
         notificationCentre.addObserver_selector_name_object(
-                proxy, 
+                proxy.id(),
                 Foundation.selector("notify:"),
                 "MyNotification",
                 null);
@@ -262,7 +262,7 @@ public class JavaProxyTest extends RococoaTestCase {
         // we were autorelease'ing the proxy - so that this failed
         NSNotificationCenter notificationCentre = NSNotificationCenter.CLASS.defaultCenter();
         notificationCentre.addObserver_selector_name_object(
-                proxy, 
+                proxy.id(),
                 Foundation.selector("notify:"),
                 "MyNotification",
                 null);
