@@ -105,7 +105,21 @@ public class OCInvocationCallbacks {
             Method[] methods = javaObject.getClass().getMethods();
             for (Method method : methods) {
                 if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount) {
-                    return method;
+                    boolean match = true;
+                    if(null == stringForType(method.getReturnType())) {
+                        match = false;
+                    }
+                    if(match) {
+                        for (Class<?> parameterType : method.getParameterTypes()) {
+                            if(null == stringForType(parameterType)) {
+                                match = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(match) {
+                        return method;
+                    }
                 }
             }
             logging.debug("No method for selector:" + selectorName);
@@ -238,7 +252,8 @@ public class OCInvocationCallbacks {
     private String stringForType(Class<?> clas) {
         NSInvocationMapper result = NSInvocationMapperLookup.mapperForType(clas);
         if (result == null) {
-            throw new RococoaException("Unable to give Objective-C type string for Java type " + clas);
+            logging.warn("Unable to give Objective-C type string for Java type " + clas);
+            return null;
         }
         return result.typeString();
     }
