@@ -36,6 +36,8 @@ public abstract class NSNotificationCenter extends NSObject {
             String notificationName,
             NSObject notificationSender);
 
+    public abstract void removeObserver(ID notificationObserver);
+
     public abstract void postNotification(NSNotification notification);
 
 }
