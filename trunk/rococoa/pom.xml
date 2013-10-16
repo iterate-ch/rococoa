@@ -47,8 +47,9 @@
         </developer>
         <developer>
             <id>dkocher</id>
-            <name>David Vinzenz Kocher</name>
-            <email>davidvinzenzkocher@gmail.com</email>
+            <name>David Kocher</name>
+            <email>post@iterate.ch</email>
+            <organization>iterate GmbH</organization>
             <roles>
                 <role>Committer</role>
             </roles>
@@ -131,7 +132,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
+                <version>2.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -144,7 +145,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
+                <version>2.9.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -156,7 +157,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
@@ -172,7 +173,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>2.9.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
@@ -180,15 +181,15 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.12.4</version>
+                    <version>2.16</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>2.5</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>1.6</version>
+                    <version>2.1</version>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -200,7 +201,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.3</version>
+                    <version>2.4</version>
                     <configuration>
                         <descriptor>src/main/assembly/dist.xml</descriptor>
                     </configuration>
@@ -215,7 +216,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.5.1</version>
+                    <version>2.8</version>
                     <executions>
                         <execution>
                             <id>copy</id>
@@ -246,12 +247,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.2</version>
+            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.6.4</version>
+            <version>1.7.5</version>
             <!--
                    Don't impose any particular slf4j implementation to Rococoa users.
                    slf4j 1.6+ comes with a default no-op implementation if none is detected.
@@ -261,33 +262,23 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <profiles>
         <profile>
-            <id>gpg</id>
-            <!--
-                   You should add the following matching profile to your settings.xml with your gpg password :
-
-                       <profile>
-                         <id>gpg</id>
-                         <properties>
-                           <gpg.passphrase>...</gpg.passphrase>
-                         </properties>
-                       </profile>
-
-                   For more details, please read http://docs.sonatype.org/x/SQBl
-
-                   Once everything is configured, just upload to Sonatype OSS with :
-
-                   mvn clean deploy -Pgpg
-               -->
+            <id>release-sign-artifacts</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
             </activation>
+            <modules>
+                <module>rococoa-core</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>
