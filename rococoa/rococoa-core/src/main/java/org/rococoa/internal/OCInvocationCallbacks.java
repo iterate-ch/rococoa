@@ -226,7 +226,7 @@ public class OCInvocationCallbacks {
         if (null == result) {
             return;
         }
-        Memory buffer = bufferForReturn(typeToReturnToObjC, result);
+        Memory buffer = bufferForReturn(result);
         if (buffer == null) {
             throw new IllegalStateException(
                     String.format("Don't (yet) know how to marshall result %s as Objective-C type %s", result, typeToReturnToObjC));
@@ -234,7 +234,7 @@ public class OCInvocationCallbacks {
         invocation.setReturnValue(buffer);
     }
 
-    private Memory bufferForReturn(String typeToReturnToObjC, Object methodCallResult) {
+    private Memory bufferForReturn(Object methodCallResult) {
         NSInvocationMapper mapper = NSInvocationMapperLookup.mapperForType(methodCallResult.getClass());
         return mapper == null ? null : mapper.bufferForResult(methodCallResult);
     }
