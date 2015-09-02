@@ -73,10 +73,23 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://rococoa.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://rococoa.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://rococoa.googlecode.com/svn/trunk/</url>
+        <url>https://github.com/iterate-ch/rococoa</url>
+        <connection>scm:git:git@github.com:iterate-ch/rococoa.git</connection>
+        <developerConnection>scm:git:git@github.com:iterate-ch/rococoa.git</developerConnection>
     </scm>
+
+    <distributionManagement>
+   		<repository>
+   			<id>nexus-releases</id>
+   			<name>Nexus Release Repository</name>
+   			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+   		</repository>
+   		<snapshotRepository>
+   			<id>sonatype-nexus-snapshots</id>
+   			<name>Sonatype Nexus snapshot repository</name>
+   			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+   		</snapshotRepository>
+   	</distributionManagement>
 
     <licenses>
         <license>
@@ -161,6 +174,17 @@
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>sonatype-nexus-staging</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
