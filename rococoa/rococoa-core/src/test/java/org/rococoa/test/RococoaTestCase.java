@@ -33,8 +33,7 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import com.sun.jna.Pointer;
 
@@ -52,7 +51,7 @@ public abstract class RococoaTestCase {
 
     static {
     	initializeLogging();
-    	logging = LoggerFactory.getLogger("org.rococoa.RococoaTestCase");
+    	logging = Logger.getLogger("org.rococoa.RococoaTestCase");
     	logVersions();
     };
 
@@ -74,10 +73,10 @@ public abstract class RococoaTestCase {
     }
     
     private static void logVersions() {
-        logging.info("Running with JAVA_HOME = {}, java.version = {}, sizeof(Pointer) = {}", 
+        logging.info(String.format("Running with JAVA_HOME = %s, java.version = %s, sizeof(Pointer) = %s",
                 new Object[] { System.getenv("JAVA_HOME"),
                     System.getProperty("java.version"),
-                    Pointer.SIZE});
+                    Pointer.SIZE}));
     }
 
     protected NSAutoreleasePool pool;

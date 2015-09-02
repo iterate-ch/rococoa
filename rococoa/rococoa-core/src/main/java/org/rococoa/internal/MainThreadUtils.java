@@ -27,21 +27,22 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.RococoaException;
 import org.rococoa.Selector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Exists just to tidy up Foundation.
- * 
+ *
  * @author duncan
  *
  */
 public abstract class MainThreadUtils {
-    private static Logger logging = LoggerFactory.getLogger("org.rococoa.foundation");
-    
+    private static Logger logging = Logger.getLogger("org.rococoa.foundation");
+
     private static final ID idNSThreadClass = Foundation.getClass("NSThread");
     private static final Selector isMainThreadSelector = Foundation.selector("isMainThread");
-    
+
     private static final ThreadLocal<Boolean> isMainThreadThreadLocal = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
@@ -55,7 +56,7 @@ public abstract class MainThreadUtils {
 
     // References to callbacks that must live longer than the method invocation because they are called asynchronously
     private static final Set<RococoaLibrary.VoidCallback> asynchronousCallbacks = new HashSet<RococoaLibrary.VoidCallback>();
-    
+
     /**
      * Return the result of calling callable on the main Cococoa thread.
      */
@@ -71,12 +72,12 @@ public abstract class MainThreadUtils {
                     thrown[0] = t;
                 }
             }};
-            
+
         rococoaLibrary.callOnMainThread(callback, true);
         rethrow(thrown[0]);
-        return (T) result[0];        
+        return (T) result[0];
     }
-    
+
     /**
      * @param runnable Run runnable on the main Cocoa thread.
      * @param waitUntilDone A Boolean that specifies whether the current thread blocks until after
@@ -93,7 +94,7 @@ public abstract class MainThreadUtils {
                         thrown[0] = t;
                     }
                     else {
-                        logging.error("Lost exception on main thread", t);
+                        logging.log(Level.SEVERE, "Lost exception on main thread", t);
                     }
                 } finally {
                     if (!waitUntilDone) {
@@ -112,11 +113,11 @@ public abstract class MainThreadUtils {
     public static boolean isMainThread() {
         return isMainThreadThreadLocal.get();
     }
-    
+
     private static boolean nsThreadSaysIsMainThread() {
         return Foundation.send(idNSThreadClass, isMainThreadSelector, boolean.class);
     }
-    
+
     private static void rethrow(Throwable t) {
         if (t == null) {
             return;

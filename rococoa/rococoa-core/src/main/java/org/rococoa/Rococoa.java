@@ -28,8 +28,9 @@ import net.sf.cglib.proxy.Enhancer;
 import org.rococoa.internal.OCInvocationCallbacks;
 import org.rococoa.internal.ObjCObjectInvocationHandler;
 import org.rococoa.internal.VarArgsUnpacker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Static factory for creating Java wrappers for Objective-C instances, and Objective-C
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Rococoa  {
 
-    private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
+    private static Logger logging = Logger.getLogger("org.rococoa.proxy");
 
     /**
      * Create a Java NSClass representing the Objective-C class with ocClassName
@@ -78,9 +79,9 @@ public abstract class Rococoa  {
             String ocFactoryName, 
             boolean retain,
             Object... args) {
-        if (logging.isTraceEnabled()) {
-            logging.trace("creating [{} ({})].{}({})", 
-                    new Object[] {ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)});
+        if (logging.isLoggable(Level.FINEST)) {
+            logging.finest(String.format("creating [%s (%s)].%s(%s)",
+                    new Object[]{ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)}));
         }
         ID ocClass = Foundation.getClass(ocClassName);
         ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);
