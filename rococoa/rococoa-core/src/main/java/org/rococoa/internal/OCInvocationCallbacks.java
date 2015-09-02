@@ -27,8 +27,9 @@ import org.rococoa.Rococoa;
 import org.rococoa.RococoaException;
 import org.rococoa.cocoa.foundation.NSInvocation;
 import org.rococoa.cocoa.foundation.NSMethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.jna.Memory;
 
@@ -51,7 +52,7 @@ import com.sun.jna.Memory;
 @SuppressWarnings("nls")
 public class OCInvocationCallbacks {
 
-    private static Logger logging = LoggerFactory.getLogger("org.rococoa.callback");
+    private static Logger logging = Logger.getLogger("org.rococoa.callback");
 
     private final Object javaObject;
 
@@ -63,8 +64,8 @@ public class OCInvocationCallbacks {
     public final RococoaLibrary.MethodSignatureCallback methodSignatureCallback =
         new RococoaLibrary.MethodSignatureCallback() {
             public String callback(String selectorName) {
-                if (logging.isTraceEnabled()) {
-                    logging.trace("callback wanting methodSignature for selector {}", selectorName);
+                if (logging.isLoggable(Level.FINEST)) {
+                    logging.finest(String.format("callback wanting methodSignature for selector %s", selectorName));
                 }
                 return methodSignatureForSelector(selectorName);
             }
@@ -76,8 +77,8 @@ public class OCInvocationCallbacks {
     public final RococoaLibrary.SelectorInvokedCallback selectorInvokedCallback =
         new RococoaLibrary.SelectorInvokedCallback() {
             public void callback(String selectorName, ID nsInvocation) {
-                if (logging.isTraceEnabled()) {
-                    logging.trace("callback invoking {} on {}", selectorName, javaObject);
+                if (logging.isLoggable(Level.FINEST)) {
+                    logging.finest(String.format("callback invoking %s on %s", selectorName, javaObject));
                 }
                 callMethod(javaObject, selectorName, Rococoa.wrap(nsInvocation, NSInvocation.class));
             }
@@ -96,7 +97,7 @@ public class OCInvocationCallbacks {
 
     protected Method methodForSelector(String selectorName) {
         if (null == selectorName) {
-            logging.error("methodForSelector called with null selectorName");
+            logging.severe("methodForSelector called with null selectorName");
             return null;
         }
         int parameterCount = countColons(selectorName);
@@ -122,10 +123,10 @@ public class OCInvocationCallbacks {
                     }
                 }
             }
-            logging.debug("No method " + methodName + " for selector:" + selectorName);
+            logging.fine("No method " + methodName + " for selector:" + selectorName);
             return null;
         } catch (Exception e) {
-            logging.error("Exception finding methodForSelector", e);
+            logging.log(Level.SEVERE, "Exception finding methodForSelector", e);
             return null;
         }
     }
@@ -170,10 +171,10 @@ public class OCInvocationCallbacks {
             Object result  = method.invoke(o, marshalledArgs);
             putResultIntoInvocation(invocation, typeToReturnToObjC, result);
         } catch (InvocationTargetException e) {
-            logging.error("Exception calling method for selector " + selectorName, e);
+            logging.log(Level.SEVERE, "Exception calling method for selector " + selectorName, e);
             throw new RococoaException("Exception calling method for selector " + selectorName, e.getCause());
         } catch (Exception e) {
-            logging.error("Exception calling method for selector " + selectorName, e);
+            logging.log(Level.SEVERE, "Exception calling method for selector " + selectorName, e);
             throw new RococoaException("Exception calling method for selector " + selectorName, e);
         }
     }
@@ -252,7 +253,7 @@ public class OCInvocationCallbacks {
     private String stringForType(Class<?> clas) {
         NSInvocationMapper result = NSInvocationMapperLookup.mapperForType(clas);
         if (result == null) {
-            logging.warn("Unable to give Objective-C type string for Java type " + clas);
+            logging.warning("Unable to give Objective-C type string for Java type " + clas);
             return null;
         }
         return result.typeString();

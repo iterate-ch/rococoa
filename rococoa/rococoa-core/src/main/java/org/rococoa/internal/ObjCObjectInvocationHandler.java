@@ -41,8 +41,9 @@ import org.rococoa.ReturnType;
 import org.rococoa.Rococoa;
 import org.rococoa.RococoaException;
 import org.rococoa.RunOnMainThread;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.jna.Pointer;
 
@@ -58,7 +59,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
 
     private static final int FINALIZE_AUTORELEASE_BATCH_SIZE = 1000;
 
-    private static Logger logging = LoggerFactory.getLogger("org.rococoa.proxy");
+    private static Logger logging = Logger.getLogger("org.rococoa.proxy");
 
     static final Method OBJECT_TOSTRING;
     static final Method OBJECT_HASHCODE;
@@ -90,10 +91,10 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         invokeAllMethodsOnMainThread = shouldInvokeMethodsOnMainThread(javaClass);
         releaseOnFinalize = shouldReleaseInFinalize(javaClass);
 
-        if (logging.isTraceEnabled()) {
+        if (logging.isLoggable(Level.FINEST)) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
-            logging.trace("Creating NSObjectInvocationHandler for id {}, javaclass {}. retain = {}, retainCount = {}",
-                    new Object[] {ocInstance, javaClass, retain, retainCount});
+            logging.finest(String.format("Creating NSObjectInvocationHandler for id %s, javaclass %s. retain = %s, retainCount = %s",
+                    new Object[]{ocInstance, javaClass, retain, retainCount}));
         }
 
         if (ocInstance.isNull()) {
@@ -150,10 +151,10 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         if (ocInstance.isNull()) {
             return;
         }
-        if (logging.isTraceEnabled()) {
+        if (logging.isLoggable(Level.FINEST)) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
-            logging.trace("finalizing [{} {}], releasing with retain count = {}",
-                    new Object[] {javaClassName, ocInstance, retainCount});
+            logging.finest(String.format("finalizing [%s %s], releasing with retain count = %s",
+                    new Object[]{javaClassName, ocInstance, retainCount}));
         }
         Foundation.cfRelease(ocInstance);
     }
@@ -162,9 +163,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
      * Callback from java.lang.reflect proxy
      */
     public Object invoke(Object proxy, Method method, Object[] args)  throws Exception {
-        if (logging.isTraceEnabled()) {
-            logging.trace("invoking [{} {}].{}({})",
-                    new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
+        if (logging.isLoggable(Level.FINEST)) {
+            logging.finest(String.format("invoking [%s %s].%s(%s)",
+                    new Object[]{javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)}));
         }
         if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
@@ -176,9 +177,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
      * Callback from cglib proxy
      */
     public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-        if (logging.isTraceEnabled()) {
-            logging.trace("invoking [{} {}].{}({})",
-                    new Object[] {javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)});
+        if (logging.isLoggable(Level.FINEST)) {
+            logging.finest(String.format("invoking [%s %s].%s(%s)",
+                    new Object[]{javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)}));
         }
         if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
@@ -283,7 +284,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
             Object marshalled = marshalledArgs[i];
             if (marshalled instanceof IDByReference) {
                 if (!(original instanceof ObjCObjectByReference)) {
-                    logging.error("Bad marshalling");
+                    logging.severe("Bad marshalling");
                     continue;
                 }
                 ((ObjCObjectByReference) original).setObject(
