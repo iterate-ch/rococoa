@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rococoa-core</artifactId>
     <packaging>jar</packaging>
@@ -9,7 +8,7 @@
     <parent>
         <groupId>org.rococoa</groupId>
         <artifactId>rococoa-parent</artifactId>
-        <version>0.6-SNAPSHOT</version>
+        <version>0.7-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
@@ -45,12 +44,12 @@
                         <configuration>
                             <tasks>
                                 <exec dir="." executable="xcodebuild" failonerror="true">
-                                    <arg value="-project"/>
-                                    <arg value="rococoa.xcodeproj"/>
-                                    <arg value="-target"/>
-                                    <arg value="librococoa"/>
-                                    <arg value="-configuration"/>
-                                    <arg value="Release"/>
+                                    <arg value="-project" />
+                                    <arg value="rococoa.xcodeproj" />
+                                    <arg value="-target" />
+                                    <arg value="librococoa" />
+                                    <arg value="-configuration" />
+                                    <arg value="Release" />
                                 </exec>
                             </tasks>
                         </configuration>
@@ -64,13 +63,13 @@
                         <configuration>
                             <tasks>
                                 <exec dir="." executable="xcodebuild" failonerror="true">
-                                    <arg value="-project"/>
-                                    <arg value="rococoa.xcodeproj"/>
-                                    <arg value="-target"/>
-                                    <arg value="librococoa"/>
-                                    <arg value="-configuration"/>
-                                    <arg value="Release"/>
-                                    <arg value="clean"/>
+                                    <arg value="-project" />
+                                    <arg value="rococoa.xcodeproj" />
+                                    <arg value="-target" />
+                                    <arg value="librococoa" />
+                                    <arg value="-configuration" />
+                                    <arg value="Release" />
+                                    <arg value="clean" />
                                 </exec>
                             </tasks>
                         </configuration>
