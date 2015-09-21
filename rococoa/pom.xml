@@ -22,10 +22,10 @@
 
     <modules>
         <!--module>rococoa-auto</module-->
-        <module>rococoa-cocoa</module>
-        <module>rococoa-contrib</module>
+        <!--<module>rococoa-cocoa</module>-->
+        <!--<module>rococoa-contrib</module>-->
         <module>rococoa-core</module>
-        <module>rococoa-functionaltest</module>
+        <!--<module>rococoa-functionaltest</module>-->
     </modules>
 
     <developers>
