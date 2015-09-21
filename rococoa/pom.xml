@@ -81,14 +81,13 @@
 
     <distributionManagement>
         <repository>
-            <id>nexus-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>maven.iterate.ch-release</id>
+            <url>s3://repo.maven.iterate.ch/releases/</url>
+            <layout>default</layout>
         </repository>
         <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus snapshot repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>maven.iterate.ch-snapshot</id>
+            <url>s3://repo.maven.iterate.ch/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -142,6 +141,13 @@
     </dependencyManagement>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
