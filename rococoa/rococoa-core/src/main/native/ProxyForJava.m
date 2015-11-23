@@ -24,7 +24,7 @@ id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback
 }
 
 @interface ProxyForJava (Private)
-+ (char *)cstringPtrForSelector:(CFStringRef) cfstring;
++ (const char *)cstringPtrForSelector:(CFStringRef) cfstring;
 @end
 
 @implementation ProxyForJava
@@ -32,14 +32,15 @@ id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback
 - (id) initWithMethodInvokedCallback: (void*) theMethodInvokedCallback methodSignatureCallback: (void*) theMethodSignatureCallback {
 	self = [super init];
 	if (self != nil) {
-		methodInvokedCallback = theMethodInvokedCallback;		
+		methodInvokedCallback = theMethodInvokedCallback;
 		methodSignatureCallback = theMethodSignatureCallback;
 	}
 	return self;
 }
 
+// Passes a given invocation to the real object the proxy represents.
 - (void)forwardInvocation:(NSInvocation *) anInvocation {
-	// calls back to Java on methodInvokedCallback, 
+	// calls back to Java on methodInvokedCallback,
 	SEL selector = [anInvocation selector];
 	NSString* selectorName = NSStringFromSelector(selector);
 	// NSLog(@"forwardInvocation for %@", selectorName);
@@ -47,11 +48,14 @@ id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
-	// NSLog(@"respondsToSelector called");
+	// NSString* selectorName = NSStringFromSelector(aSelector);
+	// NSLog(@"respondsToSelector %@", selectorName);
 	NSMethodSignature* signature = [self methodSignatureForSelector:aSelector];
 	return signature != nil;
 }
 
+// Override this method in your concrete subclass to return a proper NSMethodSignature object for the
+// given selector and the class your proxy objects stand in for.
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
 	NSString* selectorName = NSStringFromSelector(aSelector);
 	// NSLog(@"methodSignatureForSelector %@", selectorName);
@@ -60,7 +64,8 @@ id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback
 	}
 	const char* methodSignature = methodSignatureCallback([ProxyForJava cstringPtrForSelector:(CFStringRef) selectorName]);
 	if (NULL == methodSignature) {
-	    // No method with signature of selector not implemented
+		// No method with signature of selector implemented
+		// NSLog(@"No method with signature of selector implemented: %@", selectorName);
 		return nil;
 	}
 	NSMethodSignature* result = [NSMethodSignature signatureWithObjCTypes: methodSignature];
@@ -68,10 +73,17 @@ id proxyForJavaObject(void* methodInvokedCallback, void* methodSignatureCallback
 }
 
 + (const char *)cstringPtrForSelector:(CFStringRef) selectorName {
-	const char* selectorNameChar = CFStringGetCStringPtr(selectorName, CFStringGetFastestEncoding(selectorName));
+    static CFStringEncoding encoding = kCFStringEncodingUTF8;
+	const char* selectorNameChar = CFStringGetCStringPtr(selectorName, encoding);
 	if (NULL == selectorNameChar) {
-		NSLog(@"CFStringGetCStringPtr failed for selector %@", selectorName);
-		return NULL;
+		// NSLog(@"CFStringGetCStringPtr failed for selector %@ with encoding %u", selectorName, encoding);
+        // May return NULL at any time. NULL if the internal storage of theString does not allow this to be returned efficiently.
+        CFIndex maxSize = CFStringGetMaximumSizeForEncoding(CFStringGetLength(selectorName), encoding);
+        char *buffer = (char *)malloc(maxSize);
+        if(CFStringGetCString(selectorName, buffer, maxSize, encoding)) {
+            return buffer;
+        }
+		NSLog(@"CFStringGetCString failed for selector %@ with encoding %u", selectorName, encoding);
 	}
 	return selectorNameChar;
 }
