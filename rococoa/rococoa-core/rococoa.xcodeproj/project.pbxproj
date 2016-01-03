@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
-		AE1460240D1AD7F6009A6A03 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED078F00CEC608C00542DAC /* QTKit.framework */; };
 		AE1E31B10CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
 		AE1E31B20CFB1D1900508B04 /* ProxyForJava.h in Headers */ = {isa = PBXBuildFile; fileRef = AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */; };
 		AE1E31B30CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
@@ -16,8 +15,6 @@
 		AEA3577D0CECA01400AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
 		AEA357FC0CEDFBDF00AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
 		AEAEF7770D0EAEE700DA270B /* librococoa.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AED079210CEC69DC00542DAC /* librococoa.dylib */; };
-		AECF4DCB0D042C5F00B44D6E /* test.h in Headers */ = {isa = PBXBuildFile; fileRef = AECF4DC90D042C5F00B44D6E /* test.h */; };
-		AECF4DCC0D042C5F00B44D6E /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = AECF4DCA0D042C5F00B44D6E /* test.m */; };
 		AECF4DCE0D042C5F00B44D6E /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = AECF4DCA0D042C5F00B44D6E /* test.m */; };
 		AED078F10CEC608C00542DAC /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED078F00CEC608C00542DAC /* QTKit.framework */; };
 		AED079230CEC6A0A00542DAC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -65,7 +62,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE1460240D1AD7F6009A6A03 /* QTKit.framework in Frameworks */,
 				AED079230CEC6A0A00542DAC /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,7 +137,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE1E31B20CFB1D1900508B04 /* ProxyForJava.h in Headers */,
-				AECF4DCB0D042C5F00B44D6E /* test.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,6 +183,8 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "rococoa" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
@@ -223,7 +220,6 @@
 			files = (
 				AEA357FC0CEDFBDF00AE7D09 /* Rococoa.m in Sources */,
 				AE1E31B30CFB1D1900508B04 /* ProxyForJava.m in Sources */,
-				AECF4DCC0D042C5F00B44D6E /* test.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,8 +261,7 @@
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -276,8 +271,7 @@
 		1DEB927A08733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
