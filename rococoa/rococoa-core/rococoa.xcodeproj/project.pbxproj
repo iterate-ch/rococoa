@@ -7,16 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
-		AE1E31B10CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
 		AE1E31B20CFB1D1900508B04 /* ProxyForJava.h in Headers */ = {isa = PBXBuildFile; fileRef = AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */; };
 		AE1E31B30CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
-		AEA3577B0CECA01400AE7D09 /* scratch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357770CECA01400AE7D09 /* scratch.m */; };
-		AEA3577D0CECA01400AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
 		AEA357FC0CEDFBDF00AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
 		AEAEF7770D0EAEE700DA270B /* librococoa.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AED079210CEC69DC00542DAC /* librococoa.dylib */; };
-		AECF4DCE0D042C5F00B44D6E /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = AECF4DCA0D042C5F00B44D6E /* test.m */; };
-		AED078F10CEC608C00542DAC /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED078F00CEC608C00542DAC /* QTKit.framework */; };
 		AED079230CEC6A0A00542DAC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +29,6 @@
 
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		8DD76FA10486AA7600D96B5E /* rococoa */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = rococoa; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProxyForJava.h; sourceTree = "<group>"; };
 		AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProxyForJava.m; sourceTree = "<group>"; };
 		AEA357770CECA01400AE7D09 /* scratch.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = scratch.m; sourceTree = "<group>"; };
@@ -49,15 +42,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
-				AED078F10CEC608C00542DAC /* QTKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AED0791F0CEC69DC00542DAC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -100,7 +84,6 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76FA10486AA7600D96B5E /* rococoa */,
 				AED079210CEC69DC00542DAC /* librococoa.dylib */,
 			);
 			name = Products;
@@ -143,23 +126,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		8DD76F960486AA7600D96B5E /* scratch */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "scratch" */;
-			buildPhases = (
-				8DD76F990486AA7600D96B5E /* Sources */,
-				8DD76F9B0486AA7600D96B5E /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = scratch;
-			productInstallPath = "$(HOME)/bin";
-			productName = rococoa;
-			productReference = 8DD76FA10486AA7600D96B5E /* rococoa */;
-			productType = "com.apple.product-type.tool";
-		};
 		AED079200CEC69DC00542DAC /* librococoa */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AED079A10CEC6A3800542DAC /* Build configuration list for PBXNativeTarget "librococoa" */;
@@ -197,23 +163,11 @@
 			projectRoot = "";
 			targets = (
 				AED079200CEC69DC00542DAC /* librococoa */,
-				8DD76F960486AA7600D96B5E /* scratch */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8DD76F990486AA7600D96B5E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEA3577B0CECA01400AE7D09 /* scratch.m in Sources */,
-				AEA3577D0CECA01400AE7D09 /* Rococoa.m in Sources */,
-				AE1E31B10CFB1D1900508B04 /* ProxyForJava.m in Sources */,
-				AECF4DCE0D042C5F00B44D6E /* test.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AED0791E0CEC69DC00542DAC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -226,44 +180,13 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		1DEB927508733DD40010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INSTALL_PATH = "$(HOME)/bin";
-				PRODUCT_NAME = rococoa;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
-		1DEB927608733DD40010E9CD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INSTALL_PATH = "$(HOME)/bin";
-				PRODUCT_NAME = rococoa;
-			};
-			name = Release;
-		};
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PREBINDING = NO;
 			};
 			name = Debug;
@@ -274,6 +197,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PREBINDING = NO;
 			};
 			name = Release;
@@ -334,15 +258,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "scratch" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1DEB927508733DD40010E9CD /* Debug */,
-				1DEB927608733DD40010E9CD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "rococoa" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
