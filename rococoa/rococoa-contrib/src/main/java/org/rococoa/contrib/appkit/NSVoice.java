@@ -19,14 +19,22 @@
 
 package org.rococoa.contrib.appkit;
 
-import org.rococoa.contrib.AbstractPropertyDictionary;
-import org.rococoa.contrib.NativeEnum;
-
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSDictionary;
 import org.rococoa.cocoa.foundation.NSMutableDictionary;
 import org.rococoa.cocoa.foundation.NSString;
-import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.*;
+import org.rococoa.contrib.AbstractPropertyDictionary;
+import org.rococoa.contrib.NativeEnum;
+
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.Age;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.DemoText;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.Gender;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.Identifier;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.IndividuallySpokenCharacters;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.Language;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.LocaleIdentifier;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.Name;
+import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.SupportedCharacters;
 
 /** NSVoice encapsulates the properties of a speech synthesis voice, and can be
  *  used with NSSpeechSynthesizer to change the voice used to spreak.
@@ -35,29 +43,54 @@ import static org.rococoa.contrib.appkit.NSVoice.VoiceProperty.*;
  */
 public class NSVoice extends AbstractPropertyDictionary<NSVoice.VoiceProperty> {
     //No way of knowing which voices a user has installed, so just expose the known ids
-    public static final String AGNES = "com.apple.speech.synthesis.voice.Agnes";
-    public static final String ALBERT = "com.apple.speech.synthesis.voice.Albert";
-    public static final String BAD_NEWS = "com.apple.speech.synthesis.voice.BadNews";
-    public static final String BAHH = "com.apple.speech.synthesis.voice.Bahh";
-    public static final String BELLS = "com.apple.speech.synthesis.voice.Bells";
-    public static final String BOING = "com.apple.speech.synthesis.voice.Boing";
-    public static final String BRUCE = "com.apple.speech.synthesis.voice.Bruce";
-    public static final String BUBBLES = "com.apple.speech.synthesis.voice.Bubbles";
-    public static final String CELLOS = "com.apple.speech.synthesis.voice.Cellos";
-    public static final String DERANGED = "com.apple.speech.synthesis.voice.Deranged";
+    public static final String ALEX = "com.apple.speech.synthesis.voice.Alex";
+    public static final String ALICE = "com.apple.speech.synthesis.voice.alice";
+    public static final String ALVA = "com.apple.speech.synthesis.voice.alva";
+    public static final String AMELIE = "com.apple.speech.synthesis.voice.amelie";
+    public static final String ANNA = "com.apple.speech.synthesis.voice.anna";
+    public static final String CARMIT = "com.apple.speech.synthesis.voice.carmit";
+    public static final String DAMAYANTI = "com.apple.speech.synthesis.voice.damayanti";
+    public static final String DANIEL = "com.apple.speech.synthesis.voice.daniel";
+    public static final String DIEGO = "com.apple.speech.synthesis.voice.diego";
+    public static final String ELLEN = "com.apple.speech.synthesis.voice.ellen";
+    public static final String FIONA = "com.apple.speech.synthesis.voice.fiona";
     public static final String FRED = "com.apple.speech.synthesis.voice.Fred";
-    public static final String GOOD_NEWS = "com.apple.speech.synthesis.voice.GoodNews";
-    public static final String HYSTERICAL = "com.apple.speech.synthesis.voice.Hysterical";
-    public static final String JUNIOR = "com.apple.speech.synthesis.voice.Junior";
-    public static final String KATHY = "com.apple.speech.synthesis.voice.Kathy";
-    public static final String ORGAN = "com.apple.speech.synthesis.voice.Organ";
-    public static final String PRINCESS = "com.apple.speech.synthesis.voice.Princess";
-    public static final String RALPH = "com.apple.speech.synthesis.voice.Ralph";
-    public static final String TRINOIND = "com.apple.speech.synthesis.voice.Trinoids";
-    public static final String VICKI = "com.apple.speech.synthesis.voice.Vicki";
+    public static final String IOANA = "com.apple.speech.synthesis.voice.ioana";
+    public static final String JOANA = "com.apple.speech.synthesis.voice.joana";
+    public static final String JORGE = "com.apple.speech.synthesis.voice.jorge";
+    public static final String JUAN = "com.apple.speech.synthesis.voice.juan";
+    public static final String KANYA = "com.apple.speech.synthesis.voice.kanya";
+    public static final String KAREN = "com.apple.speech.synthesis.voice.karen";
+    public static final String KYOKO = "com.apple.speech.synthesis.voice.kyoko.premium";
+    public static final String LAURA = "com.apple.speech.synthesis.voice.laura";
+    public static final String LEKHA = "com.apple.speech.synthesis.voice.lekha";
+    public static final String LUCA = "com.apple.speech.synthesis.voice.luca";
+    public static final String LUCIANA = "com.apple.speech.synthesis.voice.luciana";
+    public static final String MAGED = "com.apple.speech.synthesis.voice.maged";
+    public static final String MARISKA = "com.apple.speech.synthesis.voice.mariska";
+    public static final String MEI_JIA = "com.apple.speech.synthesis.voice.mei-jia";
+    public static final String MELINA = "com.apple.speech.synthesis.voice.melina";
+    public static final String MILENA = "com.apple.speech.synthesis.voice.milena";
+    public static final String MOIRA = "com.apple.speech.synthesis.voice.moira";
+    public static final String MONICA = "com.apple.speech.synthesis.voice.monica";
+    public static final String NORA = "com.apple.speech.synthesis.voice.nora";
+    public static final String PAULINA = "com.apple.speech.synthesis.voice.paulina";
+    public static final String RISHI = "com.apple.speech.synthesis.voice.rishi";
+    public static final String SAMANTHA = "com.apple.speech.synthesis.voice.samantha";
+    public static final String SARA = "com.apple.speech.synthesis.voice.sara";
+    public static final String SATU = "com.apple.speech.synthesis.voice.satu";
+    public static final String SIN_JI = "com.apple.speech.synthesis.voice.sin-ji";
+    public static final String TESSA = "com.apple.speech.synthesis.voice.tessa";
+    public static final String THOMAS = "com.apple.speech.synthesis.voice.thomas";
+    public static final String TING_TING = "com.apple.speech.synthesis.voice.ting-ting";
+    public static final String VEENA = "com.apple.speech.synthesis.voice.veena";
     public static final String VICTORIA = "com.apple.speech.synthesis.voice.Victoria";
-    public static final String WHISPHER = "com.apple.speech.synthesis.voice.Whisper";
-    public static final String ZARVOX = "com.apple.speech.synthesis.voice.Zarvox";
+    public static final String XANDER = "com.apple.speech.synthesis.voice.xander";
+    public static final String YELDA = "com.apple.speech.synthesis.voice.yelda";
+    public static final String YUNA = "com.apple.speech.synthesis.voice.yuna";
+    public static final String YURI = "com.apple.speech.synthesis.voice.yuri";
+    public static final String ZOSIA = "com.apple.speech.synthesis.voice.zosia";
+    public static final String ZUZANA = "com.apple.speech.synthesis.voice.zuzana";
 
     /** Defines the properties of a voice*/
     public enum VoiceProperty implements NativeEnum<NSString> {
@@ -88,17 +121,17 @@ public class NSVoice extends AbstractPropertyDictionary<NSVoice.VoiceProperty> {
     NSVoice() {
         super(VoiceProperty.values().length);
     }
-    
+
     NSVoice(final NSMutableDictionary data) {
         super(checkData(null, data));
     }
-    
+
     NSVoice(NSDictionary data) {
         super(checkData(null, data));
-    }    
+    }
 
     private static NSDictionary checkData(String identifier, NSDictionary data) {
-        if ( data == null ) {
+        if (data == null || data.count() == 0) {
             throw new IllegalArgumentException("Invalid voice data" +
                     identifier == null ? "." : ", unknown identifier: " + identifier );
         } else {
@@ -150,8 +183,8 @@ public class NSVoice extends AbstractPropertyDictionary<NSVoice.VoiceProperty> {
 
     @Override
     public boolean equals(Object obj) {
-        if ( obj instanceof NSVoice ) {
-            return getIdentifier().equals(((NSVoice)obj).getIdentifier());
+        if (obj instanceof NSVoice) {
+            return getIdentifier().equals(((NSVoice) obj).getIdentifier());
         }
         return false;
     }

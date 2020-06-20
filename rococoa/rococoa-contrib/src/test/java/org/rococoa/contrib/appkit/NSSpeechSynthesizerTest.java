@@ -384,11 +384,11 @@ public class NSSpeechSynthesizerTest {
         NSVoice defaultVoice = NSSpeechSynthesizer.defaultVoice();
         assertEquals(defaultVoice, ss.getVoice());
         assertEquals(defaultVoice.getIdentifier(), ss.voice());
-        ss.setVoice(NSVoice.BAD_NEWS);
-        assertEquals(NSVoice.BAD_NEWS, ss.voice());
-        assertEquals(new NSVoice(NSVoice.BAD_NEWS), ss.getVoice());
-        ss.setVoice(NSVoice.BRUCE);
-        assertEquals(new NSVoice(NSVoice.BRUCE), ss.getVoice());
+        ss.setVoice(NSVoice.SAMANTHA);
+        assertEquals(NSVoice.SAMANTHA, ss.voice());
+        assertEquals(new NSVoice(NSVoice.SAMANTHA), ss.getVoice());
+        ss.setVoice(NSVoice.ALEX);
+        assertEquals(new NSVoice(NSVoice.ALEX), ss.getVoice());
         ss = NSSpeechSynthesizer.synthesizerWithVoice(new NSVoice(NSVoice.FRED));
         assertEquals(new NSVoice(NSVoice.FRED), ss.getVoice());
     }

@@ -19,28 +19,34 @@
 package org.rococoa.contrib.appkit;
 
 import java.util.Locale;
+
+import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.contrib.appkit.NSVoice.VoiceGender;
 import org.rococoa.test.RococoaTestCase;
 
-/** Simple tests for functionality of the voice class
- *
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * Simple tests for functionality of the voice class
  */
 public class NSVoiceTest extends RococoaTestCase {
 
     @Test
+    @Ignore
     @SuppressWarnings("deprecation")
     public void testAttributesForVoice() {
-        NSVoice voice = new NSVoice(NSVoice.VICKI);
+        NSVoice voice = new NSVoice(NSVoice.VICTORIA);
         assertEquals(35, voice.getAge());
         assertEquals("Isn't it nice to have a computer that will talk to you?", voice.getDemoText());
         assertEquals(VoiceGender.Female, voice.getGender());
-        assertEquals(NSVoice.VICKI, voice.getIdentifier());
+        assertEquals(NSVoice.VICTORIA, voice.getIdentifier());
         assertEquals(Locale.US.toString(), voice.getLocaleIdentifier());
         assertEquals("en-US", voice.getLanguage()); //deprecated method, but we test it anyway
-        assertEquals("Vicki", voice.getName());
+        assertEquals("Victoria", voice.getName());
         NSArray supportedChars = voice.getSupportedCharacters();
         assertNotNull(supportedChars);
         assertTrue(supportedChars.count() > 0);
@@ -54,7 +60,7 @@ public class NSVoiceTest extends RococoaTestCase {
         String badId = "This voice does not exist";
         try {
             new NSVoice(badId);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage().indexOf(badId) > 0);
             throw e;
         }
