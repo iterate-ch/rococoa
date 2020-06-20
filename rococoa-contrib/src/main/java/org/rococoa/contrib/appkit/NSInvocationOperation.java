@@ -28,7 +28,7 @@ import org.rococoa.Selector;
  *
  */
 public abstract class NSInvocationOperation extends NSOperation {
-    public static final _Class CLASS = Rococoa.createClass(NSInvocationOperation.class.getSimpleName(), _Class.class); //$NON-NLS-1$
+    public static final _Class CLASS = Rococoa.createClass(NSInvocationOperation.class.getSimpleName(), _Class.class);
     public interface _Class extends ObjCClass {
         public NSInvocationOperation alloc();
     }

@@ -5,7 +5,6 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>rococoa-core</artifactId>
-  <packaging>jar</packaging>
 
   <parent>
     <groupId>org.rococoa</groupId>
@@ -14,77 +13,80 @@
   </parent>
 
   <name>Rococoa Core</name>
+  <packaging>jar</packaging>
   <url>http://www.rococoa.org</url>
-
-  <profiles>
-    <profile>
-      <id>local (assume on mac)</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>native-maven-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-              <!-- trigger javah execution -->
-              <javahClassNames>
-                <javahClassName>org.rococoa.Rococoa</javahClassName>
-              </javahClassNames>
-              <!-- enable additional javah interface in dependencies list -->
-              <javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>
-              <!-- | Add jdk include directories to system include path | Override 
-                ${jkdIncludePath} If your jdk does not conform to Sun JDK layout -->
-              <javahOS>darwin</javahOS>
-              <compilerProvider>generic-classic</compilerProvider>
-              <compilerStartOptions>
-                <compilerStartOption>-g -Wall -O2 -fomit-frame-pointer -fPIC</compilerStartOption>
-                <compilerStartOption>-arch x86_64</compilerStartOption>
-              </compilerStartOptions>
-              <sources>
-                <source>
-                  <!-- relative to your project directory -->
-                  <directory>src/main/native</directory>
-                  <fileNames>
-                    <fileName>Rococoa.m</fileName>
-                    <fileName>ProxyForJava.m</fileName>
-                    <fileName>test.m</fileName>
-                  </fileNames>
-                </source>
-              </sources>
-              <linkerStartOptions>
-                <linkerStartOption>-dynamiclib -arch x86_64
-                        -framework QTKit -framework Foundation -framework AppKit
-                </linkerStartOption>
-              </linkerStartOptions>
-              <linkerFinalName></linkerFinalName>
-              <linkerEndOptions>
-                <linkerEndOption>-o ${project.build.directory}/librococoa.dylib</linkerEndOption>
-              </linkerEndOptions>
-            </configuration>
-            <executions>
-              <execution>
-                <id>javah</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>javah</goal>
-                  <goal>compile</goal>
-                  <goal>link</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <!-- trigger javah execution -->
+          <javahClassNames>
+            <javahClassName>org.rococoa.Rococoa</javahClassName>
+          </javahClassNames>
+          <!-- enable additional javah interface in dependencies list -->
+          <javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>
+          <!-- | Add jdk include directories to system include path | Override 
+            ${jkdIncludePath} If your jdk does not conform to Sun JDK layout -->
+          <javahOS>darwin</javahOS>
+          <compilerProvider>generic-classic</compilerProvider>
+          <compilerStartOptions>
+            <compilerStartOption>-g -Wall -O2 -fomit-frame-pointer -fPIC</compilerStartOption>
+            <compilerStartOption>-arch x86_64</compilerStartOption>
+          </compilerStartOptions>
+          <sources>
+            <source>
+              <!-- relative to your project directory -->
+              <directory>src/main/native</directory>
+              <fileNames>
+                <fileName>Rococoa.m</fileName>
+                <fileName>ProxyForJava.m</fileName>
+                <fileName>test.m</fileName>
+              </fileNames>
+            </source>
+          </sources>
+          <linkerStartOptions>
+            <linkerStartOption>-dynamiclib -arch x86_64
+                    -framework QTKit -framework Foundation -framework AppKit
+            </linkerStartOption>
+          </linkerStartOptions>
+          <linkerFinalName></linkerFinalName>
+        </configuration>
+        <executions>
+          <execution>
+            <id>test-daylib</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>javah</goal>
+              <goal>compile</goal>
+              <goal>link</goal>
+            </goals>
+            <configuration>
+              <linkerEndOptions>
+                <linkerEndOption>-o ${project.build.directory}/librococoa-${project.version}-test.dylib</linkerEndOption>
+              </linkerEndOptions>
+            </configuration>
+          </execution>
+          <execution>
+            <id>daylib</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>javah</goal>
+              <goal>compile</goal>
+              <goal>link</goal>
+            </goals>
+            <configuration>
+              <linkerEndOptions>
+                <linkerEndOption>-o ${project.build.directory}/librococoa-${project.version}.dylib</linkerEndOption>
+              </linkerEndOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -111,16 +113,28 @@
           </excludes>
           <forkMode>once</forkMode>
           <trimStackTrace>false</trimStackTrace>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
 
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
         <executions>
+          <execution>
+            <id>install-test-library</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <groupId>org.rococoa</groupId>
+              <artifactId>rococoa-core</artifactId>
+              <version>${project.parent.version}</version>
+              <packaging>dylib</packaging>
+              <classifier>test</classifier>
+              <file>${project.build.directory}/librococoa-${project.version}-test.dylib</file>
+            </configuration>
+          </execution>
           <execution>
             <id>install-library</id>
             <phase>install</phase>
@@ -132,7 +146,7 @@
               <artifactId>rococoa-core</artifactId>
               <version>${project.parent.version}</version>
               <packaging>dylib</packaging>
-              <file>${project.build.directory}/librococoa.dylib</file>
+              <file>${project.build.directory}/librococoa-${project.version}.dylib</file>
             </configuration>
           </execution>
         </executions>

@@ -66,7 +66,7 @@ public abstract class AbstractPropertyDictionary<E extends Enum<E> & NativeEnum<
      */
     public NSMutableDictionary getData() {
         return data;
-    }    
+    }
 
     /** Get the value associated with the given key as a String
      *  @param key the key whose associated value will be returned
@@ -83,7 +83,7 @@ public abstract class AbstractPropertyDictionary<E extends Enum<E> & NativeEnum<
     public void setString(E key, String value) {
         data.setValue_forKey(NSString.stringWithString(value), key.getNativeValue());
     }
-    
+
     /** Get the value associated with the given key as an int
      *  @param key the key whose associated value will be returned
      *  @return the value associated with the key as a Java int

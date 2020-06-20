@@ -31,20 +31,26 @@ import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
-import static org.junit.Assert.*;
 import org.junit.Test;
-
-
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
-import org.rococoa.contrib.appkit.NSSpeechSynthesizer.NSSpeechStatus;
 import org.rococoa.cocoa.foundation.NSRange;
+import org.rococoa.contrib.appkit.NSSpeechSynthesizer.NSSpeechStatus;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
-/** Exercise the speech synthesizer.
+/**
+ * Exercise the speech synthesizer.
  */
-public class NSSpeechSynthesizerTest { 
+public class NSSpeechSynthesizerTest {
     private static final int TIME_TO_WAIT = 5000;
     private NSAutoreleasePool pool;
+
+    private static NSVoice testVoice = new NSVoice(NSVoice.VICTORIA);
 
     @Before
     public void preSetup() {
@@ -60,10 +66,10 @@ public class NSSpeechSynthesizerTest {
     public void testDefaultVoice() {
         assertNotNull(NSSpeechSynthesizer.CLASS.defaultVoice()); //System preference, so no way of knowing actual value
         assertNotNull(NSSpeechSynthesizer.defaultVoice().getName());
-        assertNotNull(NSSpeechSynthesizer.synthesizerWithVoice(null));
-        assertEquals(NSSpeechSynthesizer.defaultVoice(), NSSpeechSynthesizer.synthesizerWithVoice(null).getVoice());
+        assertNotNull(NSSpeechSynthesizer.synthesizerWithVoice(testVoice));
+        assertEquals(NSSpeechSynthesizer.defaultVoice(), NSSpeechSynthesizer.synthesizerWithVoice(testVoice).getVoice());
     }
-    
+
     @Test
     public void testAvailableVoices() {
         assertEquals(NSSpeechSynthesizer.CLASS.availableVoices().count(), NSSpeechSynthesizer.availableVoices().size());
@@ -82,7 +88,7 @@ public class NSSpeechSynthesizerTest {
         assertEquals(Locale.US, dict.getLocaleIdentifier());
         assertEquals(now, dict.getModificationDate());
         dict.addPronounciation(new NSSpeechDictionary.Entry("about", "AXbUWt")); //en_GB_geordie!
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         ss.addSpeechDictionary(dict);
@@ -90,14 +96,14 @@ public class NSSpeechSynthesizerTest {
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
         String[] expected = new String[] {"%", "AX", "b", "UW", "t", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
-        
+
         //Normally the synth falls into the SQL = 'S' 'Q' 'L' camp
         sd.reset();
         ss.startSpeakingString("SQL");
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
         expected = new String[] {"%", "EH", "s", "k", "y", "UW", "EH", "l", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
-        
+
         //but we can make it say  'sequel' instead...
         dict.setModificationDate(new Date());
         dict.addAbbreviation(new NSSpeechDictionary.Entry("SQL", "sIYkwAXl"));
@@ -109,10 +115,10 @@ public class NSSpeechSynthesizerTest {
         expected = new String[] {"%", "s", "IY", "k", "w", "AX", "l", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
     }
-    
+
     @Test
     public void testStartSpeakingString() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.startSpeakingString("Hello world");
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
@@ -120,7 +126,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testIsSpeaking() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         assertTrue(!ss.isSpeaking());
         ss.startSpeakingString("Hello world");
@@ -130,7 +136,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testIsAnyApplicationSpeaking() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         assertTrue(!NSSpeechSynthesizer.isAnyApplicationSpeaking());
@@ -141,7 +147,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testDidFinishSpeaking() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         ss.startSpeakingString("hello doctor");
@@ -150,7 +156,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testWillSpeakWord() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         String toSpeak = "hello doctor name";
@@ -161,23 +167,23 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testWillSpeakPhoneme() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         String toSpeak = "blue daisy";
         ss.startSpeakingString(toSpeak);
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
         //every so often some of the phonemes get flipped around, which isn't important to this test
-        List<String> expected = new ArrayList<String>(Arrays.asList(new String[] {"%", "b", "l", "UW", "d", "EY", "z", "IY", "%"}));
+        List<String> expected = new ArrayList<>(Arrays.asList(new String[] {"%", "b", "l", "UW", "d", "EY", "z", "IY", "%"}));
         Collections.sort(expected);
-        List<String> actual = new ArrayList<String>(sd.getPhonemesSpoken());
+        List<String> actual = new ArrayList<>(sd.getPhonemesSpoken());
         Collections.sort(actual);
         assertEquals(expected,actual);
     }
 
     @Test
     public void testStopSpeakingAtBoundary() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.setDelegate(sd);
         String toSpeak = "Hello are you receiving me now? I really hope someone is!";
@@ -209,7 +215,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testGetStatus() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);        
         NSSpeechStatus status = ss.getStatus();
         assertEquals(status.isOutputBusy(), ss.isSpeaking());
@@ -228,7 +234,7 @@ public class NSSpeechSynthesizerTest {
     
     @Test
     public void testPauseSpeakingAtBoundary() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.startSpeakingString("Status check number two");
         sd.waitForNextWord(1000);
@@ -252,7 +258,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testPauseSpeakingAtSentenceBoundary() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.startSpeakingString("This is the way the world ends. Not with a bang.");
         sd.waitForNextWord(1000);
@@ -270,7 +276,7 @@ public class NSSpeechSynthesizerTest {
     
     @Test
     public void testGetError() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.startSpeakingString("Try this one [[pbas foobar]] two　three");
         sd.waitForWord(1000, "three");
@@ -286,7 +292,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testInputMode() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         assertEquals(NSSpeechSynthesizer.NSSpeechMode.Text, ss.getInputMode());
         ss.setInputMode(NSSpeechSynthesizer.NSSpeechMode.Text);
         assertEquals("Should be text in, phonemes out", "_d1AOg.", ss.phonemesFromText("dog"));
@@ -297,7 +303,7 @@ public class NSSpeechSynthesizerTest {
     
     @Test
     public void testCharacterMode() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         assertEquals(NSSpeechSynthesizer.NSSpeechMode.Normal, ss.getCharacterMode());
         ss.setCharacterMode(NSSpeechSynthesizer.NSSpeechMode.Normal);
         assertEquals("Should say dog", "_d1AOg.", ss.phonemesFromText("dog"));
@@ -308,7 +314,7 @@ public class NSSpeechSynthesizerTest {
     
     @Test
     public void testNumberMode() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         assertEquals(NSSpeechSynthesizer.NSSpeechMode.Normal, ss.getNumberMode());
         ss.setNumberMode(NSSpeechSynthesizer.NSSpeechMode.Normal);
         assertEquals("Should say twelve", "_tw1EHlv.", ss.phonemesFromText("12"));
@@ -319,7 +325,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testSynthesizerInfo() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         NSSpeechSynthesizer.NSSpeechSynthesizerInfo ssi = ss.getSynthesizerInfo();
         assertTrue(ssi.getSynthesizerIdentifier() != null);
         assertTrue(ssi.getSynthesizerVersion() != null);
@@ -327,7 +333,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testPitchBase() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         float pitchBase = ss.getPitchBase();
         assertTrue(pitchBase > 0.0f);
         ss.setPitchBase(pitchBase * 1.5f);
@@ -336,7 +342,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testPitchMod() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         float pitchMod = ss.getPitchMod();
         assertTrue(pitchMod > 0.0f);
         ss.setPitchMod(pitchMod * 0.9f);
@@ -355,7 +361,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testPhonemeInfo() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         List<NSSpeechSynthesizer.NSSpeechPhonemeInfo> spis = ss.getPhonemeInfo();
         assertTrue(spis.size() > 5);
         NSSpeechSynthesizer.NSSpeechPhonemeInfo spi = spis.get(4);
@@ -369,7 +375,7 @@ public class NSSpeechSynthesizerTest {
 
     @Test
     public void testRecentSyncAndCallback() throws InterruptedException {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         ss.startSpeakingString("I see no " + NSSpeechSynthesizer.createSyncPoint('A') + " ships sailing");
         sd.waitForWord(2500, "sailing");
@@ -393,10 +399,9 @@ public class NSSpeechSynthesizerTest {
         assertEquals(new NSVoice(NSVoice.FRED), ss.getVoice());
     }
 
-    
     @Test
     public void testCommandDelimiter() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         SynthesizerDelegate sd = new SynthesizerDelegate(ss);
 
         // this raises a question - NSSpeechCommand - should it encapsulate the available commands and
@@ -410,12 +415,11 @@ public class NSSpeechSynthesizerTest {
         sd.waitForWord(2500, "sailing");
         assertEquals("Should have synch with B", "B", sd.synchMark);
         sd.waitForSpeechDone(3000, true);
-        
     }
 
     @Test
     public void testReset() {
-        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+        NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
         float pitchBase = ss.getPitchBase();
         assertTrue(pitchBase > 0.0f);
         ss.setPitchBase(pitchBase + 1.0f);
@@ -432,7 +436,7 @@ public class NSSpeechSynthesizerTest {
         try {
             helloWorld = File.createTempFile("helloworld", ".aiff");
             helloWorld.deleteOnExit();
-            NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+            NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
             SynthesizerDelegate sd = new SynthesizerDelegate(ss);
             ss.setOutputToFileURL(helloWorld.toURI());
             ss.startSpeakingString("Hello World");
@@ -457,7 +461,7 @@ public class NSSpeechSynthesizerTest {
         try {
             helloWorld = File.createTempFile("helloworld", ".aiff");
             helloWorld.deleteOnExit();
-            NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
+            NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(testVoice);
             SynthesizerDelegate sd = new SynthesizerDelegate(ss);
             ss.startSpeakingStringToURL("Hello World", helloWorld.toURI());
             sd.waitForSpeechDone(5000, true);
@@ -477,15 +481,15 @@ public class NSSpeechSynthesizerTest {
     private static class SynthesizerDelegate implements NSSpeechSynthesizer.NSSpeechSynthesizerDelegate {
 
         private volatile boolean success = false;
-        private List<String> wordsSpoken = new ArrayList<String>();
-        private List<String> phonemesSpoken = new ArrayList<String>();
+        private List<String> wordsSpoken = new ArrayList<>();
+        private List<String> phonemesSpoken = new ArrayList<>();
         private String wordWaitingFor;
         private int position = -1;
         private String synchMark;
         private String errorMessage;
         private static final Object speechDoneMonitor = new Object();
         private static final Object waitForSpeechWordMonitor = new Object();
-        
+
         SynthesizerDelegate(NSSpeechSynthesizer ss) {
             ss.setDelegate(this);
         }

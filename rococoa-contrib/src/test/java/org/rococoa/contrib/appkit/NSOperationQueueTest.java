@@ -35,11 +35,11 @@ import org.rococoa.test.RococoaTestCase;
  *
  */
 public class NSOperationQueueTest extends RococoaTestCase {
+
     NSOperationQueue fixture;
 
     public NSOperationQueueTest() {
     }
-    
 
     @Before
     public void setUp() {
@@ -77,7 +77,7 @@ public class NSOperationQueueTest extends RococoaTestCase {
             queue.addOperations_waitUntilFinished(NSArray.CLASS.arrayWithObjects(ops), wait);
         }
         public void checkResults() {
-            List<Integer> incomplete = new ArrayList<Integer>(results.length);
+            List<Integer> incomplete = new ArrayList<>(results.length);
             synchronized(results) {
                 for(int i=0; i < results.length; i++) {
                     if (!results[i]) incomplete.add(i);

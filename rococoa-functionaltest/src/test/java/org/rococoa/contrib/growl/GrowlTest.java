@@ -19,13 +19,23 @@
 
 package org.rococoa.contrib.growl;
 
-import org.rococoa.cocoa.foundation.NSAutoreleasePool;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 
 /**
  * TestGrowl
@@ -47,7 +57,7 @@ public class GrowlTest {
                 NSAutoreleasePool.new_(); // Hmmm.. This is needed only if I create Growl beofre Swing is initialized...
 
                 final Growl growl = new Growl(
-                		GrowlTest.class.getSimpleName(),
+                        GrowlTest.class.getSimpleName(),
                         null,
                         Arrays.asList(MESSAGE, STARTUP),
                         Arrays.asList(MESSAGE, STARTUP),
@@ -81,6 +91,6 @@ public class GrowlTest {
                 growl.postNotification(STARTUP, "Started", "GrowlTest started.");
             }
         });
-        
+
     }
 }
