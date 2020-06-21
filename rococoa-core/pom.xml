@@ -37,17 +37,6 @@
             <compilerStartOption>-g -Wall -O2 -fomit-frame-pointer -fPIC</compilerStartOption>
             <compilerStartOption>-arch x86_64</compilerStartOption>
           </compilerStartOptions>
-          <sources>
-            <source>
-              <!-- relative to your project directory -->
-              <directory>src/main/native</directory>
-              <fileNames>
-                <fileName>Rococoa.m</fileName>
-                <fileName>ProxyForJava.m</fileName>
-                <fileName>test.m</fileName>
-              </fileNames>
-            </source>
-          </sources>
           <linkerStartOptions>
             <linkerStartOption>-dynamiclib -arch x86_64
                     -framework QTKit -framework Foundation -framework AppKit
@@ -58,15 +47,26 @@
         <executions>
           <execution>
             <id>test-daylib</id>
-            <phase>compile</phase>
+            <phase>test-compile</phase>
             <goals>
               <goal>javah</goal>
               <goal>compile</goal>
               <goal>link</goal>
             </goals>
             <configuration>
+              <sources>
+                <source>
+                  <!-- relative to your project directory -->
+                  <directory>src/main/native</directory>
+                  <fileNames>
+                    <fileName>Rococoa.m</fileName>
+                    <fileName>ProxyForJava.m</fileName>
+                    <fileName>test.m</fileName>
+                  </fileNames>
+                </source>
+              </sources>
               <linkerEndOptions>
-                <linkerEndOption>-o ${project.build.directory}/librococoa-${project.version}-test.dylib</linkerEndOption>
+                <linkerEndOption>-o ${project.build.testOutputDirectory}/librococoa.dylib</linkerEndOption>
               </linkerEndOptions>
             </configuration>
           </execution>
@@ -79,6 +79,16 @@
               <goal>link</goal>
             </goals>
             <configuration>
+              <sources>
+                <source>
+                  <!-- relative to your project directory -->
+                  <directory>src/main/native</directory>
+                  <fileNames>
+                    <fileName>Rococoa.m</fileName>
+                    <fileName>ProxyForJava.m</fileName>
+                  </fileNames>
+                </source>
+              </sources>
               <linkerEndOptions>
                 <linkerEndOption>-o ${project.build.directory}/librococoa-${project.version}.dylib</linkerEndOption>
               </linkerEndOptions>
@@ -96,10 +106,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -132,7 +138,7 @@
               <version>${project.parent.version}</version>
               <packaging>dylib</packaging>
               <classifier>test</classifier>
-              <file>${project.build.directory}/librococoa-${project.version}-test.dylib</file>
+              <file>${project.build.testOutputDirectory}/librococoa.dylib</file>
             </configuration>
           </execution>
           <execution>

@@ -36,7 +36,7 @@ public interface NativeEnum<N extends NSObject> {
     public static final class Resolver {
         private Resolver() {}
         /** Given an enum class that implements NativeEnum, resolve the Java enum
-         *  value that corresponds to the native value <code>value</value>
+         *  value that corresponds to the native value <code>value</code>
          *  @param <E> the type of the Java enum
          *  @param nativeEnum the class of the Java enum
          *  @param value the native value to resolve

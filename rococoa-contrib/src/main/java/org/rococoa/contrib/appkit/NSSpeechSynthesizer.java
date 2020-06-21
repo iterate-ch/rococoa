@@ -52,7 +52,7 @@ public abstract class NSSpeechSynthesizer extends NSObject {
     /** Defines the properties associated with a speech synthesizer. Getters and setters have been provided for most of these,
      *  so using the properties directly will not usually be necessary.
      *  @see NSSpeechSynthesizer#getProperty(org.rococoa.contrib.appkit.NSSpeechSynthesizer.SpeechProperty)
-     *  @see NSSpeechSynthesizer#setProperty(org.rococoa.contrib.appkit.NSSpeechSynthesizer.SpeechProperty, org.rococoa.NSObject)
+     *  @see NSSpeechSynthesizer#setProperty(SpeechProperty, NSObject)
      */
     public enum SpeechProperty implements NativeEnum<NSString> {
         StatusProperty,

@@ -139,6 +139,7 @@
               <debug>false</debug>
               <verbose>false</verbose>
               <failOnWarnings>false</failOnWarnings>
+              <failOnError>false</failOnError>
               <additionalparam>-Xdoclint:all -Xdoclint:-missing</additionalparam>
             </configuration>
           </execution>
