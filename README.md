@@ -4,6 +4,8 @@ Rococoa is a generic Java binding to the Mac Objective-C object system. It
 allows the creation and use of Objective-C objects in Java, and the 
 implementation of Objective-C interfaces in Java.
 
+![Java CI with Maven](https://github.com/iterate-ch/rococoa/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 ## Rococoa Acknowledgements
 Rococoa owes much to the following people and organisations
   * [JNA](http://jna.dev.java.net) does all the heavy lifting of calling into Cocoa and marshaling parameters. Timothy Wall also added pass struct by value and other extension points to make our life simpler.
