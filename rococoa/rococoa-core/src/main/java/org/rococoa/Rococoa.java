@@ -81,7 +81,7 @@ public abstract class Rococoa  {
             Object... args) {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("creating [%s (%s)].%s(%s)",
-                    new Object[]{ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)}));
+                    ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)));
         }
         ID ocClass = Foundation.getClass(ocClassName);
         ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);

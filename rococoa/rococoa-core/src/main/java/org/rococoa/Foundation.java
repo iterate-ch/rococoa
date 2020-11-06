@@ -204,7 +204,7 @@ public abstract class Foundation {
     public static <T> T send(ID receiver, Selector selector, Class<T> returnType, Object... args) {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("sending (%s) %s.%s(%s)",
-                    new Object[]{returnType.getSimpleName(), receiver, selector.getName(), new VarArgsUnpacker(args)}));
+                    returnType.getSimpleName(), receiver, selector.getName(), new VarArgsUnpacker(args)));
         }
         return (T) messageSendLibrary.syntheticSendMessage(returnType, receiver, selector, args);
     }

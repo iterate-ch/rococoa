@@ -94,7 +94,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         if (logging.isLoggable(Level.FINEST)) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
             logging.finest(String.format("Creating NSObjectInvocationHandler for id %s, javaclass %s. retain = %s, retainCount = %s",
-                    new Object[]{ocInstance, javaClass, retain, retainCount}));
+                    ocInstance, javaClass, retain, retainCount));
         }
 
         if (ocInstance.isNull()) {
@@ -154,7 +154,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         if (logging.isLoggable(Level.FINEST)) {
             int retainCount = Foundation.cfGetRetainCount(ocInstance);
             logging.finest(String.format("finalizing [%s %s], releasing with retain count = %s",
-                    new Object[]{javaClassName, ocInstance, retainCount}));
+                    javaClassName, ocInstance, retainCount));
         }
         Foundation.cfRelease(ocInstance);
     }
@@ -165,7 +165,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     public Object invoke(Object proxy, Method method, Object[] args)  throws Exception {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("invoking [%s %s].%s(%s)",
-                    new Object[]{javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)}));
+                    javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)));
         }
         if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
@@ -179,7 +179,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("invoking [%s %s].%s(%s)",
-                    new Object[]{javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)}));
+                    javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)));
         }
         if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
