@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.rococoa</groupId>
         <artifactId>rococoa-parent</artifactId>
-        <version>0.6-SNAPSHOT</version>
+        <version>0.8.3-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -57,12 +57,11 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <aggregate>true</aggregate>
                     <minmemory>128m</minmemory>
                     <maxmemory>512</maxmemory>
                     <breakiterator>true</breakiterator>
                     <quiet>true</quiet>
-                    <source>1.6</source>
+                    <source>1.8</source>
                     <verbose>false</verbose>
                     <show>public</show>
                     <links>

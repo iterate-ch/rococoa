@@ -20,11 +20,11 @@
     </properties>
 
     <modules>
-        <!--module>rococoa-auto</module-->
-        <!--<module>rococoa-cocoa</module>-->
-        <!--<module>rococoa-contrib</module>-->
+        <module>rococoa-auto</module>
+        <module>rococoa-cocoa</module>
+        <module>rococoa-contrib</module>
         <module>rococoa-core</module>
-        <!--<module>rococoa-functionaltest</module>-->
+        <module>rococoa-functionaltest</module>
     </modules>
 
     <developers>
@@ -191,19 +191,19 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.3</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.8</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.18.1</version>
+                    <version>2.22.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
@@ -215,7 +215,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.2</version>
+                    <version>2.5.3</version>
                     <configuration>
                         <arguments>-DskipTests</arguments>
                     </configuration>
@@ -234,14 +234,16 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.5.5</version>
+                    <version>3.2.0</version>
                     <configuration>
-                        <descriptor>src/main/assembly/dist.xml</descriptor>
+                        <descriptors>
+                            <descriptor>src/main/assembly/dist.xml</descriptor>
+                        </descriptors>
                     </configuration>
                     <executions>
                         <execution>
                             <goals>
-                                <goal>attached</goal>
+                                <goal>single</goal>
                             </goals>
                             <phase>package</phase>
                         </execution>
@@ -249,7 +251,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>3.1.2</version>
                     <executions>
                         <execution>
                             <id>copy</id>
