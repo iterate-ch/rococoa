@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
 
 typedef struct TestIntDoubleStruct {
 	int anInt;
