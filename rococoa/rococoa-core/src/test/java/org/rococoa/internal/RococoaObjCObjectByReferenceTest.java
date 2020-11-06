@@ -47,7 +47,7 @@ public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
     }
 
     private interface TestShuntDelegate {
-        public void callback(ObjCObjectByReference reference);
+        void callback(ID reference);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
         TestShunt shunt = Rococoa.create("TestShunt", TestShunt.class);
         final CountDownLatch count = new CountDownLatch(1);
         final ObjCObject callback = Rococoa.proxy(new TestShuntDelegate() {
-            public void callback(ObjCObjectByReference reference) {
+            public void callback(ID reference) {
                 // Success
                 count.countDown();
             }
