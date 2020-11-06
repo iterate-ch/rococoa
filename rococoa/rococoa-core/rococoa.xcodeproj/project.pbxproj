@@ -12,7 +12,6 @@
 		47E780252555A8E400D21DBB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		47E7803A2555A90D00D21DBB /* librococoa-test.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 47E7802B2555A8E400D21DBB /* librococoa-test.dylib */; };
 		47E7803E2555A95C00D21DBB /* librococoa.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AED079210CEC69DC00542DAC /* librococoa.dylib */; };
-		47E780472555C25D00D21DBB /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED078F00CEC608C00542DAC /* QTKit.framework */; };
 		AE1E31B20CFB1D1900508B04 /* ProxyForJava.h in Headers */ = {isa = PBXBuildFile; fileRef = AE1E31AE0CFB1D1900508B04 /* ProxyForJava.h */; };
 		AE1E31B30CFB1D1900508B04 /* ProxyForJava.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1E31AF0CFB1D1900508B04 /* ProxyForJava.m */; };
 		AEA357FC0CEDFBDF00AE7D09 /* Rococoa.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA357790CECA01400AE7D09 /* Rococoa.m */; };
@@ -63,7 +62,6 @@
 		AEA357790CECA01400AE7D09 /* Rococoa.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Rococoa.m; sourceTree = "<group>"; };
 		AECF4DC90D042C5F00B44D6E /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		AECF4DCA0D042C5F00B44D6E /* test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
-		AED078F00CEC608C00542DAC /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		AED079210CEC69DC00542DAC /* librococoa.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = librococoa.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859EA3029092ED04C91782 /* rococoa.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = rococoa.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,7 +73,6 @@
 			files = (
 				47E7803E2555A95C00D21DBB /* librococoa.dylib in Frameworks */,
 				47E780252555A8E400D21DBB /* Foundation.framework in Frameworks */,
-				47E780472555C25D00D21DBB /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +110,6 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				AED078F00CEC608C00542DAC /* QTKit.framework */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
