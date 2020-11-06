@@ -29,7 +29,7 @@ import com.sun.jna.Native;
  */
 public interface AppKitLibrary extends Library {
 	
-	public static final AppKitLibrary INSTANCE = (AppKitLibrary) Native.loadLibrary("AppKit", AppKitLibrary.class);
+	AppKitLibrary INSTANCE = Native.load("AppKit", AppKitLibrary.class);
 
 	void NSRectFill (NSRect aRect);
 

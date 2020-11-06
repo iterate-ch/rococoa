@@ -71,10 +71,10 @@ public abstract class Foundation {
 
         Map<String, Object> messageSendLibraryOptions = new HashMap<String, Object>(1);
         messageSendLibraryOptions.put(Library.OPTION_INVOCATION_MAPPER, new MsgSendInvocationMapper());
-        messageSendLibrary = (MsgSendLibrary) Native.loadLibrary("Foundation", MsgSendLibrary.class, messageSendLibraryOptions);
+        messageSendLibrary = Native.load("Foundation", MsgSendLibrary.class, messageSendLibraryOptions);
 
-        foundationLibrary = (FoundationLibrary) Native.loadLibrary("Foundation", FoundationLibrary.class);
-        rococoaLibrary = (RococoaLibrary) Native.loadLibrary("rococoa", RococoaLibrary.class);
+        foundationLibrary = Native.load("Foundation", FoundationLibrary.class);
+        rococoaLibrary = Native.load("rococoa", RococoaLibrary.class);
         logging.finest("exit initializing Foundation");
     }
 
