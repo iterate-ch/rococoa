@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
+import com.sun.jna.Native;
 import org.junit.After;
 import org.junit.Before;
 import org.rococoa.Foundation;
@@ -74,9 +75,9 @@ public abstract class RococoaTestCase {
     
     private static void logVersions() {
         logging.info(String.format("Running with JAVA_HOME = %s, java.version = %s, sizeof(Pointer) = %s",
-                new Object[] { System.getenv("JAVA_HOME"),
-                    System.getProperty("java.version"),
-                    Pointer.SIZE}));
+                System.getenv("JAVA_HOME"),
+                System.getProperty("java.version"),
+                Native.POINTER_SIZE));
     }
 
     protected NSAutoreleasePool pool;
