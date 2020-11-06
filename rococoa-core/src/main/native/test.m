@@ -8,6 +8,7 @@
 
 #import "test.h"
 #import <stdarg.h>
+#include <pthread/pthread.h>
 
 TestIntDoubleStruct createIntDoubleStruct(int a, double b) {
 	TestIntDoubleStruct result = {a, b};
