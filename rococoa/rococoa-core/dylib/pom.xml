@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>librococoa</artifactId>
+    <name>Rococoa Core Native Library</name>
+    <url>http://www.rococoa.org</url>
+    <parent>
+        <groupId>org.rococoa</groupId>
+        <artifactId>rococoa-parent</artifactId>
+        <version>0.8.3-SNAPSHOT</version>
+    </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>build-native</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <exec dir="${project.basedir}/.." executable="xcodebuild" failonerror="true">
+                                    <arg value="-project"/>
+                                    <arg value="rococoa.xcodeproj"/>
+                                    <arg value="-target"/>
+                                    <arg value="librococoa-test"/>
+                                    <arg value="-configuration"/>
+                                    <arg value="Release"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-native-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <exec dir="${project.basedir}/.." executable="xcodebuild" failonerror="true">
+                                    <arg value="-project"/>
+                                    <arg value="rococoa.xcodeproj"/>
+                                    <arg value="-target"/>
+                                    <arg value="librococoa-test"/>
+                                    <arg value="-configuration"/>
+                                    <arg value="Release"/>
+                                    <arg value="clean"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <type>dylib</type>
+                                    <file>${project.basedir}/../build/Release/librococoa.dylib</file>
+                                </artifact>
+                                <artifact>
+                                    <type>dylib</type>
+                                    <classifier>test</classifier>
+                                    <file>${project.basedir}/../build/Release/librococoa-test.dylib</file>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

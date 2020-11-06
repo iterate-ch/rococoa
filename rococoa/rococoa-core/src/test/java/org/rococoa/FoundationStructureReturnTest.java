@@ -35,7 +35,7 @@ public class FoundationStructureReturnTest extends RococoaTestCase {
         double addFieldsOfStructByValueVARARGS(int count, TestStruct.ByValue ...objects);
     }
     
-    private StructLibrary library = (StructLibrary) Native.loadLibrary("rococoa", StructLibrary.class);    
+    private StructLibrary library = Native.load("rococoa-test", StructLibrary.class);
     
     @Test public void testStaticReceiveStructure() {
         TestStruct.ByValue result = library.createIntDoubleStruct(42, Math.E);

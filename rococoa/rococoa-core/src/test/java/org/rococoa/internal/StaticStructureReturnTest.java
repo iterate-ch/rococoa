@@ -138,7 +138,7 @@ public class StaticStructureReturnTest {
         IntDoubleStruct createIntDoubleStruct(int a, double b);
     }
 
-    private TestLibrary library3 = (TestLibrary) Native.loadLibrary("rococoa", TestLibrary.class);
+    private TestLibrary library3 = Native.load("rococoa-test", TestLibrary.class);
 
     @Test
     public void testIntInt() {

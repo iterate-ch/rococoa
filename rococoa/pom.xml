@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.rococoa</groupId>
     <artifactId>rococoa-parent</artifactId>
@@ -17,6 +18,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <argLine />
     </properties>
 
     <modules>
@@ -24,6 +26,7 @@
         <module>rococoa-cocoa</module>
         <module>rococoa-contrib</module>
         <module>rococoa-core</module>
+        <module>rococoa-core/dylib</module>
         <module>rococoa-functionaltest</module>
     </modules>
 
@@ -107,6 +110,19 @@
             </dependency>
             <dependency>
                 <groupId>org.rococoa</groupId>
+                <artifactId>librococoa</artifactId>
+                <type>dylib</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.rococoa</groupId>
+                <artifactId>librococoa</artifactId>
+                <classifier>test</classifier>
+                <type>dylib</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.rococoa</groupId>
                 <artifactId>rococoa-cocoa</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -185,6 +201,37 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies-dylib-target</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <includeTypes>dylib</includeTypes>
+                            <stripClassifier>false</stripClassifier>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>@{argLine} -Djava.library.path=${project.build.directory}</argLine>
+                    <systemPropertyVariables>
+                        <jna.library.path>${project.build.directory}</jna.library.path>
+                    </systemPropertyVariables>
+                    <environmentVariables>
+                        <DYLD_FALLBACK_FRAMEWORK_PATH>${project.build.directory}</DYLD_FALLBACK_FRAMEWORK_PATH>
+                    </environmentVariables>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
         </plugins>
 
         <pluginManagement>
@@ -252,27 +299,11 @@
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.1.2</version>
-                    <executions>
-                        <execution>
-                            <id>copy</id>
-                            <phase>generate-resources</phase>
-                            <goals>
-                                <goal>copy</goal>
-                            </goals>
-                            <configuration>
-                                <artifactItems>
-                                    <artifactItem>
-                                        <groupId>org.rococoa</groupId>
-                                        <artifactId>rococoa-core</artifactId>
-                                        <type>dylib</type>
-                                        <overWrite>false</overWrite>
-                                        <outputDirectory>${basedir}</outputDirectory>
-                                        <destFileName>librococoa.dylib</destFileName>
-                                    </artifactItem>
-                                </artifactItems>
-                            </configuration>
-                        </execution>
-                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.2.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

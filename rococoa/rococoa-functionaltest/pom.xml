@@ -29,6 +29,13 @@
             <artifactId>rococoa-core</artifactId>
             <type>test-jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.rococoa</groupId>
+            <artifactId>librococoa</artifactId>
+            <classifier>test</classifier>
+            <type>dylib</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
