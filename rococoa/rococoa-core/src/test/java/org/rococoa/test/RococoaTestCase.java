@@ -1,13 +1,13 @@
 /*
  * Copyright 2007, 2008 Duncan McGregor
- * 
+ *
  * This file is part of Rococoa, a library to allow Java to talk to Cocoa.
- * 
+ *
  * Rococoa is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Rococoa is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,16 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa.test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.LogManager;
 
 import com.sun.jna.Native;
 import org.junit.After;
@@ -34,27 +26,33 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSObject;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import com.sun.jna.Pointer;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * A TestCase which runs tests with an autorelease pool in place.
- * 
+ *
  * @author duncan
  */
 @SuppressWarnings("nls")
 public abstract class RococoaTestCase {
-    
+
     // stress our memory management
     public static boolean gcAfterTest = true;
-    protected final static Logger logging ;
+    protected final static Logger logging;
 
     static {
-    	initializeLogging();
-    	logging = Logger.getLogger("org.rococoa.RococoaTestCase");
-    	logVersions();
-    };
+        initializeLogging();
+        logging = Logger.getLogger("org.rococoa.RococoaTestCase");
+        logVersions();
+    }
 
     public static void initializeLogging() {
         try {
@@ -72,7 +70,7 @@ public abstract class RococoaTestCase {
             throw new RuntimeException("Could not initialize logging", x);
         }
     }
-    
+
     private static void logVersions() {
         logging.info(String.format("Running with JAVA_HOME = %s, java.version = %s, sizeof(Pointer) = %s",
                 System.getenv("JAVA_HOME"),
@@ -81,11 +79,11 @@ public abstract class RococoaTestCase {
     }
 
     protected NSAutoreleasePool pool;
-    
+
     @Before
     public void preSetup() {
         pool = NSAutoreleasePool.new_();
-		assertNotNull(pool);
+        assertNotNull(pool);
     }
 
     @After
@@ -94,20 +92,18 @@ public abstract class RococoaTestCase {
             gc();
         pool.drain();
     }
-    
+
     public static void assertRetainCount(int expected, NSObject object) {
-	assertRetainCount(expected, object.id());
-    }    
+        assertRetainCount(expected, object.id());
+    }
 
     public static void assertRetainCount(int expected, ID id) {
-	assertEquals(expected, Foundation.cfGetRetainCount(id));
-    }    
-
+        assertEquals(expected, Foundation.cfGetRetainCount(id).intValue());
+    }
 
     public static void gc() {
         System.gc();
         System.gc();
         System.runFinalization();
     }
-    
 }
