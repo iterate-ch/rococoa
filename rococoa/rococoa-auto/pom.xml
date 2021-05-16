@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <jnaerator.version>0.9.10-SNAPSHOT</jnaerator.version>
+        <jnaerator.version>0.12</jnaerator.version>
     </properties>
 
     <dependencies>
