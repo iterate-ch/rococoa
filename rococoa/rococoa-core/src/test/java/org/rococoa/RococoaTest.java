@@ -19,13 +19,6 @@
  
 package org.rococoa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSDate;
@@ -33,6 +26,8 @@ import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.test.RococoaTestCase;
+
+import static org.junit.Assert.*;
 
 @SuppressWarnings("nls")
 public class RococoaTest extends RococoaTestCase {
@@ -46,17 +41,17 @@ public class RococoaTest extends RococoaTestCase {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         NSNumber fortyTwoAlias = Rococoa.wrap(fortyTwo.id(), NSNumber.class);
         NSNumber fortyThree = NSNumber.CLASS.numberWithInt(43);
-        assertTrue(fortyTwo.equals(fortyTwoAlias));
-        assertTrue(fortyTwoAlias.equals(fortyTwo));
-        assertFalse(fortyTwo.equals(fortyThree));
-        assertFalse(fortyTwo.equals(null));
+        assertEquals(fortyTwo, fortyTwoAlias);
+        assertEquals(fortyTwoAlias, fortyTwo);
+        assertNotEquals(fortyTwo, fortyThree);
+        assertNotEquals(null, fortyTwo);
     }
         
     @Test public void testEqualsMapsToIsEqual() {
         NSString s1 = NSString.stringWithString("string");
         NSString s2 = NSString.stringWithString("STRING").lowercaseString();
         assertNotSame(s1, s2);
-        assertFalse(s1.id().equals(s2.id()));
+        assertNotEquals(s1.id(), s2.id());
         assertEquals(s1, s2);
     }
    
@@ -108,13 +103,13 @@ public class RococoaTest extends RococoaTestCase {
     }
     
     public interface OddClass extends ObjCClass {
-        public NSObject numberWithInt(int value);
+        NSObject numberWithInt(int value);
     }
 
     @Test public void testDownCast() {
         // this is OK
-        NSObject numberAsObject = NSNumber.CLASS.numberWithInt(42);
-        assertEquals(42, ((NSNumber) numberAsObject).intValue());
+        NSNumber numberAsObject = NSNumber.CLASS.numberWithInt(42);
+        assertEquals(42, numberAsObject.intValue());
         
         // but when defined return type is NSObject, we can't cast Java objects
         OddClass nsClass = Rococoa.createClass("NSNumber", OddClass.class);

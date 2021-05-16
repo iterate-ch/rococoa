@@ -68,7 +68,7 @@ public class NSAutoreleasePoolThreadTest {
         pool.drain();
         WeakReference<Object> reference = new WeakReference<Object>(pool);
         pool = null;
-        while(reference.get() != null) {
+        while (reference.get() != null) {
             RococoaTestCase.gc();
         }
         RococoaTestCase.gc();
@@ -144,11 +144,9 @@ public class NSAutoreleasePoolThreadTest {
     private void await(CyclicBarrier barrier) {
         try {
             barrier.await();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
-
 }

@@ -19,10 +19,10 @@
 
 package org.rococoa;
 
+import com.sun.jna.Structure;
+
 import java.util.Arrays;
 import java.util.List;
-
-import com.sun.jna.Structure;
 
 public class TestStruct extends Structure {
     public int anInt;
@@ -31,8 +31,6 @@ public class TestStruct extends Structure {
     public TestStruct() {
         this(0, 0);
     }
-
-    ;
 
     public TestStruct(int anInt, double aDouble) {
         this.anInt = anInt;
@@ -43,8 +41,6 @@ public class TestStruct extends Structure {
         public ByValue() {
             this(0, 0);
         }
-
-        ;
 
         public ByValue(int anInt, double aDouble) {
             super(anInt, aDouble);

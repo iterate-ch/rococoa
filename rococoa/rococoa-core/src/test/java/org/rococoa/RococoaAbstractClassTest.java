@@ -33,7 +33,7 @@ public static abstract class NSNumberAsClass extends NSObject {
     
     public static final _Class CLASS = Rococoa.createClass("NSNumber", _Class.class); //$NON-NLS-1$
     public interface _Class extends ObjCClass {
-        public NSNumberAsClass numberWithInt(int value);
+        NSNumberAsClass numberWithInt(int value);
     }
     
     public static NSNumberAsClass numberWithInt(int value) {

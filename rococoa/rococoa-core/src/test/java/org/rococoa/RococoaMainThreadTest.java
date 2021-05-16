@@ -58,10 +58,10 @@ public class RococoaMainThreadTest extends RococoaTestCase {
 
     private interface TestShuntAnnotatedMethod extends TestShunt {
         @RunOnMainThread
-        public boolean isMainThread();
+        boolean isMainThread();
     }
 
     private interface TestShuntUnAnnotatedMethod extends TestShunt {
-        public boolean isMainThread();
+        boolean isMainThread();
     }
 }
