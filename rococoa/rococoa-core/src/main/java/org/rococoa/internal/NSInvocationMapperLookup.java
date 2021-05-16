@@ -19,9 +19,10 @@
 
 package org.rococoa.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Structure;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.ObjCObject;
@@ -30,16 +31,13 @@ import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSUInteger;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Structure;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Look up how to map from and from NSInvocation and Java objects.
  *
  * @author duncan
- *
  */
 public final class NSInvocationMapperLookup {
     private static final int NATIVE_POINTER_SIZE = Native.POINTER_SIZE;
@@ -86,40 +84,51 @@ public final class NSInvocationMapperLookup {
 
     static {
         addToLookup(new NSInvocationMapper("v", void.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 throw new IllegalStateException("Should not have to read void");
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 return new Memory(0);
             }
         });
         addToLookup(new NSInvocationMapper("c", boolean.class) {
             // Cocoa BOOL is defined as signed char
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 byte character = buffer.getByte(0);
                 return character == 0 ? java.lang.Boolean.FALSE : java.lang.Boolean.TRUE;
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(1);
                 result.setByte(0, ((Boolean) methodCallResult) ? (byte) 1 : (byte) 0);
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("c", byte.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getByte(0);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(1);
                 result.setByte(0, ((Byte) methodCallResult).byteValue());
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("s", char.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 throw new UnsupportedOperationException("Don't yet support char, while I think what to do");
                 // TODO - think what to do
             }
+
             @Override
             public Memory bufferForResult(Object methodCallResult) {
                 throw new UnsupportedOperationException("Don't yet support char, while I think what to do");
@@ -127,78 +136,101 @@ public final class NSInvocationMapperLookup {
             }
         });
         addToLookup(new NSInvocationMapper("s", short.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getShort(0);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(2);
                 result.setShort(0, ((Short) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("i", int.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getInt(0);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(4);
                 result.setInt(0, ((Integer) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("q", long.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getLong(0);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(8);
                 result.setLong(0, (Long) methodCallResult);
                 return result;
-            };
+            }
+
+            ;
         });
         addToLookup(new NSInvocationMapper("f", float.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getFloat(0);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(4);
                 result.setFloat(0, ((Float) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("d", double.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return buffer.getDouble(0);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(8);
                 result.setDouble(0, ((Double) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("@", ID.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
                 if (id.isNull()) {
                     return null;
                 }
                 return id;
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(NATIVE_POINTER_SIZE);
                 result.setNativeLong(0, ((ID) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper("@", String.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
                 if (id.isNull()) {
                     return null;
                 }
                 return Foundation.toString(id);
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory buffer = new Memory(NATIVE_POINTER_SIZE);
                 ID idString = Foundation.cfString((String) methodCallResult);
                 Foundation.sendReturnsID(idString, "autorelease");
@@ -207,42 +239,51 @@ public final class NSInvocationMapperLookup {
             }
         });
         addToLookup(new NSInvocationMapper(NSINTEGER_ENCODING, NSInteger.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return new NSInteger(buffer.getNativeLong(0));
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(NATIVE_LONG_SIZE);
                 result.setNativeLong(0, ((NativeLong) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper(NSUINTEGER_ENCODING, NSUInteger.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 return new NSUInteger(buffer.getNativeLong(0));
             }
-            @Override public Memory bufferForResult(Object methodCallResult) {
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
                 Memory result = new Memory(NATIVE_LONG_SIZE);
                 result.setNativeLong(0, ((NativeLong) methodCallResult));
                 return result;
             }
         });
         addToLookup(new NSInvocationMapper(CGFLOAT_ENCODING, CGFloat.class) {
-            @Override public Object readFrom(Memory buffer, Class<?> type) {
-            	if (NATIVE_LONG_SIZE == 4) {
-            		return new CGFloat(buffer.getFloat(0));
-                }
-            	if (NATIVE_LONG_SIZE == 8) {
-            		return new CGFloat(buffer.getDouble(0));
-                }
-            	throw new IllegalStateException();
-            }
-            @Override public Memory bufferForResult(Object methodCallResult) {
-                Memory result = new Memory(NATIVE_LONG_SIZE);
+            @Override
+            public Object readFrom(Memory buffer, Class<?> type) {
                 if (NATIVE_LONG_SIZE == 4) {
-                	result.setFloat(0, ((CGFloat) methodCallResult).floatValue());
+                    return new CGFloat(buffer.getFloat(0));
                 }
                 if (NATIVE_LONG_SIZE == 8) {
-                	result.setDouble(0, ((CGFloat) methodCallResult).doubleValue());
+                    return new CGFloat(buffer.getDouble(0));
+                }
+                throw new IllegalStateException();
+            }
+
+            @Override
+            public Memory bufferForResult(Object methodCallResult) {
+                Memory result = new Memory(NATIVE_LONG_SIZE);
+                if (NATIVE_LONG_SIZE == 4) {
+                    result.setFloat(0, ((CGFloat) methodCallResult).floatValue());
+                }
+                if (NATIVE_LONG_SIZE == 8) {
+                    result.setDouble(0, ((CGFloat) methodCallResult).doubleValue());
                 }
                 return result;
             }
@@ -251,28 +292,36 @@ public final class NSInvocationMapperLookup {
 
     static final NSInvocationMapper OCOBJECT = new NSInvocationMapper("@", ObjCObject.class) {
         @SuppressWarnings("unchecked")
-        @Override public Object readFrom(Memory buffer, Class<?> type) {
+        @Override
+        public Object readFrom(Memory buffer, Class<?> type) {
             ID id = ID.fromLong(buffer.getNativeLong(0).longValue());
             if (id.isNull()) {
                 return null;
             }
             return Rococoa.wrap(id, (Class<? extends ObjCObject>) type);
         }
-        @Override public Memory bufferForResult(Object methodCallResult) {
+
+        @Override
+        public Memory bufferForResult(Object methodCallResult) {
             Memory buffer = new Memory(NATIVE_POINTER_SIZE);
             buffer.setNativeLong(0, ((ObjCObject) methodCallResult).id());
             return buffer;
-        }};
+        }
+    };
 
     static final NSInvocationMapper NATIVE_LONG = new NSInvocationMapper(NATIVE_LONG_ENCODING, NativeLong.class) {
-        @Override public Object readFrom(Memory buffer, Class<?> type) {
+        @Override
+        public Object readFrom(Memory buffer, Class<?> type) {
             return buffer.getNativeLong(0);
         }
-        @Override public Memory bufferForResult(Object methodCallResult) {
+
+        @Override
+        public Memory bufferForResult(Object methodCallResult) {
             Memory result = new Memory(NATIVE_LONG_SIZE);
             result.setNativeLong(0, ((NativeLong) methodCallResult));
             return result;
-        }};
+        }
+    };
 
     private static void addToLookup(NSInvocationMapper mapper) {
         Class<?> type = mapper.type;

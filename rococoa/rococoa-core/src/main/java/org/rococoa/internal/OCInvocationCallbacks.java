@@ -52,7 +52,7 @@ import com.sun.jna.Memory;
 @SuppressWarnings("nls")
 public class OCInvocationCallbacks {
 
-    private static Logger logging = Logger.getLogger("org.rococoa.callback");
+    private static final Logger logging = Logger.getLogger("org.rococoa.callback");
 
     private final Object javaObject;
 

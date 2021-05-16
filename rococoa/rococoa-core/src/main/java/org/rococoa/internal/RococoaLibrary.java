@@ -33,14 +33,14 @@ public interface RococoaLibrary extends Library {
     /** 
      * Callback from Obj-C to get method signature string for Java method matching selectorName 
      */
-    public interface MethodSignatureCallback extends Callback {
+    interface MethodSignatureCallback extends Callback {
         String callback(String selectorName);
     }
     
     /**
      *  Callback from Obj-C to invoke method on Java object 
      */
-    public interface SelectorInvokedCallback extends Callback {
+    interface SelectorInvokedCallback extends Callback {
         void callback(String selectorName, ID nsInvocation);    
     }
 
@@ -54,7 +54,7 @@ public interface RococoaLibrary extends Library {
     /**
      * Generic callback from Obj-C
      */
-    public interface VoidCallback extends Callback {
+    interface VoidCallback extends Callback {
         void callback();        
     }
     

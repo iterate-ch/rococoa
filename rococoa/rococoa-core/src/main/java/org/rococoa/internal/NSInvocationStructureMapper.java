@@ -17,24 +17,20 @@
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 
- */
 package org.rococoa.internal;
+
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
+import org.rococoa.RococoaException;
+import org.rococoa.cocoa.foundation.NSInvocation;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.rococoa.RococoaException;
-import org.rococoa.cocoa.foundation.NSInvocation;
-
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
 
 class NSInvocationStructureMapper extends NSInvocationMapper {
 
@@ -49,7 +45,7 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
             result.append('^'); // pointer to
         }
         result.append('{').append(clas.getSimpleName()).append('=');
-        for (Field f : collectStructFields(clas, new ArrayList<Field>())) {
+        for (Field f : collectStructFields(clas, new ArrayList<>())) {
             result.append(NSInvocationMapperLookup.stringForType(f.getType()));
         }
         return result.append('}').toString();
@@ -63,42 +59,40 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
         Collections.addAll(list, clas.getDeclaredFields());
         return collectStructFields((Class<? extends Structure>) clas.getSuperclass(), list);
     }
-    
+
     @SuppressWarnings("unchecked")
-    @Override public Object readArgumentFrom(NSInvocation invocation, int index, Class<?> type) {
+    @Override
+    public Object readArgumentFrom(NSInvocation invocation, int index, Class<?> type) {
         if (Structure.ByValue.class.isAssignableFrom(type)) {
             return readStructureByValue(invocation, index, (Class<? extends Structure>) type);
-        }
-        else {
+        } else {
             return readStructureByReference(invocation, index, (Class<? extends Structure>) type);
         }
     }
-    
-    @Override public Memory bufferForResult(Object methodCallResult) {
+
+    @Override
+    public Memory bufferForResult(Object methodCallResult) {
         if (methodCallResult instanceof Structure.ByValue) {
             return bufferForStructureByValue((Structure) methodCallResult);
-        }
-        else {
+        } else {
             return bufferForStructureByReference((Structure) methodCallResult);
         }
     }
-    
-    private Structure readStructureByValue(NSInvocation invocation, int index, 
-            Class<? extends Structure> type)
-    {
+
+    private Structure readStructureByValue(NSInvocation invocation, int index,
+                                           Class<? extends Structure> type) {
         Structure result = newInstance(type);
         Memory buffer = new Memory(result.size());
         invocation.getArgument_atIndex(buffer, index);
         return copyBufferToStructure(buffer, result);
     }
-    
-    private Structure readStructureByReference(NSInvocation invocation, int index, 
-            Class<? extends Structure> type)
-    {
+
+    private Structure readStructureByReference(NSInvocation invocation, int index,
+                                               Class<? extends Structure> type) {
         Memory buffer = new Memory(Native.POINTER_SIZE);
         invocation.getArgument_atIndex(buffer, index);
         Pointer pointerToResult = buffer.getPointer(0);
-        Structure result = newInstance(type);        
+        Structure result = newInstance(type);
         return copyBufferToStructure(pointerToResult, result);
     }
 
@@ -107,7 +101,7 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
         try {
             return (T) clas.newInstance();
         } catch (Exception e) {
-            throw new RococoaException("Could not instantiate " + clas,  e);
+            throw new RococoaException("Could not instantiate " + clas, e);
         }
     }
 
@@ -117,7 +111,7 @@ class NSInvocationStructureMapper extends NSInvocationMapper {
         structure.read();
         return structure;
     }
-    
+
     private Memory bufferForStructureByValue(Structure methodCallResult) {
         methodCallResult.write();
         int byteCount = methodCallResult.size();

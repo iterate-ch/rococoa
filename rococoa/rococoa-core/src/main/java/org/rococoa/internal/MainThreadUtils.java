@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  *
  */
 public abstract class MainThreadUtils {
-    private static Logger logging = Logger.getLogger("org.rococoa.foundation");
+    private static final Logger logging = Logger.getLogger("org.rococoa.foundation");
 
     private static final ID idNSThreadClass = Foundation.getClass("NSThread");
     private static final Selector isMainThreadSelector = Foundation.selector("isMainThread");

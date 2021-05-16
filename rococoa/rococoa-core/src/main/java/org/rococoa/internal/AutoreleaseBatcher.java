@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class AutoreleaseBatcher extends OperationBatcher {
     
-    private static Logger logging = Logger.getLogger("org.rococoa");
+    private static final Logger logging = Logger.getLogger("org.rococoa");
 
     private static final ThreadLocal<AutoreleaseBatcher> threadLocal = new ThreadLocal<AutoreleaseBatcher>();
 

@@ -18,33 +18,26 @@
  */
 
 package org.rococoa;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
-import org.rococoa.internal.FoundationLibrary;
-import org.rococoa.internal.MainThreadUtils;
-import org.rococoa.internal.MsgSendInvocationMapper;
-import org.rococoa.internal.MsgSendLibrary;
-import org.rococoa.internal.OCInvocationCallbacks;
-import org.rococoa.internal.RococoaLibrary;
-import org.rococoa.internal.VarArgsUnpacker;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import org.rococoa.cocoa.CFIndex;
+import org.rococoa.internal.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
  * The core of Rococoa - statics to handle selectors and messaging at a function call level.
- *
+ * <p>
  * Marshalling of Java types to C types is handled by JNA. Marshalling of Java
  * type to Objective-C types is handled by RococoaTypeMapper.
- *
+ * <p>
  * Not to be confused with the Mac Foundation or Core Foundation frameworks, most
  * users shouldn't need to access this class directly.
  *
@@ -53,13 +46,13 @@ import com.sun.jna.Native;
 @SuppressWarnings("nls")
 public abstract class Foundation {
 
-    private static Logger logging = Logger.getLogger("org.rococoa.foundation");
+    private static final Logger logging = Logger.getLogger("org.rococoa.foundation");
 
     private static final FoundationLibrary foundationLibrary;
     private static final MsgSendLibrary messageSendLibrary;
     private static final RococoaLibrary rococoaLibrary;
 
-    private static final Map<String, Selector> selectorCache = new HashMap<String, Selector>();
+    private static final Map<String, Selector> selectorCache = new HashMap<>();
 
     static {
         logging.finest("Initializing Foundation");
@@ -69,7 +62,7 @@ public abstract class Foundation {
         // May be removed if we use toStringViaUTF16
         System.setProperty("jna.encoding", "UTF8");
 
-        Map<String, Object> messageSendLibraryOptions = new HashMap<String, Object>(1);
+        Map<String, Object> messageSendLibraryOptions = new HashMap<>(1);
         messageSendLibraryOptions.put(Library.OPTION_INVOCATION_MAPPER, new MsgSendInvocationMapper());
         messageSendLibrary = Native.load("Foundation", MsgSendLibrary.class, messageSendLibraryOptions);
 
@@ -93,20 +86,16 @@ public abstract class Foundation {
 
     /**
      * Return a CFString as an ID, toll-free bridged to NSString.
-     *
+     * <p>
      * Note that the returned string must be freed with {@link #cfRelease(ID)}.
      */
     public static ID cfString(String s) {
         // Use a byte[] rather than letting jna do the String -> char* marshalling itself.
         // Turns out about 10% quicker for long strings.
-        try {
-            byte[] utf16Bytes = s.getBytes("UTF-16LE");
-            return foundationLibrary.CFStringCreateWithBytes(null, utf16Bytes,
-                    utf16Bytes.length,
-                    StringEncoding.kCFStringEncodingUTF16LE.value, (byte) 0);
-        } catch (UnsupportedEncodingException x) {
-            throw new RococoaException(x);
-        }
+        byte[] utf16Bytes = s.getBytes(StandardCharsets.UTF_16LE);
+        return foundationLibrary.CFStringCreateWithBytes(null, utf16Bytes,
+                utf16Bytes.length,
+                StringEncoding.kCFStringEncodingUTF16LE.value, (byte) 0);
     }
 
     /**
@@ -129,7 +118,7 @@ public abstract class Foundation {
         foundationLibrary.CFRelease(id);
     }
 
-    public static int cfGetRetainCount(ID cfTypeRef) {
+    public static CFIndex cfGetRetainCount(ID cfTypeRef) {
         return foundationLibrary.CFGetRetainCount(cfTypeRef);
     }
 
@@ -139,19 +128,15 @@ public abstract class Foundation {
 
     /* Experimental */
     static String toStringViaUTF16(ID cfString) {
-        try {
-            int lengthInChars = foundationLibrary.CFStringGetLength(cfString);
-            int potentialLengthInBytes = 3 * lengthInChars + 1; // UTF16 fully escaped 16 bit chars, plus nul
+        int lengthInChars = foundationLibrary.CFStringGetLength(cfString);
+        int potentialLengthInBytes = 3 * lengthInChars + 1; // UTF16 fully escaped 16 bit chars, plus nul
 
-            byte[] buffer = new byte[potentialLengthInBytes];
-            byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF16LE.value);
-            if (ok == 0) {
-                throw new RococoaException("Could not convert string");
-            }
-            return new String(buffer, "UTF-16LE").substring(0, lengthInChars);
-        } catch (UnsupportedEncodingException e) {
-            throw new RococoaException(e);
+        byte[] buffer = new byte[potentialLengthInBytes];
+        byte ok = foundationLibrary.CFStringGetCString(cfString, buffer, buffer.length, StringEncoding.kCFStringEncodingUTF16LE.value);
+        if (ok == 0) {
+            throw new RococoaException("Could not convert string");
         }
+        return new String(buffer, StandardCharsets.UTF_16LE).substring(0, lengthInChars);
     }
 
     static String toStringViaUTF8(ID cfString) {
@@ -188,7 +173,7 @@ public abstract class Foundation {
 
     /**
      * Send message with selectorName to receiver, passing args, expecting returnType.
-     *
+     * <p>
      * Note that you are responsible for memory management if returnType is ID.
      */
     public static <T> T send(ID receiver, String selectorName, Class<T> returnType, Object... args) {
@@ -197,7 +182,7 @@ public abstract class Foundation {
 
     /**
      * Send message with selector to receiver, passing args, expecting returnType.
-     *
+     * <p>
      * Note that you are responsible for memory management if returnType is ID.
      */
     @SuppressWarnings("unchecked")
@@ -211,7 +196,7 @@ public abstract class Foundation {
 
     /**
      * Convenience as this happens a lot in tests.
-     *
+     * <p>
      * Note that you are responsible for memory management for the returned ID
      */
     public static ID sendReturnsID(ID receiver, String selectorName, Object... args) {
@@ -249,10 +234,11 @@ public abstract class Foundation {
     public static void runOnMainThread(Runnable runnable, boolean waitUntilDone) {
         MainThreadUtils.runOnMainThread(rococoaLibrary, runnable, waitUntilDone);
     }
+
     /**
      * Create an Objective-C object which delegates to callbacks when methods
      * are invoked on it.
-     *
+     * <p>
      * Object is created with alloc, so is owned by the caller.
      */
     public static ID newOCProxy(OCInvocationCallbacks callbacks) {
@@ -271,11 +257,11 @@ public abstract class Foundation {
         // you own using release or autorelease. Any other time you receive an
         // object, you must not release it.
 
-	// Note that this does not appear to be an infallible rule - see
-	// https://rococoa.dev.java.net/servlets/ReadMsg?list=dev&msgNo=71
+        // Note that this does not appear to be an infallible rule - see
+        // https://rococoa.dev.java.net/servlets/ReadMsg?list=dev&msgNo=71
         return selectorName.startsWith("alloc") ||
-        	selectorName.startsWith("new") ||
-        	selectorName.toLowerCase().contains("copy");
+                selectorName.startsWith("new") ||
+                selectorName.toLowerCase().contains("copy");
     }
 
 }
