@@ -19,30 +19,25 @@
 
 package org.rococoa.contrib.appkit;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.rococoa.cocoa.foundation.NSAutoreleasePool;
+import org.rococoa.cocoa.foundation.NSRange;
+import org.rococoa.contrib.appkit.NSSpeechSynthesizer.NSSpeechStatus;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-import org.junit.After;
-import org.junit.Before;
 import static org.junit.Assert.*;
-import org.junit.Test;
-
-
-import org.rococoa.cocoa.foundation.NSAutoreleasePool;
-import org.rococoa.contrib.appkit.NSSpeechSynthesizer.NSSpeechStatus;
-import org.rococoa.cocoa.foundation.NSRange;
-
-
-/** Exercise the speech synthesizer.
+/**
+ * Exercise the speech synthesizer.
  */
-public class NSSpeechSynthesizerTest { 
+@Ignore
+public class NSSpeechSynthesizerTest {
     private static final int TIME_TO_WAIT = 5000;
     private NSAutoreleasePool pool;
 
@@ -63,7 +58,7 @@ public class NSSpeechSynthesizerTest {
         assertNotNull(NSSpeechSynthesizer.synthesizerWithVoice(null));
         assertEquals(NSSpeechSynthesizer.defaultVoice(), NSSpeechSynthesizer.synthesizerWithVoice(null).getVoice());
     }
-    
+
     @Test
     public void testAvailableVoices() {
         assertEquals(NSSpeechSynthesizer.CLASS.availableVoices().count(), NSSpeechSynthesizer.availableVoices().size());
@@ -71,7 +66,7 @@ public class NSSpeechSynthesizerTest {
         assertNotNull(NSSpeechSynthesizer.availableVoices().get(0).getName());
         assertTrue(NSSpeechSynthesizer.availableVoices().get(0).getName().length() > 0);
     }
- 
+
     @Test
     public void testAddGetSpeechDictionary() {
         //first, let's teach the synth to talk like its from Newcastle (sort of)
@@ -88,16 +83,16 @@ public class NSSpeechSynthesizerTest {
         ss.addSpeechDictionary(dict);
         ss.startSpeakingString("about");
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
-        String[] expected = new String[] {"%", "AX", "b", "UW", "t", "%"};
+        String[] expected = new String[]{"%", "AX", "b", "UW", "t", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
-        
+
         //Normally the synth falls into the SQL = 'S' 'Q' 'L' camp
         sd.reset();
         ss.startSpeakingString("SQL");
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
-        expected = new String[] {"%", "EH", "s", "k", "y", "UW", "EH", "l", "%"};
+        expected = new String[]{"%", "EH", "s", "k", "y", "UW", "EH", "l", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
-        
+
         //but we can make it say  'sequel' instead...
         dict.setModificationDate(new Date());
         dict.addAbbreviation(new NSSpeechDictionary.Entry("SQL", "sIYkwAXl"));
@@ -106,10 +101,10 @@ public class NSSpeechSynthesizerTest {
         sd.reset();
         ss.startSpeakingString("SQL");
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
-        expected = new String[] {"%", "s", "IY", "k", "w", "AX", "l", "%"};
+        expected = new String[]{"%", "s", "IY", "k", "w", "AX", "l", "%"};
         assertEquals(Arrays.asList(expected), sd.getPhonemesSpoken());
     }
-    
+
     @Test
     public void testStartSpeakingString() throws InterruptedException {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
@@ -168,11 +163,11 @@ public class NSSpeechSynthesizerTest {
         ss.startSpeakingString(toSpeak);
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
         //every so often some of the phonemes get flipped around, which isn't important to this test
-        List<String> expected = new ArrayList<String>(Arrays.asList(new String[] {"%", "b", "l", "UW", "d", "EY", "z", "IY", "%"}));
+        List<String> expected = new ArrayList<String>(Arrays.asList(new String[]{"%", "b", "l", "UW", "d", "EY", "z", "IY", "%"}));
         Collections.sort(expected);
         List<String> actual = new ArrayList<String>(sd.getPhonemesSpoken());
         Collections.sort(actual);
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -196,7 +191,7 @@ public class NSSpeechSynthesizerTest {
         ss.stopSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.SentenceBoundary);
         sd.waitForWord(TIME_TO_WAIT, "now");
         sd.waitForSpeechDone(TIME_TO_WAIT, false);
-        assertTrue("Expected 6 word sentence but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() == 6);        
+        assertTrue("Expected 6 word sentence but got: " + sd.getWordsSpoken(), sd.getWordsSpoken().size() == 6);
 
         sd.reset();
         ss.startSpeakingString(toSpeak);
@@ -210,13 +205,13 @@ public class NSSpeechSynthesizerTest {
     @Test
     public void testGetStatus() {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
-        SynthesizerDelegate sd = new SynthesizerDelegate(ss);        
+        SynthesizerDelegate sd = new SynthesizerDelegate(ss);
         NSSpeechStatus status = ss.getStatus();
         assertEquals(status.isOutputBusy(), ss.isSpeaking());
         assertFalse(status.isOutputPaused());
         assertEquals("Should have no characters left", 0, status.getNumberOfCharactersLeft());
         assertEquals(0, status.getPhonemeCode());
-        
+
         ss.startSpeakingString("Status check");
         status = ss.getStatus();
         assertEquals(status.isOutputBusy(), ss.isSpeaking());
@@ -225,7 +220,7 @@ public class NSSpeechSynthesizerTest {
         //assertTrue("Opcode should not be zero", status.getPhonemeCode() != 0); always zero... seems to have word granularity
         sd.waitForSpeechDone(TIME_TO_WAIT, true);
     }
-    
+
     @Test
     public void testPauseSpeakingAtBoundary() throws InterruptedException {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
@@ -234,15 +229,15 @@ public class NSSpeechSynthesizerTest {
         sd.waitForNextWord(1000);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.WordBoundary);
         Thread.sleep(1000); //this API is very asynchronous ... need to sleep before polling status
-        NSSpeechStatus status = ss.getStatus();   
+        NSSpeechStatus status = ss.getStatus();
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
-        assertEquals("Check number of characters left failed", 16, status.getNumberOfCharactersLeft());        
+        assertEquals("Check number of characters left failed", 16, status.getNumberOfCharactersLeft());
         ss.continueSpeaking();
         sd.waitForNextWord(2500);
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.ImmediateBoundary);
         Thread.sleep(TIME_TO_WAIT);
-        status = ss.getStatus();   
+        status = ss.getStatus();
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
         assertEquals("Check number of characters left failed", 10, status.getNumberOfCharactersLeft());
@@ -259,7 +254,7 @@ public class NSSpeechSynthesizerTest {
         ss.pauseSpeakingAtBoundary(NSSpeechSynthesizer.NSSpeechBoundary.SentenceBoundary);
         sd.waitForWord(10000, "ends"); //this tells you the word is _about_ to be spoken
         Thread.sleep(750); //so we need to wait a bit more
-        NSSpeechStatus status = ss.getStatus();   
+        NSSpeechStatus status = ss.getStatus();
         assertFalse("Output should not be busy", status.isOutputBusy());
         assertTrue("Output should be paused", status.isOutputPaused());
         //often returns 22, which is just before 'ends'. There's a heck of a lag, basically, in the getStatus interface
@@ -267,7 +262,7 @@ public class NSSpeechSynthesizerTest {
         ss.continueSpeaking();
         sd.waitForSpeechDone(5000, true);
     }
-    
+
     @Test
     public void testGetError() throws InterruptedException {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
@@ -294,7 +289,7 @@ public class NSSpeechSynthesizerTest {
         assertEquals(NSSpeechSynthesizer.NSSpeechMode.Phoneme, ss.getInputMode());
         assertEquals("Should be phonemes in, phonemes out", "_d1AOg.", ss.phonemesFromText("_d1AOg."));
     }
-    
+
     @Test
     public void testCharacterMode() {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
@@ -305,7 +300,7 @@ public class NSSpeechSynthesizerTest {
         assertEquals(NSSpeechSynthesizer.NSSpeechMode.Literal, ss.getCharacterMode());
         assertEquals("Should say d o g", "_d1IY ~2OW _J1IY.", ss.phonemesFromText("dog"));
     }
-    
+
     @Test
     public void testNumberMode() {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
@@ -374,7 +369,7 @@ public class NSSpeechSynthesizerTest {
         ss.startSpeakingString("I see no " + NSSpeechSynthesizer.createSyncPoint('A') + " ships sailing");
         sd.waitForWord(2500, "sailing");
         assertEquals("Should have synch with A", "A", sd.synchMark);
-        sd.waitForSpeechDone(3000, true);   
+        sd.waitForSpeechDone(3000, true);
         assertEquals("Should be able to get recent sync", 'A', ss.getRecentSync());
     }
 
@@ -393,7 +388,7 @@ public class NSSpeechSynthesizerTest {
         assertEquals(new NSVoice(NSVoice.FRED), ss.getVoice());
     }
 
-    
+
     @Test
     public void testCommandDelimiter() {
         NSSpeechSynthesizer ss = NSSpeechSynthesizer.synthesizerWithVoice(null);
@@ -410,7 +405,7 @@ public class NSSpeechSynthesizerTest {
         sd.waitForWord(2500, "sailing");
         assertEquals("Should have synch with B", "B", sd.synchMark);
         sd.waitForSpeechDone(3000, true);
-        
+
     }
 
     @Test
@@ -441,10 +436,10 @@ public class NSSpeechSynthesizerTest {
             fis = new FileInputStream(helloWorld);
             assertTrue("Should have some bytes", fis.available() > 0);
         } finally {
-            if ( fis != null ) {
+            if (fis != null) {
                 fis.close();
             }
-            if ( helloWorld != null ) {
+            if (helloWorld != null) {
                 helloWorld.delete();
             }
         }
@@ -465,10 +460,10 @@ public class NSSpeechSynthesizerTest {
             fis = new FileInputStream(helloWorld);
             assertTrue("Should have some bytes", fis.available() > 0);
         } finally {
-            if ( fis != null ) {
+            if (fis != null) {
                 fis.close();
             }
-            if ( helloWorld != null ) {
+            if (helloWorld != null) {
                 helloWorld.delete();
             }
         }
@@ -485,7 +480,7 @@ public class NSSpeechSynthesizerTest {
         private String errorMessage;
         private static final Object speechDoneMonitor = new Object();
         private static final Object waitForSpeechWordMonitor = new Object();
-        
+
         SynthesizerDelegate(NSSpeechSynthesizer ss) {
             ss.setDelegate(this);
         }
@@ -529,7 +524,7 @@ public class NSSpeechSynthesizerTest {
                 }
             }
         }
-       
+
         public void waitForNextWord(long interval) {
             synchronized (waitForSpeechWordMonitor) {
                 try {
@@ -539,7 +534,7 @@ public class NSSpeechSynthesizerTest {
                 }
             }
         }
-                
+
         public void waitForWord(long interval, final String word) {
             synchronized (waitForSpeechWordMonitor) {
                 wordWaitingFor = word;
@@ -553,7 +548,7 @@ public class NSSpeechSynthesizerTest {
 
         private String getCallerName() {
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                if ( ste.getMethodName().startsWith("test") ) {
+                if (ste.getMethodName().startsWith("test")) {
                     return ste.getMethodName();
                 }
             }
@@ -569,7 +564,7 @@ public class NSSpeechSynthesizerTest {
 
         public void speechSynthesizer_didEncounterSyncMessage(NSSpeechSynthesizer sender, String synchMark) {
             this.synchMark = synchMark;
-         //   System.out.println("In callback, sync: " + sender.getRecentSync());
+            //   System.out.println("In callback, sync: " + sender.getRecentSync());
         }
 
         public synchronized void speechSynthesizer_willSpeakPhoneme(NSSpeechSynthesizer sender, short phonemeOpcode) {
@@ -578,8 +573,8 @@ public class NSSpeechSynthesizerTest {
 
         public void speechSynthesizer_willSpeakWord_ofString(NSSpeechSynthesizer sender, NSRange wordToSpeak, String text) {
             wordsSpoken.add(text.substring((int) wordToSpeak.getLocation(), (int) wordToSpeak.getEndLocation()));
-            if ( wordWaitingFor == null || wordsSpoken.get(wordsSpoken.size()-1).equals(wordWaitingFor)) {
-                synchronized(waitForSpeechWordMonitor) {
+            if (wordWaitingFor == null || wordsSpoken.get(wordsSpoken.size() - 1).equals(wordWaitingFor)) {
+                synchronized (waitForSpeechWordMonitor) {
                     waitForSpeechWordMonitor.notify();
                 }
             }
