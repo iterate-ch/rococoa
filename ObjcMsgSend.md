@@ -38,7 +38,7 @@ What I think this means is that despite the prototype saying that the function r
 In C the way to make this happen is to cast the function pointer to a pointer to a function that does return the correct struct by value, thus tricking the compiler into generating the correct cleanup code.
 
 If you don't have a C compiler handy to do this for you, this is going to be tricky.
-Luckily Rococoa uses [JNA](http://jna.dev.java.net), which in turns uses [libffi](http://sourceware.org/libffi/), which is very close to having a C compiler to hand at runtime.
+Luckily Rococoa uses [JNA](https://github.com/java-native-access/jna), which in turns uses [libffi](http://sourceware.org/libffi/), which is very close to having a C compiler to hand at runtime.
 Armed with a description of the structure being returned, libffi sorts out the call stack after the call.
 
 It turns out that libffi doesn't only help with objc\_msgSend\_stret.
