@@ -62,7 +62,7 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>verify</phase>
+                        <phase>test-compile</phase>
                         <goals>
                             <goal>attach-artifact</goal>
                         </goals>
