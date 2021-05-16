@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>librococoa</artifactId>
     <name>Rococoa Core Native Library</name>
-    <url>http://www.rococoa.org</url>
+    <url>https://github.com/iterate-ch/rococoa</url>
     <parent>
         <groupId>org.rococoa</groupId>
         <artifactId>rococoa-parent</artifactId>

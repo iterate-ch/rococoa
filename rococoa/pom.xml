@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <version>0.8.3-SNAPSHOT</version>
     <name>Rococoa Parent Project</name>
-    <url>http://www.rococoa.org</url>
+    <url>https://github.com/iterate-ch/rococoa</url>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>

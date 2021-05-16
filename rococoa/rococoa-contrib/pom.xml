@@ -4,7 +4,7 @@
     <artifactId>rococoa-contrib</artifactId>
     <packaging>jar</packaging>
     <name>Rococoa Contrib</name>
-    <url>http://www.rococoa.org</url>
+    <url>https://github.com/iterate-ch/rococoa</url>
 
     <parent>
         <groupId>org.rococoa</groupId>

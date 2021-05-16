@@ -4,7 +4,7 @@
     <artifactId>rococoa-cocoa</artifactId>
     <packaging>jar</packaging>
     <name>Rococoa Cocoa Mappings</name>
-    <url>http://www.rococoa.org</url>
+    <url>https://github.com/iterate-ch/rococoa</url>
 
     <parent>
         <groupId>org.rococoa</groupId>

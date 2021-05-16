@@ -5,7 +5,7 @@
     <artifactId>rococoa-core</artifactId>
     <packaging>jar</packaging>
     <name>Rococoa Core</name>
-    <url>http://www.rococoa.org</url>
+    <url>https://github.com/iterate-ch/rococoa</url>
     <parent>
         <groupId>org.rococoa</groupId>
         <artifactId>rococoa-parent</artifactId>
