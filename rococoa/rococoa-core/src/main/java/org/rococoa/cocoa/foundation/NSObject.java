@@ -33,7 +33,7 @@ public abstract class NSObject implements ObjCObject {
 
     public abstract NSObject retain();
     public abstract void release();
-    public abstract int retainCount();
+    public abstract NSUInteger retainCount();
     
     public abstract boolean isKindOfClass(ObjCClass nsClass);
     public abstract boolean isKindOfClass(ID nsClass);

@@ -25,8 +25,8 @@ import org.rococoa.Rococoa;
 public abstract class NSURL extends NSObject  {
     public static final _Class CLASS = Rococoa.createClass("NSURL", _Class.class); //$NON-NLS-1$
     public interface _Class extends ObjCClass {
-        public NSURL URLWithString(String value);
-        public NSURL fileURLWithPath(String path);
+        NSURL URLWithString(String value);
+        NSURL fileURLWithPath(String path);
     }
     public abstract NSURL absoluteURL();
     public abstract String path();

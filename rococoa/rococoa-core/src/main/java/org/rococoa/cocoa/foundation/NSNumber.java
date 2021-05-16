@@ -26,11 +26,11 @@ import org.rococoa.Rococoa;
 public abstract class NSNumber extends NSObject {
     public static final _Class CLASS = Rococoa.createClass("NSNumber", _Class.class); //$NON-NLS-1$
     public interface _Class extends ObjCClass {
-        public NSNumber numberWithBool(boolean value);
-        public NSNumber numberWithInt(int value);
-        public NSNumber numberWithDouble(double e);
-        public NSNumber numberWithLong(long value);
-        public NSNumber numberWithFloat(float value);
+        NSNumber numberWithBool(boolean value);
+        NSNumber numberWithInt(int value);
+        NSNumber numberWithDouble(double e);
+        NSNumber numberWithLong(long value);
+        NSNumber numberWithFloat(float value);
     }
     
     public abstract short shortValue();
