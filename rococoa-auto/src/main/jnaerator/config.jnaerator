@@ -1,6 +1,6 @@
 -F "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks:$(JNAERATOR_FRAMEWORKS_PATH)"
--framework Foundation
--framework AppKit
+//-framework Foundation
+//-framework AppKit
 //-framework CoreFoundation
 //-framework CoreGraphics
 
