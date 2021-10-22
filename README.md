@@ -19,9 +19,9 @@ try it on PPC, and
 [let me know](https://rococoa.dev.java.net/servlets/ProjectMailingListList)
 any other problems.
 
- * [Take the Whistlestop Tour](https://github.com/umjammer/rococoa/blob/wiki/WhistlestopTour.md)
- * [How To](https://github.com/umjammer/rococoa/blob/wiki/HowTo.md)
- * [Quicktime](https://github.com/umjammer/rococoa/blob/wiki/Quicktime.md)
- * [Limitations](https://github.com/umjammer/rococoa/blob/wiki/Limitations.md)
- * [Help Wanted](https://github.com/umjammer/rococoa/blob/wiki/HelpWanted.md)
- * [How To](https://github.com/umjammer/rococoa/blob/wiki/HowTo.md)
+ * [Take the Whistlestop Tour](https://github.com/iterate-ch/rococoa/blob/master/Building.md)
+ * [How To](https://github.com/iterate-ch/rococoa/blob/wiki/HowTo.md)
+ * [Quicktime](https://github.com/iterate-ch/rococoa/blob/wiki/Quicktime.md)
+ * [Limitations](https://github.com/iterate-ch/rococoa/blob/wiki/Limitations.md)
+ * [Help Wanted](https://github.com/iterate-ch/rococoa/blob/wiki/HelpWanted.md)
+ * [How To](https://github.com/iterate-ch/rococoa/blob/wiki/HowTo.md)
