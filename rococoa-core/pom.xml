@@ -189,6 +189,9 @@
             <argument>-Durl=https://maven.pkg.github.com/umjammer/rococoa</argument>
             <argument>-s $GITHUB_WORKSPACE/settings.xml</argument>
           </arguments>
+          <environmentVariables>
+            <GITHUB_TOKEN>${env.GITHUB_TOKEN}</GITHUB_TOKEN>
+          </environmentVariables>
         </configuration>
       </plugin>
      </plugins>
