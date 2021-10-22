@@ -157,7 +157,40 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
+
+      <plugin>
+        <!--
+          because of maven deploy-file uploads source, jar also
+          TODO maven-metadata.xml!/metadata/versioning/latest is not updated
+          TODO how about https://stackoverflow.com/a/37552776/6102938
+         -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>deploy-library</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>mvn</executable>
+          <arguments>
+            <argument>deploy:deploy-file</argument>
+            <argument>-DgroupId=${project.groupId}</argument>
+            <argument>-DartifactId=${project.artifactId}</argument>
+            <argument>-Dversion=${project.version}</argument>
+            <argument>-Dpackaging=dylib</argument>
+            <argument>-Dfile=${project.build.testOutputDirectory}/librococoa.dylib</argument>
+            <argument>-DrepositoryId=github</argument>
+            <argument>-Durl=https://maven.pkg.github.com/umjammer/rococoa</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+     </plugins>
   </build>
 
   <dependencies>
