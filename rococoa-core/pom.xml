@@ -39,7 +39,7 @@
           </compilerStartOptions>
           <linkerStartOptions>
             <linkerStartOption>-dynamiclib -arch x86_64
-                    -framework QTKit -framework Foundation -framework AppKit
+                    -framework QTKit -framework Foundation
             </linkerStartOption>
           </linkerStartOptions>
           <linkerFinalName></linkerFinalName>
