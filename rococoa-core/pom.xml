@@ -187,6 +187,7 @@
             <argument>-Dfile=${project.build.testOutputDirectory}/librococoa.dylib</argument>
             <argument>-DrepositoryId=github</argument>
             <argument>-Durl=https://maven.pkg.github.com/umjammer/rococoa</argument>
+            <argument>-s $GITHUB_WORKSPACE/settings.xml</argument>
           </arguments>
         </configuration>
       </plugin>
