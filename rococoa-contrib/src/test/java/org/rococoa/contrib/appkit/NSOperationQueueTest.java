@@ -21,11 +21,11 @@ package org.rococoa.contrib.appkit;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rococoa.Foundation;
 import org.rococoa.ObjCObject;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.cocoa.foundation.NSInteger;
@@ -41,7 +41,7 @@ public class NSOperationQueueTest extends RococoaTestCase {
     public NSOperationQueueTest() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fixture = NSOperationQueue.CLASS.alloc().init();
     }
@@ -83,7 +83,7 @@ public class NSOperationQueueTest extends RococoaTestCase {
                     if (!results[i]) incomplete.add(i);
                 }
             }
-            assertEquals("Failed for items: " + incomplete, 0, incomplete.size());
+            assertEquals(0, incomplete.size(), "Failed for items: " + incomplete);
         }
         public int firstFailure() {
             synchronized(results) {
@@ -136,7 +136,7 @@ public class NSOperationQueueTest extends RococoaTestCase {
         fixture.waitUntilAllOperationsAreFinished();
         assertEquals(0, fixture.operationCount().intValue());
         int firstFailure = runnables.firstFailure();
-        assertTrue("Not all should pass: " + firstFailure, 0 < firstFailure && firstFailure < numItems );
+        assertTrue(0 < firstFailure && firstFailure < numItems, "Not all should pass: " + firstFailure);
         assertTrue(runnables.ops[firstFailure].isCancelled()||runnables.ops[firstFailure].isReady());
     }
 
@@ -193,8 +193,8 @@ public class NSOperationQueueTest extends RococoaTestCase {
         int numItems = 250;
         RunnableHolder runnables = new RunnableHolder(numItems);
         runnables.addOperations(fixture);
-        assertTrue("Should have some operations", fixture.operations().count() > 0);
+        assertTrue(fixture.operations().count() > 0, "Should have some operations");
         fixture.waitUntilAllOperationsAreFinished();
-        assertTrue("Should have completed all operations", fixture.operations().count() == 0);
+        assertTrue(fixture.operations().count() == 0, "Should have completed all operations");
     }
 }

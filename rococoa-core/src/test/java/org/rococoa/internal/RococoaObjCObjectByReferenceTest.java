@@ -21,8 +21,8 @@ package org.rococoa.internal;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.ID;
 import org.rococoa.ObjCObject;
 import org.rococoa.ObjCObjectByReference;
@@ -31,7 +31,7 @@ import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.test.RococoaTestCase;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("nls")
 public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
@@ -45,7 +45,7 @@ public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
         public void callback(ObjCObjectByReference reference);
     }
 
-    @Ignore("by vavi")
+    @Disabled("by vavi")
     @Test
     public void testArgument() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
@@ -61,7 +61,7 @@ public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
         assertEquals(2, value.retainCount());
     }
 
-    @Ignore("by vavi")
+    @Disabled("by vavi")
     @Test
     public void testDelegate() {
         NSAutoreleasePool pool = NSAutoreleasePool.new_();
@@ -75,7 +75,7 @@ public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
         });
         final ID delegate = callback.id();
         shunt.testCallbackWithReference(delegate);
-        assertEquals("Callback to delegate failed", 0, count.getCount());
+        assertEquals(0, count.getCount(), "Callback to delegate failed");
         pool.drain();
     }
 }

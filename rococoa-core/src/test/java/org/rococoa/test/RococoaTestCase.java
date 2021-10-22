@@ -19,16 +19,15 @@
 
 package org.rococoa.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
@@ -83,13 +82,13 @@ public abstract class RococoaTestCase {
 
     protected NSAutoreleasePool pool;
 
-    @Before
+    @BeforeEach
     public void preSetup() {
         pool = NSAutoreleasePool.new_();
         assertNotNull(pool);
     }
 
-    @After
+    @AfterEach
     public void postTeardown() {
         if (gcAfterTest)
             gc();

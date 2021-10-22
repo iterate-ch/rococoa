@@ -19,15 +19,16 @@
  
 package org.rococoa;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.test.RococoaTestCase;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("nls")
-@Ignore("by vavi because of crash")
+@Disabled("by vavi because of crash")
 public class FoundationRetainReleaseTest extends RococoaTestCase {
 
     @Test public void test() {

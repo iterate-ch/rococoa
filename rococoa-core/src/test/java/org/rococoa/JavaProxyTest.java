@@ -19,13 +19,10 @@
  
 package org.rococoa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSNotification;
 import org.rococoa.cocoa.foundation.NSNotificationCenter;
@@ -112,7 +109,7 @@ public class JavaProxyTest extends RococoaTestCase {
     private JavaImplementor implementor;
     private NSObject proxy;
      
-    @Before public void setUp() throws Exception {
+    @BeforeEach public void setUp() throws Exception {
         implementor = new JavaImplementor();
         proxy = Rococoa.proxy(implementor, NSObject.class); // hang onto this to prevent GC issues
     }   
@@ -186,10 +183,10 @@ public class JavaProxyTest extends RococoaTestCase {
         TestStruct struct = new TestStruct(42, Math.PI);
         TestStruct result = Foundation.send(proxy.id(), "takesStructureReturnsStructure:", 
                 TestStruct.class, struct);
-        assertEquals("passing to java", 42, ((TestStruct) implementor.arg).anInt);
-        assertEquals("passing to java", Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001);
-        assertEquals("returning to OC", 42, result.anInt);
-        assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
+        assertEquals(42, ((TestStruct) implementor.arg).anInt, "passing to java");
+        assertEquals(Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001, "passing to java");
+        assertEquals(42, result.anInt, "returning to OC");
+        assertEquals(Math.PI, result.aDouble, 0.00001, "returning to OC");
     }
 
     @Test public void testSendAndReceiveStructByValue() {
@@ -197,10 +194,10 @@ public class JavaProxyTest extends RococoaTestCase {
         TestStruct.ByValue struct = new TestStruct.ByValue(42, Math.PI);
         TestStruct result = Foundation.send(proxy.id(), "takesStructureByValueReturnsStructureByValue:", 
                 TestStruct.ByValue.class, struct);
-        assertEquals("passing to java", 42, ((TestStruct) implementor.arg).anInt);
-        assertEquals("passing to java", Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001);
-        assertEquals("returning to OC", 42, result.anInt);
-        assertEquals("returning to OC", Math.PI, result.aDouble, 0.00001);
+        assertEquals(42, ((TestStruct) implementor.arg).anInt, "passing to java");
+        assertEquals(Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001, "passing to java");
+        assertEquals(42, result.anInt, "returning to OC");
+        assertEquals(Math.PI, result.aDouble, 0.00001, "returning to OC");
     }
     
     @Test public void testSendAndReceiveNativeLong() {

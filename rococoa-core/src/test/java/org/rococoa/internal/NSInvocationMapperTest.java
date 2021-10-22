@@ -19,9 +19,9 @@
 
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSUInteger;
@@ -110,6 +110,6 @@ public class NSInvocationMapperTest {
     }
 
     private void check(String expected, Class<?> javaType) {
-        assertEquals(javaType.toString(), expected,  NSInvocationMapperLookup.stringForType(javaType));
+        assertEquals(expected,  NSInvocationMapperLookup.stringForType(javaType), javaType.toString());
     }
 }

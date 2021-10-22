@@ -19,11 +19,10 @@
  
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.ObjCObject;
@@ -36,7 +35,7 @@ import com.sun.jna.FromNativeConverter;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ToNativeConverter;
 
-@Ignore("by vavi because of error")
+@Disabled("by vavi because of error")
 @SuppressWarnings({ "nls", "unchecked", "cast" })
 public class ObjCObjectTypeConverterTest extends RococoaTestCase {
 

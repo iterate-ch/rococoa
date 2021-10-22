@@ -19,14 +19,12 @@
 
 package org.rococoa;
 
-import org.junit.Ignore;
-import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.rococoa.test.RococoaTestCase.assertRetainCount;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -38,7 +36,7 @@ import static org.rococoa.test.RococoaTestCase.assertRetainCount;
  *
  * @author duncan
  */
-@Ignore("by vavi because of crash")
+@Disabled("by vavi because of crash")
 public class FoundationMemoryAssumptionsTest {
 
     @Test
@@ -105,7 +103,7 @@ public class FoundationMemoryAssumptionsTest {
         Foundation.cfRelease(idNSString);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void crashDoubleFreeing() {
         ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
@@ -115,7 +113,7 @@ public class FoundationMemoryAssumptionsTest {
         Foundation.cfRelease(idNSObject); // crash
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void zombies() {
         assertEquals("YES", System.getenv("NSZombiesEnabled"));
@@ -134,7 +132,7 @@ public class FoundationMemoryAssumptionsTest {
         assertRetainCount(-1, idEmptyNSString); // I guess that there is single empty string with infinite count
 
         ID idInitedNSString = Foundation.sendReturnsID(idEmptyNSString, "initWithCString:", "bananarama");
-        assertThat(idInitedNSString, not(equalTo(idEmptyNSString)));
+        assertNotEquals(idInitedNSString, idEmptyNSString);
         assertRetainCount(1, idInitedNSString);
     }
 

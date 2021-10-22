@@ -20,15 +20,13 @@ package org.rococoa.contrib.appkit;
 
 import java.util.Locale;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.foundation.NSArray;
 import org.rococoa.contrib.appkit.NSVoice.VoiceGender;
 import org.rococoa.test.RococoaTestCase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Simple tests for functionality of the voice class
@@ -36,7 +34,7 @@ import static org.junit.Assert.assertTrue;
 public class NSVoiceTest extends RococoaTestCase {
 
     @Test
-    @Ignore
+    @Disabled
     @SuppressWarnings("deprecation")
     public void testAttributesForVoice() {
         NSVoice voice = new NSVoice(NSVoice.VICTORIA);
@@ -55,14 +53,12 @@ public class NSVoiceTest extends RococoaTestCase {
         assertTrue(individuallySpokenChars.count() > 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testBadIdentifier() {
         String badId = "This voice does not exist";
-        try {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
             new NSVoice(badId);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().indexOf(badId) > 0);
-            throw e;
-        }
+        });
+        assertTrue(e.getMessage().indexOf(badId) > 0);
     }
 }

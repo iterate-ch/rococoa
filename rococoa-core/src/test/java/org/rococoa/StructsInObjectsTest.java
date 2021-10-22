@@ -19,9 +19,9 @@
  
 package org.rococoa;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.foundation.NSSize;
 import org.rococoa.cocoa.foundation.NSValue;
 import org.rococoa.test.RococoaTestCase;

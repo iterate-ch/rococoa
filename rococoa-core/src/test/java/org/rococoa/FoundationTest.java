@@ -19,14 +19,10 @@
 
 package org.rococoa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.test.RococoaTestCase;
 
 public class FoundationTest extends RococoaTestCase {
@@ -44,7 +40,7 @@ public class FoundationTest extends RococoaTestCase {
     }
 
     @SuppressWarnings("unused")
-    @Ignore("slow")
+    @Disabled("slow")
     @Test public void testStringPerformance() {
         String stringWithOddChar = "Hello \u2648";
         StringBuilder longStringBuilder = new StringBuilder();
@@ -74,7 +70,7 @@ public class FoundationTest extends RococoaTestCase {
         assertEquals(Math.E, aDoubleValue, 0.001);
     }
 
-    @Ignore("by vavi")
+    @Disabled("by vavi")
     @Test public void testFloat() {
         ID clas = Foundation.getClass("NSNumber");
         ID aFloat = Foundation.sendReturnsID(clas, "numberWithFloat:", 3.142f);
@@ -105,7 +101,7 @@ public class FoundationTest extends RococoaTestCase {
     }
 
     // TODO - make work by wrapping call with native try- catch
-    @Ignore("to make work")
+    @Disabled("to make work")
     @Test public void testInvokeUnknownSelector() {
         Selector noSuchSelector = Foundation.selector("noSelector:NamedThis:OrribleThing:");
         assertTrue(noSuchSelector.longValue() != 0); 

@@ -20,18 +20,14 @@
 package org.rococoa.cocoa.qtkit;
 
 import com.sun.jna.Platform;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.ObjCObjectByReference;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.ObjCClass;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSArray;
@@ -43,7 +39,7 @@ import org.rococoa.test.RococoaTestCase;
 
 
 @SuppressWarnings("nls")
-@Ignore("by vavi")
+@Disabled("by vavi")
 public class QTMovieTest extends RococoaTestCase {
 
     static String testMovieFile = "testdata/DrWho.mov";

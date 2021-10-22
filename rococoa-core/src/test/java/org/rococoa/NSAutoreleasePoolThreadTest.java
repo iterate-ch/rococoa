@@ -19,8 +19,8 @@
 
 package org.rococoa;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.test.RococoaTestCase;
 
@@ -86,7 +86,7 @@ public class NSAutoreleasePoolThreadTest {
         RococoaTestCase.gc();
     }
 
-    @Ignore("crashes")
+    @Disabled("crashes")
     @Test
     public void cantDrainPoolCreatedOnAFinishedThread() throws InterruptedException {
         final NSAutoreleasePool[] poolHolder = new NSAutoreleasePool[1];
@@ -100,7 +100,7 @@ public class NSAutoreleasePoolThreadTest {
         poolHolder[0].drain();
     }
 
-    @Ignore("crashes")
+    @Disabled("crashes")
     @Test
     public void drainPoolCreatedOnANotFinishedThread() throws InterruptedException {
         final NSAutoreleasePool[] poolHolder = new NSAutoreleasePool[1];

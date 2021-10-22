@@ -19,10 +19,10 @@
 
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.rococoa.test.RococoaTestCase.assertRetainCount;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.test.RococoaTestCase;

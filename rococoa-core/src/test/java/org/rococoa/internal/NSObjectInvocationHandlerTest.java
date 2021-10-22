@@ -19,13 +19,11 @@
 
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.ref.WeakReference;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.rococoa.ID;
 import org.rococoa.cocoa.foundation.NSData;
 import org.rococoa.cocoa.foundation.NSDictionary;
@@ -72,11 +70,11 @@ public static abstract class NSImage extends NSObject {
     @Test
     public void testInitReturnsNil() {
         NSImage image = NSImage.CLASS.alloc();
-        assertNotNull("Allocation must return valid reference", image);
+        assertNotNull(image, "Allocation must return valid reference");
 
         NSImage failedInitializedImage = image.initWithData(null);
-        assertNull("Expected init to fail and return nil", failedInitializedImage);
-        assertTrue("Initial image should now be invalid too", image.id().isNull());
+        assertNull(failedInitializedImage, "Expected init to fail and return nil");
+        assertTrue(image.id().isNull(), "Initial image should now be invalid too");
             // TODO - I'm a little unsure about whether this is the best course
 
         // We shall not crash after garbage collection when the NSObjectInvocationHandler is finalized

@@ -19,16 +19,16 @@
 
 package org.rococoa.internal;
 
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Diagnosing a JNA bug (introduced in JNA 3.0.6) when returning small structures.

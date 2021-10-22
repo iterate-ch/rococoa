@@ -23,11 +23,11 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
-import static org.junit.Assert .*;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.ID;
-import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.Rococoa;
 import org.rococoa.ObjCObject;
 import org.rococoa.cocoa.appkit.NSOpenPanel;
@@ -38,7 +38,7 @@ public class NSOpenPanelTest extends RococoaTestCase {
 
     // Requires user to select a text file somewhere downtree from ~
     @Test
-    @Ignore
+    @Disabled
     public void testShow() {
         new JFrame().setVisible(true); // otherwise no panel
         NSOpenPanel panel = NSOpenPanel.CLASS.openPanel();

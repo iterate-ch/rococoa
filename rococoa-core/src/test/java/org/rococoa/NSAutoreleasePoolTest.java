@@ -19,8 +19,8 @@
 
 package org.rococoa;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.test.RococoaTestCase;
 
@@ -57,7 +57,7 @@ public class NSAutoreleasePoolTest {
         RococoaTestCase.assertRetainCount(2, idString);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Foundation.cfRelease(idString);
     }

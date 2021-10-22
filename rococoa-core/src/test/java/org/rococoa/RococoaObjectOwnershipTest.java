@@ -19,12 +19,12 @@
 
 package org.rococoa;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.ref.WeakReference;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSDate;
 import org.rococoa.cocoa.foundation.NSObject;
@@ -35,7 +35,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
     public static boolean shouldBeInPool = true;
     public static boolean shouldNotBeInPool = false;
 	
-    @Ignore("by vavi because of error")
+    @Disabled("by vavi because of error")
     @Test public void directFactoryMethodsReturnsYieldsPooledObject() {
 	// TODO - I've seen this fail with a retain count of 3. I wonder whether
 	// there is some aggressive instance sharing going on with NSDate
@@ -46,7 +46,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
                 }});
     }
 
-    @Ignore("by vavi")
+    @Disabled("by vavi")
     @Test public void factoryMethodOnClassYieldsPooledObject() {
 	// TODO - see above
         check(shouldBeInPool, 
@@ -56,7 +56,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
                 }});
     }
 
-    @Ignore("by vavi")
+    @Disabled("by vavi")
     @Test public void createYieldsNonPooledObject() {
         check(shouldNotBeInPool, 
             new Factory() {
@@ -65,7 +65,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
                 }});
     }
 
-    @Ignore("by vavi")
+    @Disabled("by vavi")
     @Test public void newYieldsNonPooledObject() {
         // calling new on an NSClass results in a NOT autorelease'd object
         check(shouldNotBeInPool, 

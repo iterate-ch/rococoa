@@ -28,28 +28,28 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Test the API of the GCDExecutorService.
  *  @author Andrew Thompson (lordpixel@mac.com)
  */
+@DisabledIfEnvironmentVariable(named = "GITHUB_WORKFLOW", matches = ".*")
 public class GCDExecutorServiceTest {
     /**The GCD Executor to test*/
     ExecutorService fixture;
     public GCDExecutorServiceTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupLogging() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fixture = new GCDExecutorService();
     }
@@ -57,14 +57,16 @@ public class GCDExecutorServiceTest {
     /**
      * Test of shutdown method, of class GCDExecutorService.
      */
-    @Test(expected=RejectedExecutionException.class)
+    @Test
     public void testShutdown() {
-        fixture.shutdown();
-        assertTrue(fixture.isShutdown());
-        assertTrue(fixture.isTerminated());
-        fixture.execute(new Runnable() {
-            public void run() {}
-        });
+    	assertThrows(RejectedExecutionException.class, () -> {
+	        fixture.shutdown();
+	        assertTrue(fixture.isShutdown());
+	        assertTrue(fixture.isTerminated());
+	        fixture.execute(new Runnable() {
+	            public void run() {}
+	        });
+    	});
     }
 
     @Test
@@ -79,7 +81,7 @@ public class GCDExecutorServiceTest {
         assertTrue(fixture.isShutdown());
         Thread.sleep(100);
         List<Runnable> unrun = fixture.shutdownNow();
-        assertTrue( finished[0] + ", " + unrun, finished[0] && unrun.size() == 0 );
+        assertTrue(finished[0] && unrun.size() == 0, finished[0] + ", " + unrun);
     }
 
     /**
