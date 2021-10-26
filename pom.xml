@@ -7,7 +7,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.8.3-SNAPSHOT</version>
+  <version>0.8.4</version>
 
   <modules>
     <module>rococoa-auto</module>
@@ -148,7 +148,7 @@
               <verbose>false</verbose>
               <failOnWarnings>false</failOnWarnings>
               <failOnError>false</failOnError>
-              <additionalparam>-Xdoclint:all -Xdoclint:-missing</additionalparam>
+              <additionalparam>-Xdoclint:none -Xdoclint:-missing</additionalparam>
               <doclint>none</doclint>
             </configuration>
           </execution>
@@ -205,6 +205,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>github</id>
+      <name>GitHub umjammer Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/umjammer/rococoa-core</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>

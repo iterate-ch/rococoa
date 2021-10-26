@@ -1,3 +1,5 @@
+[![Maven Package](https://github.com/umjammer/rococoa/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/umjammer/rococoa/actions/workflows/maven-publish.yml)
+
 #  Welcome to Rococoa
 
 Rococoa is a generic Java binding to the Mac Objective-C object system. It 
