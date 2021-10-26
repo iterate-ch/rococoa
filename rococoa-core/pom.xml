@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.rococoa</groupId>
     <artifactId>rococoa-parent</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.3</version>
   </parent>
 
   <name>Rococoa Core</name>
@@ -187,6 +187,7 @@
             <argument>-Dfile=${project.build.testOutputDirectory}/librococoa.dylib</argument>
             <argument>-DrepositoryId=github</argument>
             <argument>-Durl=https://maven.pkg.github.com/umjammer/rococoa</argument>
+            <argument>-DgeneratePom=false</argument>
             <argument>-s</argument>
             <argument>${env.GITHUB_WORKSPACE}/settings.xml</argument>
           </arguments>

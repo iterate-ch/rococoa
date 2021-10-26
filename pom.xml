@@ -7,7 +7,7 @@
   <groupId>org.rococoa</groupId>
   <artifactId>rococoa-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.8.4</version>
+  <version>0.8.3</version>
 
   <modules>
     <module>rococoa-auto</module>
