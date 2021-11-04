@@ -76,10 +76,13 @@ class MsgSendHandler implements InvocationHandler {
     private final static boolean ppc = System.getProperty("os.arch").trim().equalsIgnoreCase("ppc");
 
     private final static Method OBJC_MSGSEND;
+    private final static Method OBJC_MSGSEND_FPRET;
     private final static Method OBJC_MSGSEND_STRET;
     static {
         try {
             OBJC_MSGSEND = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend",
+                    ID.class, Selector.class, Object[].class);
+            OBJC_MSGSEND_FPRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_fpret",
                     ID.class, Selector.class, Object[].class);
             OBJC_MSGSEND_STRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_stret",
                     ID.class, Selector.class, Object[].class);
@@ -90,13 +93,15 @@ class MsgSendHandler implements InvocationHandler {
     }
 
     private final Pair<Method, Function> objc_msgSend_stret_Pair;
+    private final Pair<Method, Function> objc_msgSend_fpret_Pair;
     private final Pair<Method, Function> objc_msgSend_Pair;
 
     private RococoaTypeMapper rococoaTypeMapper = new RococoaTypeMapper();
 
-    public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_stret_Function) {
-        this.objc_msgSend_Pair = new Pair<Method, Function>(OBJC_MSGSEND, objc_msgSend_Function);
-        this.objc_msgSend_stret_Pair = new Pair<Method, Function>(OBJC_MSGSEND_STRET, objc_msgSend_stret_Function);
+    public MsgSendHandler(Function objc_msgSend_Function, Function objc_msgSend_fpret_Function, Function objc_msgSend_stret_Function) {
+        this.objc_msgSend_Pair = new Pair<>(OBJC_MSGSEND, objc_msgSend_Function);
+        this.objc_msgSend_fpret_Pair = new Pair<>(OBJC_MSGSEND_FPRET, objc_msgSend_fpret_Function);
+        this.objc_msgSend_stret_Pair = new Pair<>(OBJC_MSGSEND_STRET, objc_msgSend_stret_Function);
     }
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

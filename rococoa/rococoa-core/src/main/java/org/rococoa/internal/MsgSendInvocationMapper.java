@@ -62,6 +62,7 @@ public class MsgSendInvocationMapper implements InvocationMapper {
         // Not too bad as the results are cached.
         return new MsgSendHandler(
                 lib.getFunction("objc_msgSend"),
+                lib.getFunction("objc_msgSend_fpret"),
                 lib.getFunction("objc_msgSend_stret"));
     }
     

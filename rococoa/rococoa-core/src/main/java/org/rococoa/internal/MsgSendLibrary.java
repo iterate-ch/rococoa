@@ -35,5 +35,6 @@ public interface MsgSendLibrary extends Library {
     
     // We don't call these directly, but through syntheticSendMessage
     Object objc_msgSend(ID receiver, Selector selector, Object... args);        
-    Structure objc_msgSend_stret(ID receiver, Selector selector, Object... args);         
+    Structure objc_msgSend_fpret(ID receiver, Selector selector, Object... args);
+    Structure objc_msgSend_stret(ID receiver, Selector selector, Object... args);
 }
