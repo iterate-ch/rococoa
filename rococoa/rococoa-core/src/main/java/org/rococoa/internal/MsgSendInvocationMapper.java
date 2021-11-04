@@ -24,6 +24,7 @@ package org.rococoa.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.rococoa.ID;
 import org.rococoa.Selector;
@@ -61,8 +62,8 @@ public class MsgSendInvocationMapper implements InvocationMapper {
         // Have to late bind this, as it's the only time we get to see lib.
         // Not too bad as the results are cached.
         return new MsgSendHandler(
-                lib.getFunction("objc_msgSend"),
-                lib.getFunction("objc_msgSend_stret"));
+                Optional.of(lib.getFunction("objc_msgSend")),
+                MsgSendHandler.AARCH64 ? Optional.ofNullable(null) : Optional.of(lib.getFunction("objc_msgSend_stret")));
     }
     
 }
