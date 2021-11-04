@@ -1,6 +1,6 @@
 #include "Rococoa.h"
 
-void callOnMainThread(void (*fn)(), BOOL waitUntilDone) {
+void callOnMainThread(void (*fn)(void), BOOL waitUntilDone) {
 	// NSLog(@"callOnMainThread function at address %p", fn);
 	// Pool is required as we're being called from Java, which probably doesn't have a pool to 
 	// allocate the NSValue from.
@@ -13,7 +13,7 @@ void callOnMainThread(void (*fn)(), BOOL waitUntilDone) {
 @implementation RococoaHelper : NSObject
 
 + (void) callback: (NSValue*) fnAsValue {
-	void (*fn)() = [fnAsValue pointerValue]; 
+    void (*fn)(void) = [fnAsValue pointerValue]; 
 	(*fn)();
 } 
 
