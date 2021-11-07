@@ -19,13 +19,17 @@
 
 package org.rococoa.internal;
 
-public class Pair<T1, T2> {
-    
-    public final T1 a;
-    public final T2 b;
+import com.sun.jna.Function;
 
-    public Pair(T1 a, T2 b) {
-        this.a = a;
-        this.b = b;        
+import java.lang.reflect.Method;
+
+public class MethodFunctionPair {
+    
+    public final Method method;
+    public final Function function;
+
+    public MethodFunctionPair(Method method, Function function) {
+        this.method = method;
+        this.function = function;
     }
 }

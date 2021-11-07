@@ -19,8 +19,8 @@
 
 package org.rococoa.internal;
 
-import com.sun.jna.Function;
 import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 import org.rococoa.ID;
@@ -28,10 +28,12 @@ import org.rococoa.RococoaException;
 import org.rococoa.Selector;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Very special case InvocationHandler that invokes the correct message dispatch
@@ -63,7 +65,6 @@ class MsgSendHandler implements InvocationHandler {
      * @see com.sun.jna.Function#OPTION_INVOKING_METHOD
      */
     private final String OPTION_INVOKING_METHOD = "invoking-method";
-    // TODO - use JNA string when made public
 
     private final static int I386_STRET_CUTOFF = 9;
     private final static int IA64_STRET_CUTOFF = 17;
@@ -74,12 +75,15 @@ class MsgSendHandler implements InvocationHandler {
     public final static boolean PPC = System.getProperty("os.arch").trim().equalsIgnoreCase("ppc");
 
     private final static Method OBJC_MSGSEND;
+    private final static Method OBJC_MSGSEND_VAR_ARGS;
     private final static Method OBJC_MSGSEND_STRET;
 
     static {
         try {
             OBJC_MSGSEND = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend",
                     ID.class, Selector.class, Object[].class);
+            OBJC_MSGSEND_VAR_ARGS = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend",
+                    ID.class, Selector.class, Object.class, Object[].class);
             OBJC_MSGSEND_STRET = MsgSendLibrary.class.getDeclaredMethod("objc_msgSend_stret",
                     ID.class, Selector.class, Object[].class);
         } catch (NoSuchMethodException x) {
@@ -87,36 +91,34 @@ class MsgSendHandler implements InvocationHandler {
         }
     }
 
-    private final Pair<Method, Function> objc_msgSend_stret_Pair;
-    private final Pair<Method, Function> objc_msgSend_Pair;
+    private final MethodFunctionPair objc_msgSend_stret_Pair;
+    private final MethodFunctionPair objc_msgSend_varArgs_Pair;
+    private final MethodFunctionPair objc_msgSend_Pair;
 
     private final RococoaTypeMapper rococoaTypeMapper = new RococoaTypeMapper();
 
-    public MsgSendHandler(Optional<Function> objc_msgSend_Function, Optional<Function> objc_msgSend_stret_Function) {
-        this.objc_msgSend_Pair = new Pair<>(OBJC_MSGSEND, objc_msgSend_Function.orElse(null));
-        this.objc_msgSend_stret_Pair = new Pair<>(OBJC_MSGSEND_STRET, objc_msgSend_stret_Function.orElse(null));
+    public MsgSendHandler(final NativeLibrary lib) {
+        this.objc_msgSend_Pair = new MethodFunctionPair(AARCH64 ? null : OBJC_MSGSEND,
+                lib.getFunction("objc_msgSend"));
+        this.objc_msgSend_varArgs_Pair = new MethodFunctionPair(OBJC_MSGSEND_VAR_ARGS,
+                lib.getFunction("objc_msgSend"));
+        this.objc_msgSend_stret_Pair = new MethodFunctionPair(OBJC_MSGSEND_STRET,
+                AARCH64 ? null : lib.getFunction("objc_msgSend_stret"));
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) {
         Class<?> returnTypeForThisCall = (Class<?>) args[0];
-        Object[] argsWithoutReturnType = this.removeReturnTypeFrom(args);
-
-        Map<String, Object> options = new HashMap<>(1);
-        options.put(Library.OPTION_TYPE_MAPPER, rococoaTypeMapper);
-
-        Pair<Method, Function> invocation = this.invocationFor(returnTypeForThisCall);
-        options.put(OPTION_INVOKING_METHOD, invocation.a);
-        return invocation.b.invoke(returnTypeForThisCall, argsWithoutReturnType, options);
+        MethodFunctionPair invocation = this.invocationFor(returnTypeForThisCall, MsgSendInvocationMapper.SYNTHETIC_SEND_VARARGS_MSG.equals(method));
+        Map<String, Object> options = new HashMap<>(Collections.singletonMap(Library.OPTION_TYPE_MAPPER, rococoaTypeMapper));
+        options.put(OPTION_INVOKING_METHOD, invocation.method);
+        return invocation.function.invoke(returnTypeForThisCall, Arrays.copyOfRange(args, 1, args.length), options);
     }
 
-    private Object[] removeReturnTypeFrom(Object[] args) {
-        Object[] result = new Object[args.length - 1];
-        System.arraycopy(args, 1, result, 0, args.length - 2);
-        return result;
-    }
-
-    private Pair<Method, Function> invocationFor(Class<?> returnTypeForThisCall) {
+    private MethodFunctionPair invocationFor(Class<?> returnTypeForThisCall, boolean varArgs) {
         if (AARCH64) {
+            if (varArgs) {
+                return objc_msgSend_varArgs_Pair;
+            }
             return objc_msgSend_Pair;
         }
         boolean isStruct = Structure.class.isAssignableFrom(returnTypeForThisCall);
@@ -130,9 +132,9 @@ class MsgSendHandler implements InvocationHandler {
                 return objc_msgSend_stret_Pair;
             }
             // on i386 structs with sizeof exactly equal to 1, 2, 4, or 8 return in registers
-            Structure prototype = (Structure) returnTypeForThisCall.newInstance();
+            Structure prototype = (Structure) returnTypeForThisCall.getDeclaredConstructor().newInstance();
             return prototype.size() < STRET_CUTOFF ? objc_msgSend_Pair : objc_msgSend_stret_Pair;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RococoaException(e);
         }
     }

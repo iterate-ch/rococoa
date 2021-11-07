@@ -24,6 +24,7 @@ import com.sun.jna.Native;
 import org.rococoa.cocoa.CFIndex;
 import org.rococoa.internal.*;
 
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -171,25 +172,38 @@ public abstract class Foundation {
         return result;
     }
 
-    /**
-     * Send message with selectorName to receiver, passing args, expecting returnType.
-     * <p>
-     * Note that you are responsible for memory management if returnType is ID.
-     */
+    @SuppressWarnings("unchecked")
     public static <T> T send(ID receiver, String selectorName, Class<T> returnType, Object... args) {
-        return send(receiver, selector(selectorName), returnType, args);
+        return send(receiver, selectorName, returnType, null, args);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T send(ID receiver, String selectorName, Class<T> returnType, Method method, Object... args) {
+        return send(receiver, selector(selectorName), returnType, method, args);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T send(ID receiver, Selector selector, Class<T> returnType, Object... args) {
+        return send(receiver, selector, returnType, null, args);
     }
 
     /**
      * Send message with selector to receiver, passing args, expecting returnType.
      * <p>
      * Note that you are responsible for memory management if returnType is ID.
+     *
+     * @param returnType Expected return type mapping
+     * @param method     Used to determine if variadic function call is required
+     * @param args       Arguments including ID and selector
      */
     @SuppressWarnings("unchecked")
-    public static <T> T send(ID receiver, Selector selector, Class<T> returnType, Object... args) {
+    public static <T> T send(ID receiver, Selector selector, Class<T> returnType, Method method, Object... args) {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("sending (%s) %s.%s(%s)",
                     returnType.getSimpleName(), receiver, selector.getName(), new VarArgsUnpacker(args)));
+        }
+        if (method != null && method.isVarArgs()) {
+            return (T) messageSendLibrary.syntheticSendVarArgsMessage(returnType, receiver, selector, args);
         }
         return (T) messageSendLibrary.syntheticSendMessage(returnType, receiver, selector, args);
     }
