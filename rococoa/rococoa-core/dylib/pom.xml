@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>librococoa</artifactId>
     <name>Rococoa Core Native Library</name>
@@ -9,7 +8,7 @@
         <groupId>org.rococoa</groupId>
         <artifactId>rococoa-parent</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>0.8.3-SNAPSHOT</version>
+        <version>0.9.0</version>
     </parent>
     <build>
         <plugins>
@@ -25,12 +24,12 @@
                         <configuration>
                             <target>
                                 <exec dir="${project.basedir}/.." executable="xcodebuild" failonerror="true">
-                                    <arg value="-project"/>
-                                    <arg value="rococoa.xcodeproj"/>
-                                    <arg value="-target"/>
-                                    <arg value="librococoa-test"/>
-                                    <arg value="-configuration"/>
-                                    <arg value="Release"/>
+                                    <arg value="-project" />
+                                    <arg value="rococoa.xcodeproj" />
+                                    <arg value="-target" />
+                                    <arg value="librococoa-test" />
+                                    <arg value="-configuration" />
+                                    <arg value="Release" />
                                 </exec>
                             </target>
                         </configuration>
@@ -44,13 +43,13 @@
                         <configuration>
                             <target>
                                 <exec dir="${project.basedir}/.." executable="xcodebuild" failonerror="true">
-                                    <arg value="-project"/>
-                                    <arg value="rococoa.xcodeproj"/>
-                                    <arg value="-target"/>
-                                    <arg value="librococoa-test"/>
-                                    <arg value="-configuration"/>
-                                    <arg value="Release"/>
-                                    <arg value="clean"/>
+                                    <arg value="-project" />
+                                    <arg value="rococoa.xcodeproj" />
+                                    <arg value="-target" />
+                                    <arg value="librococoa-test" />
+                                    <arg value="-configuration" />
+                                    <arg value="Release" />
+                                    <arg value="clean" />
                                 </exec>
                             </target>
                         </configuration>
