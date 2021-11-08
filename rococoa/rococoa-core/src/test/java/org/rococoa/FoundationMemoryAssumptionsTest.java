@@ -19,126 +19,137 @@
 
 package org.rococoa;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.rococoa.test.RococoaTestCase.assertRetainCount;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 /**
  * Showing some fundamentals of Cocoa memory management
- *
+ * <p>
  * Not a RococoaTestCase so that we know the state of autorelease pools.
- * 
+ * <p>
  * TODO - don't run these when in ObjC GC
- * 
- * @author duncan
  *
+ * @author duncan
  */
 public class FoundationMemoryAssumptionsTest {
 
-    @Test public void classHasInfiniteRetainCount() {
-	assertRetainCount(-1, Foundation.getClass("NSString"));
+    @Test
+    public void classHasInfiniteRetainCount() {
+        assertRetainCount(-1, Foundation.getClass("NSString"));
     }
 
-    @Test public void cFStringHasRetainCountOfOne() {
-	assertRetainCount(1, Foundation.cfString("Hello World"));
+    @Test
+    public void cFStringHasRetainCountOfOne() {
+        assertRetainCount(1, Foundation.cfString("Hello World"));
     }
 
-    @Test public void initGivesRetainCountOfOne() {
-	ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "alloc");
-	assertRetainCount(1, idNSObject);		
+    @Test
+    public void initGivesRetainCountOfOne() {
+        ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "alloc");
+        assertRetainCount(1, idNSObject);
     }
 
-    @Test public void newGivesRetainCountOfOne() {
-	ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
-	assertRetainCount(1, idNSObject);				
+    @Test
+    public void newGivesRetainCountOfOne() {
+        ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
+        assertRetainCount(1, idNSObject);
     }
 
-    @Test public void testAutoreleasePool() {
-	ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");
-	assertRetainCount(1, idPool);				
+    @Test
+    public void testAutoreleasePool() {
+        ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");
+        assertRetainCount(1, idPool);
 
-	ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
-	assertRetainCount(1, idNSObject);
+        ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
+        assertRetainCount(1, idNSObject);
 
-	assertEquals(idNSObject, Foundation.sendReturnsID(idNSObject, "autorelease"));
-	assertRetainCount(1, idNSObject); // pool doesn't retain, but does assume ownership. 
-	// Effectively autorelease gives the object to the pool, rather than sharing        
+        assertEquals(idNSObject, Foundation.sendReturnsID(idNSObject, "autorelease"));
+        assertRetainCount(1, idNSObject); // pool doesn't retain, but does assume ownership.
+        // Effectively autorelease gives the object to the pool, rather than sharing
 
-	// retain so that draining the pool doesn't free
-	assertEquals(idNSObject, Foundation.cfRetain(idNSObject));
-	assertRetainCount(2, idNSObject);
+        // retain so that draining the pool doesn't free
+        assertEquals(idNSObject, Foundation.cfRetain(idNSObject));
+        assertRetainCount(2, idNSObject);
 
-	Foundation.sendReturnsVoid(idPool, "drain");
-	assertRetainCount(1, idNSObject);
+        Foundation.sendReturnsVoid(idPool, "drain");
+        assertRetainCount(1, idNSObject);
 
-	Foundation.cfRelease(idNSObject);
+        Foundation.cfRelease(idNSObject);
     }
 
-    @Test public void testAutoreleaseFactoryMethod() {
-	ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");
-	assertRetainCount(1, idPool);				
+    @Test
+    public void testAutoreleaseFactoryMethod() {
+        ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");
+        assertRetainCount(1, idPool);
 
-	ID idNSString = Foundation.sendReturnsID(Foundation.getClass("NSString"), "stringWithCString:", "kowabunga");
-	assertRetainCount(1, idNSString);
+        ID idNSString = Foundation.sendReturnsID(Foundation.getClass("NSString"), "stringWithCString:", "kowabunga");
+        assertRetainCount(1, idNSString);
 
-	// retain so that draining the pool doesn't free
-	assertEquals(idNSString, Foundation.cfRetain(idNSString));
-	assertRetainCount(2, idNSString);
+        // retain so that draining the pool doesn't free
+        assertEquals(idNSString, Foundation.cfRetain(idNSString));
+        assertRetainCount(2, idNSString);
 
-	Foundation.sendReturnsVoid(idPool, "drain");
-	assertRetainCount(1, idNSString);
+        Foundation.sendReturnsVoid(idPool, "drain");
+        assertRetainCount(1, idNSString);
 
-	Foundation.cfRelease(idNSString);
+        Foundation.cfRelease(idNSString);
     }
 
-    @Ignore @Test public void crashDoubleFreeing() {
-	ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
-	assertRetainCount(1, idNSObject);				
+    @Ignore
+    @Test
+    public void crashDoubleFreeing() {
+        ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
+        assertRetainCount(1, idNSObject);
 
-	Foundation.cfRelease(idNSObject);        
-	Foundation.cfRelease(idNSObject); // crash
+        Foundation.cfRelease(idNSObject);
+        Foundation.cfRelease(idNSObject); // crash
     }
 
-    @Ignore @Test public void zombies() {
-	assertEquals("YES", System.getenv("NSZombiesEnabled"));
-	assertEquals("16", System.getenv("CFZombieLevel"));
+    @Ignore
+    @Test
+    public void zombies() {
+        assertEquals("YES", System.getenv("NSZombiesEnabled"));
+        assertEquals("16", System.getenv("CFZombieLevel"));
 
-	ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
-	assertRetainCount(1, idNSObject);				
+        ID idNSObject = Foundation.sendReturnsID(Foundation.getClass("NSObject"), "new");
+        assertRetainCount(1, idNSObject);
 
-	Foundation.cfRelease(idNSObject);
-	Foundation.cfRelease(idNSObject); // crash, but with stderr logging
+        Foundation.cfRelease(idNSObject);
+        Foundation.cfRelease(idNSObject); // crash, but with stderr logging
     }
 
-    @Test public void nSStringSpecialCases() {
-	ID idEmptyNSString = Foundation.sendReturnsID(Foundation.getClass("NSString"), "alloc");
-	assertRetainCount(-1, idEmptyNSString); // I guess that there is single empty string with infinite count
+    @Test
+    public void nSStringSpecialCases() {
+        ID idEmptyNSString = Foundation.sendReturnsID(Foundation.getClass("NSString"), "alloc");
+        assertRetainCount(-1, idEmptyNSString); // I guess that there is single empty string with infinite count
 
-	ID idInitedNSString = Foundation.sendReturnsID(idEmptyNSString, "initWithCString:", "bananarama");
-	assertThat(idInitedNSString, not(equalTo(idEmptyNSString)));
-	assertRetainCount(1, idInitedNSString);
+        ID idInitedNSString = Foundation.sendReturnsID(idEmptyNSString, "initWithCString:", "bananarama");
+        assertThat(idInitedNSString, not(equalTo(idEmptyNSString)));
+        assertRetainCount(1, idInitedNSString);
     }
-    
+
     // Check that toll-free bridging applies to autorelease
-    @Test public void autoReleaseWorksForCFString() {
-        ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");      
+    @Test
+    public void autoReleaseWorksForCFString() {
+        ID idPool = Foundation.sendReturnsID(Foundation.getClass("NSAutoreleasePool"), "new");
 
         ID cfStringRef = Foundation.cfString("awooga");
         assertRetainCount(1, cfStringRef);
-        
+
         // retain so that draining the pool doesn't free
         assertEquals(cfStringRef, Foundation.cfRetain(cfStringRef));
         assertRetainCount(2, cfStringRef);
 
-        
+
         Foundation.sendReturnsID(cfStringRef, "autorelease");
         assertRetainCount(2, cfStringRef);
-        
+
         Foundation.sendReturnsVoid(idPool, "drain");
         assertRetainCount(1, cfStringRef);
     }

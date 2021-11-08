@@ -25,8 +25,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.rococoa.test.RococoaTestCase;
 
-
-@SuppressWarnings("nls")
 public class RococoaMainThreadTest extends RococoaTestCase {
     private interface TestShunt extends ObjCObject {
         boolean isMainThread();

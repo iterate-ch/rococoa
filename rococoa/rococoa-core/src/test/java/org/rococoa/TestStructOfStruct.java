@@ -19,10 +19,10 @@
 
 package org.rococoa;
 
+import com.sun.jna.Structure;
+
 import java.util.Arrays;
 import java.util.List;
-
-import com.sun.jna.Structure;
 
 public class TestStructOfStruct extends Structure {
     public double aDouble;

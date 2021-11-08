@@ -1,13 +1,13 @@
 /*
  * Copyright 2007, 2008 Duncan McGregor
- * 
+ *
  * This file is part of Rococoa, a library to allow Java to talk to Cocoa.
- * 
+ *
  * Rococoa is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Rococoa is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,28 +16,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rococoa.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package org.rococoa;
 
 import org.junit.Test;
-import org.rococoa.cocoa.foundation.NSArray;
-import org.rococoa.cocoa.foundation.NSDate;
-import org.rococoa.cocoa.foundation.NSNumber;
-import org.rococoa.cocoa.foundation.NSObject;
-import org.rococoa.cocoa.foundation.NSString;
+import org.rococoa.cocoa.foundation.*;
 import org.rococoa.test.RococoaTestCase;
 
 import static org.junit.Assert.*;
 
-@SuppressWarnings("nls")
 public class RococoaTest extends RococoaTestCase {
-        
-    @Test public void testCreate() {
+
+    @Test
+    public void testCreate() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
-        assertEquals(42, fortyTwo.intValue());        
+        assertEquals(42, fortyTwo.intValue());
     }
-    
-    @Test public void testEqualsWithAliases() {
+
+    @Test
+    public void testEqualsWithAliases() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         NSNumber fortyTwoAlias = Rococoa.wrap(fortyTwo.id(), NSNumber.class);
         NSNumber fortyThree = NSNumber.CLASS.numberWithInt(43);
@@ -46,89 +43,100 @@ public class RococoaTest extends RococoaTestCase {
         assertNotEquals(fortyTwo, fortyThree);
         assertNotEquals(null, fortyTwo);
     }
-        
-    @Test public void testEqualsMapsToIsEqual() {
+
+    @Test
+    public void testEqualsMapsToIsEqual() {
         NSString s1 = NSString.stringWithString("string");
         NSString s2 = NSString.stringWithString("STRING").lowercaseString();
         assertNotSame(s1, s2);
         assertNotEquals(s1.id(), s2.id());
         assertEquals(s1, s2);
     }
-   
-    @Test public void testReturnTypes() {
+
+    @Test
+    public void testReturnTypes() {
         NSNumber e = NSNumber.CLASS.numberWithDouble(Math.E);
         assertEquals(2, e.intValue());
         assertEquals(2, e.longValue());
         assertEquals((float) Math.E, e.floatValue(), 0.001);
         assertEquals(Math.E, e.doubleValue(), 0.001);
     }
-    
-    @Test public void testPassOCObject() {
-        NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);    
+
+    @Test
+    public void testPassOCObject() {
+        NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
         NSNumber e = NSNumber.CLASS.numberWithDouble(Math.E);
-        
+
         assertEquals(-1, e.compare(fortyTwo));
         assertEquals(0, e.compare(e));
         assertEquals(1, fortyTwo.compare(e));
     }
-    
-    @Test public void testStringMarshalling() {
+
+    @Test
+    public void testStringMarshalling() {
         NSString string = NSString.CLASS.stringWithString("Hello world");
         assertTrue(string.isEqualToString("Hello world"));
         assertFalse(string.isEqualToString("Hello worldy"));
     }
-    
-    @Test public void testKeywordMethod() {
+
+    @Test
+    public void testKeywordMethod() {
         // TODO - this method doesn't actually test keyword methods any more
         NSDate epoc = NSDate.CLASS.dateWithTimeIntervalSince1970(0);
         assertEquals(0, epoc.timeIntervalSince1970(), 0.000001f);
         NSDate anotherDate = NSDate.CLASS.dateWithTimeIntervalSince1970(40d);
-        assertEquals(40, anotherDate.timeIntervalSince1970(), 0.000001f);        
+        assertEquals(40, anotherDate.timeIntervalSince1970(), 0.000001f);
     }
-        
-    @Test public void testVarags() {
+
+    @Test
+    public void testVarags() {
         NSArray array = NSArray.CLASS.arrayWithObjects(
                 NSNumber.CLASS.numberWithBool(true),
                 NSNumber.CLASS.numberWithInt(42),
-                NSDate.CLASS.dateWithTimeIntervalSince1970(666),
-                null); // required by NSArray
+                NSDate.CLASS.dateWithTimeIntervalSince1970(666)
+        );
         assertNotNull(array);
         assertFalse(array.id().isNull());
         assertEquals(3, array.count());
     }
-    
-    @Test public void testFactory() {
-        NSNumber._Class nsNumberClass = Rococoa.createClass("NSNumber",  NSNumber._Class.class); //$NON-NLS-1$
+
+    @Test
+    public void testFactory() {
+        NSNumber._Class nsNumberClass = Rococoa.createClass("NSNumber", NSNumber._Class.class); //$NON-NLS-1$
         assertEquals(nsNumberClass.id(), Foundation.getClass("NSNumber"));
     }
-    
+
     public interface OddClass extends ObjCClass {
         NSObject numberWithInt(int value);
     }
 
-    @Test public void testDownCast() {
+    @Test
+    public void testDownCast() {
         // this is OK
         NSNumber numberAsObject = NSNumber.CLASS.numberWithInt(42);
         assertEquals(42, numberAsObject.intValue());
-        
+
         // but when defined return type is NSObject, we can't cast Java objects
         OddClass nsClass = Rococoa.createClass("NSNumber", OddClass.class);
         NSObject returnAsObject = nsClass.numberWithInt(42);
         try {
             ((NSNumber) returnAsObject).intValue();
             fail();
-        } catch (ClassCastException expected) {}
-        
+        } catch (ClassCastException expected) {
+        }
+
         // we need to do this
         assertEquals(42, Rococoa.cast(returnAsObject, NSNumber.class).intValue());
     }
-    
-    @Test public void testToString() {
+
+    @Test
+    public void testToString() {
         NSNumber fortyTwo = NSNumber.CLASS.numberWithInt(42);
-        assertEquals("42", fortyTwo.toString());        
+        assertEquals("42", fortyTwo.toString());
     }
-    
-    @Test public void testGeneratedClassName() {
+
+    @Test
+    public void testGeneratedClassName() {
         NSString string = NSString.stringWithString("Hello World");
         Class<? extends NSString> stringClass = string.getClass();
         assertEquals(NSString.class.getPackage(), stringClass.getPackage());

@@ -27,7 +27,9 @@ import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
-import org.rococoa.cocoa.foundation.*;
+import org.rococoa.cocoa.foundation.NSNumber;
+import org.rococoa.cocoa.foundation.NSObject;
+import org.rococoa.cocoa.foundation.NSURL;
 import org.rococoa.test.RococoaTestCase;
 
 import static org.junit.Assert.assertEquals;
@@ -109,6 +111,4 @@ public class ObjCObjectTypeConverterTest extends RococoaTestCase {
         ID idClass = Foundation.getClass("NSObject");
         assertRetainCount(1, Foundation.send(idClass, "alloc", NSObject.class)); // not in the pool, so just one for Java
     }
-
-
 }

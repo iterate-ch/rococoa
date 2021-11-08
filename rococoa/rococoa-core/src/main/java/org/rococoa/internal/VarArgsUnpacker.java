@@ -19,7 +19,6 @@
  
 package org.rococoa.internal;
 
-@SuppressWarnings("nls")
 public class VarArgsUnpacker {
 
     private static final String SEPERATOR = ", ";

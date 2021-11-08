@@ -19,19 +19,19 @@
 
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertEquals;
-
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 import org.junit.Test;
 import org.rococoa.cocoa.CGFloat;
 import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSUInteger;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
+import static org.junit.Assert.assertEquals;
 
 public class NSInvocationMapperTest {
 
-    @Test public void testEncoding32() throws Exception {
+    @Test
+    public void testEncoding32() throws Exception {
         if (Native.LONG_SIZE != 4)
             return;
         
@@ -67,10 +67,11 @@ public class NSInvocationMapperTest {
         check("l", NativeLong.class);
         check("f", CGFloat.class);
         check("f", float.class);
-        check("d", double.class);        
+        check("d", double.class);
     }
 
-    @Test public void testEncoding64() throws Exception {
+    @Test
+    public void testEncoding64() throws Exception {
         if (Native.LONG_SIZE == 4)
             return;
         
@@ -110,6 +111,6 @@ public class NSInvocationMapperTest {
     }
 
     private void check(String expected, Class<?> javaType) {
-        assertEquals(javaType.toString(), expected,  NSInvocationMapperLookup.stringForType(javaType));
+        assertEquals(javaType.toString(), expected, NSInvocationMapperLookup.stringForType(javaType));
     }
 }

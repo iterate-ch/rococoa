@@ -21,6 +21,7 @@ package org.rococoa;
 
 import com.sun.jna.NativeLong;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rococoa.cocoa.foundation.*;
 import org.rococoa.test.RococoaTestCase;
@@ -28,7 +29,6 @@ import org.rococoa.test.RococoaTestCase;
 import static org.junit.Assert.*;
 
 
-@SuppressWarnings("nls")
 public class JavaProxyTest extends RococoaTestCase {
 
     public static class JavaImplementor {
@@ -114,9 +114,9 @@ public class JavaProxyTest extends RococoaTestCase {
     public void testRepondsToSelector() {
         // respond to selector is required for delegates
         assertEquals(0, (byte) Foundation.send(proxy.id(), "respondsToSelector:",
-                byte.class, Foundation.selector("Bo")));
+                byte.class, new Selector[]{Foundation.selector("Bo")}));
         assertEquals(1, (byte) Foundation.send(proxy.id(), "respondsToSelector:",
-                byte.class, Foundation.selector("sayHello")));
+                byte.class, new Selector[]{Foundation.selector("sayHello")}));
     }
 
     @Test
@@ -136,8 +136,7 @@ public class JavaProxyTest extends RococoaTestCase {
 
     @Test
     public void testTakesIDReturnsID() {
-        ID result = Foundation.sendReturnsID(proxy.id(), "testTakesIDReturnsID:",
-                ID.fromLong(42));
+        ID result = Foundation.sendReturnsID(proxy.id(), "testTakesIDReturnsID:", ID.fromLong(42));
         assertEquals("Hello", Foundation.toString(result));
         assertEquals(ID.fromLong(42), implementor.arg);
     }
@@ -155,7 +154,7 @@ public class JavaProxyTest extends RococoaTestCase {
     @Test
     public void testTakesStringReturnsByte() {
         byte result = Foundation.send(proxy.id(), "takesStringReturnsByte:",
-                byte.class, Foundation.cfString("hello"));
+                byte.class, new Object[]{Foundation.cfString("hello")});
         assertEquals(42, result);
         assertEquals("hello", ((NSString) implementor.arg).toString());
     }
@@ -163,9 +162,9 @@ public class JavaProxyTest extends RococoaTestCase {
     @Test
     public void testTakesBooleanReturnsBoolean() {
         assertTrue(Foundation.send(proxy.id(), "takesBooleanReturnsBoolean:",
-                boolean.class, false));
+                boolean.class, new Object[]{false}));
         assertFalse(Foundation.send(proxy.id(), "takesBooleanReturnsBoolean:",
-                boolean.class, true));
+                boolean.class, new Object[]{true}));
     }
 
     @Test
@@ -181,14 +180,14 @@ public class JavaProxyTest extends RococoaTestCase {
     @Test
     public void testTakesJavaStringReturnsJavaString() {
         assertEquals("lower", Foundation.send(proxy.id(), "takesJavaStringReturnsJavaString:",
-                String.class, "LoWeR"));
+                String.class, new String[]{"LoWeR"}));
     }
 
     @Test
     public void testSendAndReceiveStructByReference() {
         TestStruct struct = new TestStruct(42, Math.PI);
         TestStruct result = Foundation.send(proxy.id(), "takesStructureReturnsStructure:",
-                TestStruct.class, struct);
+                TestStruct.class, new TestStruct[]{struct});
         assertEquals("passing to java", 42, ((TestStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001);
         assertEquals("returning to OC", 42, result.anInt);
@@ -200,7 +199,7 @@ public class JavaProxyTest extends RococoaTestCase {
         // Hmmm, difficult to prove this is passed by value
         TestStruct.ByValue struct = new TestStruct.ByValue(42, Math.PI);
         TestStruct result = Foundation.send(proxy.id(), "takesStructureByValueReturnsStructureByValue:",
-                TestStruct.ByValue.class, struct);
+                TestStruct.ByValue.class, new TestStruct.ByValue[]{struct});
         assertEquals("passing to java", 42, ((TestStruct) implementor.arg).anInt);
         assertEquals("passing to java", Math.PI, ((TestStruct) implementor.arg).aDouble, 0.00001);
         assertEquals("returning to OC", 42, result.anInt);
@@ -210,29 +209,29 @@ public class JavaProxyTest extends RococoaTestCase {
     @Test
     public void testSendAndReceiveNativeLong() {
         NativeLong result = Foundation.send(proxy.id(), "takesNativeLongReturnsNativeLong:",
-                NativeLong.class, new NativeLong(42));
+                NativeLong.class, new NativeLong[]{new NativeLong(42)});
         assertEquals(42, result.longValue());
     }
 
     @Test
     public void testSendAndReceiveLong() {
         long result = Foundation.send(proxy.id(), "takesLongReturnsLong:",
-                long.class, 42);
+                long.class, new Integer[]{42});
         assertEquals(42, result);
 
         result = Foundation.send(proxy.id(), "takesLongReturnsLong:",
-                long.class, Long.MAX_VALUE);
+                long.class, new Long[]{Long.MAX_VALUE});
         assertEquals(Long.MAX_VALUE, result);
     }
 
     @Test
     public void testSendAndReceiveDouble() {
         double result = Foundation.send(proxy.id(), "takesDoubleReturnsDouble:",
-                double.class, Math.PI);
+                double.class, new Double[]{Math.PI});
         assertEquals(Double.doubleToLongBits(Math.PI), Double.doubleToLongBits(result));
 
         result = Foundation.send(proxy.id(), "takesDoubleReturnsDouble:",
-                double.class, Double.MAX_VALUE);
+                double.class, new Double[]{Double.MAX_VALUE});
         assertEquals(Double.doubleToLongBits(Double.MAX_VALUE), Double.doubleToLongBits(result));
     }
 

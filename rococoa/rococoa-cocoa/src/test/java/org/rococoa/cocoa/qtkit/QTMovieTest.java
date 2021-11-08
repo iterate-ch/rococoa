@@ -33,7 +33,6 @@ import java.io.File;
 import static org.junit.Assert.*;
 
 
-@SuppressWarnings("nls")
 @Ignore
 public class QTMovieTest extends RococoaTestCase {
 

@@ -22,7 +22,6 @@ package org.rococoa.cocoa.qtkit;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
-@SuppressWarnings("nls")
 public interface QTKit extends Library {
     
     QTKit instance = Native.load("QTKit", QTKit.class);

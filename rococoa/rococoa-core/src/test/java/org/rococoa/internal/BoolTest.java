@@ -19,29 +19,31 @@
 
 package org.rococoa.internal;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.rococoa.ObjCObject;
 import org.rococoa.Rococoa;
 import org.rococoa.test.RococoaTestCase;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class BoolTest extends RococoaTestCase {
 
     private interface TestShunt extends ObjCObject {
         boolean valueIsYES(boolean a);
+
         boolean valueIsNO(boolean a);
     }
-    
+
     private TestShunt testShunt = Rococoa.create("TestShunt", TestShunt.class);
-    
-    @Test public void test() {
+
+    @Test
+    public void test() {
         assertTrue(testShunt.valueIsYES(true));
         assertFalse(testShunt.valueIsYES(false));
         assertTrue(testShunt.valueIsNO(false));
         assertFalse(testShunt.valueIsNO(true));
     }
-    
+
 }

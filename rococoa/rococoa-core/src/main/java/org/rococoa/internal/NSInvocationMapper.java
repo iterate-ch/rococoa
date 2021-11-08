@@ -20,6 +20,7 @@
 package org.rococoa.internal;
 
 
+import com.sun.jna.Native;
 import org.rococoa.cocoa.foundation.NSInvocation;
 
 import com.sun.jna.Memory;
@@ -45,7 +46,7 @@ public abstract class NSInvocationMapper {
     }
     
     public Object readArgumentFrom(NSInvocation invocation, int index, Class<?> type) {
-        Memory buffer = new Memory(8); // big enough for long or double
+        Memory buffer = new Memory(Native.LONG_SIZE); // big enough for long or double
         invocation.getArgument_atIndex(buffer, index);
         return readFrom(buffer, type);
     }

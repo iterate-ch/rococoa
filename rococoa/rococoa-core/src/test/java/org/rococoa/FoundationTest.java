@@ -21,7 +21,6 @@ package org.rococoa;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.rococoa.cocoa.foundation.NSNumber;
 import org.rococoa.test.RococoaTestCase;
 
 import static org.junit.Assert.*;

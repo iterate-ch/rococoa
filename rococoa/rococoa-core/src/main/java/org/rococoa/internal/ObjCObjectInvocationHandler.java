@@ -19,6 +19,12 @@
 
 package org.rococoa.internal;
 
+import com.sun.jna.Pointer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+import org.rococoa.*;
+import org.rococoa.cocoa.CFIndex;
+
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,35 +33,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
-import org.rococoa.Foundation;
-import org.rococoa.ID;
-import org.rococoa.IDByReference;
-import org.rococoa.ObjCObject;
-import org.rococoa.ObjCObjectByReference;
-import org.rococoa.ReleaseInFinalize;
-import org.rococoa.ReturnType;
-import org.rococoa.Rococoa;
-import org.rococoa.RococoaException;
-import org.rococoa.RunOnMainThread;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.jna.Pointer;
-import org.rococoa.cocoa.CFIndex;
 
 /**
  * Listens to invocations of methods on a Java NSObject, and forwards them to
  * its Objective-C counterpart.
  *
  * @author duncan
- *
  */
-@SuppressWarnings("nls")
 public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
 
     private static final int FINALIZE_AUTORELEASE_BATCH_SIZE = 1000;
@@ -73,8 +59,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
             OBJECT_HASHCODE = Object.class.getMethod("hashCode");
             OBJECT_EQUALS = Object.class.getMethod("equals", Object.class);
             OCOBJECT_ID = ObjCObject.class.getMethod("id");
-        }
-        catch (Exception x) {
+        } catch (NoSuchMethodException x) {
             throw new RococoaException("Error retrieving method", x);
         }
     }
@@ -82,7 +67,6 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     private ID ocInstance;
     private final String javaClassName;
     private final boolean invokeAllMethodsOnMainThread;
-    
     private final boolean releaseOnFinalize;
     private volatile boolean finalized;
 
@@ -94,7 +78,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
 
         if (logging.isLoggable(Level.FINEST)) {
             CFIndex retainCount = Foundation.cfGetRetainCount(ocInstance);
-            logging.finest(String.format("Creating NSObjectInvocationHandler for id %s, javaclass %s. retain = %s, retainCount = %s",
+            logging.finest(String.format("Creating ObjCObjectInvocationHandler for id %s, javaclass %s. retain = %s, retainCount = %s",
                     ocInstance, javaClass, retain, retainCount.intValue()));
         }
 
@@ -104,10 +88,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
 
         if (retain) {
             if (callAcrossToMainThread()) {
-                Foundation.runOnMainThread(new Runnable() {
-                    public void run() {
-                        Foundation.cfRetain(ocInstance);
-                    }});
+                Foundation.runOnMainThread(() -> Foundation.cfRetain(ocInstance));
             } else {
                 Foundation.cfRetain(ocInstance);
             }
@@ -131,10 +112,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         }
         try {
             if (callAcrossToMainThread()) {
-                Foundation.runOnMainThread(new Runnable() {
-                    public void run() {
-                        release();
-                    }});
+                Foundation.runOnMainThread(() -> release());
             } else {
                 AutoreleaseBatcher autoreleaseBatcher = AutoreleaseBatcher.forThread(FINALIZE_AUTORELEASE_BATCH_SIZE);
                 release();
@@ -163,7 +141,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     /**
      * Callback from java.lang.reflect proxy
      */
-    public Object invoke(Object proxy, Method method, Object[] args)  throws Exception {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("invoking [%s %s].%s(%s)",
                     javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)));
@@ -226,7 +204,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         return sendOnThisOrMainThread(null, ocInstance, "isEqual:", Boolean.class, another);
     }
 
-    private Object invokeCocoa(final Method method, Object[] args) {
+    protected Object invokeCocoa(final Method method, Object[] args) {
         String selectorName = selectorNameFor(method);
         Class<?> returnType = returnTypeFor(method);
         Object[] marshalledArgs = marshallArgsFor(args);
@@ -249,14 +227,14 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         return result;
     }
 
-    private void handleInitMethod(Object result) {        
+    private void handleInitMethod(Object result) {
         // Normally init methods return self, but on error they may return nil.
         // In this case the ObjC object for which this is the handler is considered
         // freed and should not be released when we are finalized.
         if (result != null) {
             return;
         }
-        ocInstance = ID.fromLong(0);        
+        ocInstance = ID.fromLong(0);
     }
 
     private Object sendOnThisOrMainThread(Method method, final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
@@ -285,7 +263,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
                     continue;
                 }
                 ((ObjCObjectByReference) original).setObject(
-                   Rococoa.wrap(((IDByReference) marshalled).getValue(), ObjCObject.class));
+                        Rococoa.wrap(((IDByReference) marshalled).getValue(), ObjCObject.class));
             }
         }
     }
@@ -294,8 +272,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         ReturnType annotation = method.getAnnotation(ReturnType.class);
         if (annotation == null) {
             return method.getReturnType();
-        }
-        else {
+        } else {
             return annotation.value();
         }
     }
@@ -304,14 +281,13 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         if (args == null) {
             return null;
         }
-        List<Object> result = new ArrayList<Object>(args.length);
-        for (int i = 0; i < args.length; i++) {
-            Object marshalled = marshall(args[i]);
+        List<Object> result = new ArrayList<>(args.length);
+        for (Object arg : args) {
+            final Object marshalled = marshall(arg);
             if (marshalled instanceof Object[]) {
                 // flatten varags, it would never(?) make sense to pass Object[] to Cococoa
                 result.addAll(Arrays.asList((Object[]) marshalled));
-            }
-            else {
+            } else {
                 result.add(marshalled);
             }
         }
@@ -325,14 +301,14 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
             return null;
         }
         if (arg instanceof ObjCObjectByReference) {
-			// Forward conversion (another backwards conversion will take place in fillInReferences)
+            // Forward conversion (another backwards conversion will take place in fillInReferences)
             IDByReference idref = new IDByReference();
-			ObjCObject ob = ((ObjCObjectByReference)arg).getValueAs(ObjCObject.class);
-			if (ob != null) {
-				idref.setValue(ob.id());
+            ObjCObject ob = ((ObjCObjectByReference) arg).getValueAs(ObjCObject.class);
+            if (ob != null) {
+                idref.setValue(ob.id());
             }
-			return idref;
-		}
+            return idref;
+        }
         return arg;
     }
 
@@ -352,7 +328,7 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
         }
         return result.toString();
     }
-    
+
     private boolean shouldInvokeMethodsOnMainThread(AnnotatedElement element) {
         return element != null && element.getAnnotation(RunOnMainThread.class) != null;
     }
@@ -362,6 +338,6 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     }
 
     private boolean callAcrossToMainThreadFor(Method m) {
-        return (invokeAllMethodsOnMainThread || shouldInvokeMethodsOnMainThread(m) ) && !Foundation.isMainThread() ;
+        return (invokeAllMethodsOnMainThread || shouldInvokeMethodsOnMainThread(m)) && !Foundation.isMainThread();
     }
 }

@@ -26,7 +26,6 @@ import org.rococoa.cocoa.foundation.NSDictionary;
 
 import com.sun.jna.Pointer;
 
-@SuppressWarnings("nls")
 public @RunOnMainThread abstract class QTMedia extends NSObject {
 
     public static final String QTMediaDurationAttribute = "QTMediaDurationAttribute";

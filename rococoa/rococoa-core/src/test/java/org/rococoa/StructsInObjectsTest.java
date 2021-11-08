@@ -19,7 +19,6 @@
 
 package org.rococoa;
 
-import com.sun.jna.Library;
 import org.junit.Test;
 import org.rococoa.cocoa.foundation.NSSize;
 import org.rococoa.cocoa.foundation.NSValue;
@@ -31,10 +30,6 @@ import static org.junit.Assert.assertEquals;
  * Checks that we can embed a struct by value in a object.
  */
 public class StructsInObjectsTest extends RococoaTestCase {
-
-    public interface MyLibrary extends Library {
-        NSSize objc_msgSend(ID receiver, Selector selector, Object... args);
-    }
 
     @Test
     public void test() throws Exception {

@@ -44,7 +44,6 @@ import java.util.logging.Logger;
  *
  * @author duncan
  */
-@SuppressWarnings("nls")
 public abstract class Foundation {
 
     private static final Logger logging = Logger.getLogger("org.rococoa.foundation");

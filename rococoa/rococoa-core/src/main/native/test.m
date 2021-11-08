@@ -69,6 +69,12 @@ TestIntIntStruct createIntIntStruct(int a, int b) {
 	return s.aStruct.aDouble;
 }
 
+- (NSNumber*) testNumberFromInt: (int) aValue {
+    NSLog(@"Received number %i", aValue);
+	NSNumber* number = [NSNumber numberWithInt: aValue];
+	return number;
+}
+
 - (void) testNSNumberByReference: (NSNumber**) fillMeIn with: (int) aValue {
 	NSNumber* number = [NSNumber numberWithInt: aValue];
 	*fillMeIn = number;

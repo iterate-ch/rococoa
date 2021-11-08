@@ -21,7 +21,6 @@ package org.rococoa;
 
 import com.sun.jna.NativeLong;
 
-@SuppressWarnings("nls")
 public class Selector extends NativeLong {
     
     private  String name;
