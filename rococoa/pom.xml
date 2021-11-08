@@ -4,7 +4,7 @@
     <groupId>org.rococoa</groupId>
     <artifactId>rococoa-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
     <name>Rococoa Parent Project</name>
     <url>https://github.com/iterate-ch/rococoa</url>
 
@@ -77,7 +77,7 @@
         <url>https://github.com/iterate-ch/rococoa</url>
         <connection>scm:git:git@github.com:iterate-ch/rococoa.git</connection>
         <developerConnection>scm:git:git@github.com:iterate-ch/rococoa.git</developerConnection>
-        <tag>0.9.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
