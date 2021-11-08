@@ -262,13 +262,9 @@ public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInt
     private Object sendOnThisOrMainThread(Method method, final ID id, final String selectorName, final Class<?> returnType, final Object... args) {
         if (callAcrossToMainThreadFor(method)) {
             return Foundation.callOnMainThread(
-                new Callable<Object>() {
-                    public Object call() {
-                        return Foundation.send(id, selectorName, returnType, args);
-                    }});
-        }
-        else {
-            return Foundation.send(id, selectorName, returnType, args);
+                    (Callable<Object>) () -> Foundation.send(id, selectorName, returnType, method, args));
+        } else {
+            return Foundation.send(id, selectorName, returnType, method, args);
         }
     }
 
