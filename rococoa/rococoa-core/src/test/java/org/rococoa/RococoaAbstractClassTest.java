@@ -57,7 +57,7 @@ public class RococoaAbstractClassTest extends RococoaTestCase {
     }
 
     @Test
-    public void testCGLibResusesClasses() {
+    public void testByteBuddyReusesClasses() {
         NSNumberAsClass number = NSNumberAsClass.numberWithInt(42);
         NSNumberAsClass number2 = NSNumberAsClass.numberWithInt(42);
         assertSame(number.getClass(), number2.getClass());

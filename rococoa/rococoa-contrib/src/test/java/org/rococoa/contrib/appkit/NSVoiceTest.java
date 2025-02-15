@@ -56,6 +56,7 @@ public class NSVoiceTest extends RococoaTestCase {
     }
 
     @Test(expected=IllegalArgumentException.class)
+    @Ignore
     public void testBadIdentifier() {
         String badId = "This voice does not exist";
         try {

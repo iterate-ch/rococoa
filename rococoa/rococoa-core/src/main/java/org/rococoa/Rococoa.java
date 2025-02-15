@@ -21,17 +21,20 @@ package org.rococoa;
 
 import java.lang.reflect.Proxy;
 
-import net.sf.cglib.core.DefaultNamingPolicy;
-import net.sf.cglib.core.Predicate;
-import net.sf.cglib.proxy.Enhancer;
-
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.TypeCache;
+import net.bytebuddy.description.modifier.Visibility;
+import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
 import org.rococoa.cocoa.CFIndex;
-import org.rococoa.internal.OCInvocationCallbacks;
-import org.rococoa.internal.ObjCObjectInvocationHandler;
-import org.rococoa.internal.VarArgsUnpacker;
+import org.rococoa.internal.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static net.bytebuddy.implementation.FieldAccessor.*;
+import static net.bytebuddy.implementation.MethodCall.*;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 /**
  * Static factory for creating Java wrappers for Objective-C instances, and Objective-C
@@ -159,32 +162,55 @@ public abstract class Rococoa  {
         // it to be release'd when the NSObject is finalized
         return wrap(proxyID, javaType, false);
     }
-    
+
+    private static final TypeCache<Class<? extends ObjCObject>> typeCache = new TypeCache<>();
+    private static final String i15r = "invocationHandler";
+
     /**
      * Create a java.lang.reflect.Proxy or cglib proxy of type, which forwards
-     * invocations to invococationHandler.
+     * invocations to invocationHandler.
      */
     @SuppressWarnings("unchecked")
-    private static <T> T createProxy(final Class<T> type, ObjCObjectInvocationHandler invocationHandler) {
+    private static <T extends ObjCObject> T createProxy(final Class<T> type, ObjCObjectInvocationHandler invocationHandler) {
         if (type.isInterface()) {
             return (T) Proxy.newProxyInstance(
                 invocationHandler.getClass().getClassLoader(), 
                 new Class[] {type}, invocationHandler);
         } else {
-            Enhancer e = new Enhancer();
-            e.setUseCache(true); // make sure that we reuse if we've already defined
-            e.setNamingPolicy(new DefaultNamingPolicy() {
-                public String getClassName(String prefix, String source, Object key, Predicate names) {
-                    if (source.equals(net.sf.cglib.proxy.Enhancer.class.getName())) {
-                        return type.getName() + "$$ByRococoa";
-                    }
-                    else {
-                        return super.getClassName(prefix, source, key, names);
-                    }
-                }});
-            e.setSuperclass(type);
-            e.setCallback(invocationHandler);
-            return (T) e.create();            
+            ClassLoader classLoader = type.getClassLoader();
+
+            Class<?> proxyClass =
+                typeCache.findOrInsert(classLoader, type, () ->
+                    new ByteBuddy()
+                        .subclass(type, ConstructorStrategy.Default.NO_CONSTRUCTORS)
+                        .name(type.getName() + "$$ByRococoa")
+                        .defineField(i15r, ObjCObjectInvocationHandler.class)
+                        .defineConstructor(Visibility.PUBLIC)
+                          .withParameter(ObjCObjectInvocationHandler.class, i15r)
+                          .intercept(
+                            // Invoke superclass default constructor explicitly
+                            invoke(type.getConstructor())
+                              .andThen(ofField(i15r).setsArgumentAt(0))
+                        )
+                        .method(
+                            isAbstract()
+                                .or(is(ObjCObjectInvocationHandler.OBJECT_EQUALS))
+                                .or(is(ObjCObjectInvocationHandler.OBJECT_TOSTRING))
+                                .or(is(ObjCObjectInvocationHandler.OCOBJECT_ID))
+                        )
+                        .intercept(InvocationHandlerAdapter.toField(i15r))
+                        .make()
+                        .load(classLoader)
+                        .getLoaded()
+                );
+
+            try {
+                return ((Class<? extends T>) proxyClass)
+                    .getConstructor(ObjCObjectInvocationHandler.class)
+                    .newInstance(invocationHandler);
+            } catch (ReflectiveOperationException e) {
+                throw new RococoaException(e);
+            }
         }
     }
     

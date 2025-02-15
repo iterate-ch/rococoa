@@ -22,10 +22,10 @@ package org.rococoa.test;
 import com.sun.jna.Native;
 import org.junit.After;
 import org.junit.Before;
-import org.rococoa.Foundation;
 import org.rococoa.ID;
 import org.rococoa.cocoa.foundation.NSAutoreleasePool;
 import org.rococoa.cocoa.foundation.NSObject;
+import org.rococoa.internal.RococoaLibrary;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +33,6 @@ import java.io.InputStream;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -42,6 +41,9 @@ import static org.junit.Assert.assertNotNull;
  * @author duncan
  */
 public abstract class RococoaTestCase {
+    static {
+        Native.load("rococoa-test", RococoaLibrary.class);
+    }
 
     // stress our memory management
     public static boolean gcAfterTest = true;

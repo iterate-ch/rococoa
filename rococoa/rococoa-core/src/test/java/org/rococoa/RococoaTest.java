@@ -139,7 +139,7 @@ public class RococoaTest extends RococoaTestCase {
     public void testGeneratedClassName() {
         NSString string = NSString.stringWithString("Hello World");
         Class<? extends NSString> stringClass = string.getClass();
-        assertEquals(NSString.class.getPackage(), stringClass.getPackage());
+        assertEquals(NSString.class.getPackage().getName(), stringClass.getPackage().getName());
         assertEquals("NSString$$ByRococoa", stringClass.getSimpleName());
     }
 

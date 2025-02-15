@@ -76,11 +76,6 @@
 
     <repositories>
         <repository>
-            <id>nativelibs4java</id>
-            <name>NativeLibs4Java</name>
-            <url>http://nativelibs4java.sourceforge.net/maven</url>
-        </repository>
-        <repository>
             <id>sonatype-oss-public</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
             <releases>
@@ -92,11 +87,6 @@
         </repository>
     </repositories>
     <pluginRepositories>
-        <pluginRepository>
-            <id>nativelibs4java</id>
-            <name>NativeLibs4Java</name>
-            <url>http://nativelibs4java.sourceforge.net/maven</url>
-        </pluginRepository>
         <pluginRepository>
             <id>sonatype-oss-public</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
