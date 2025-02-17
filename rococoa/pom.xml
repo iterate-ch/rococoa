@@ -147,9 +147,9 @@
                 <version>5.16.0</version>
             </dependency>
             <dependency>
-                <groupId>net.bytebuddy</groupId>
-                <artifactId>byte-buddy</artifactId>
-                <version>1.17.1</version>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>3.3.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -205,7 +205,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>@{argLine}-Djava.library.path=${project.build.directory}</argLine>
+                    <argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED -Djava.library.path=${project.build.directory}</argLine>
                     <systemPropertyVariables>
                         <jna.library.path>${project.build.directory}</jna.library.path>
                     </systemPropertyVariables>

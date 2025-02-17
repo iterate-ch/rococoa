@@ -20,6 +20,8 @@
 package org.rococoa.internal;
 
 import com.sun.jna.Pointer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 import org.rococoa.*;
 import org.rococoa.cocoa.CFIndex;
 
@@ -40,16 +42,16 @@ import java.util.logging.Logger;
  *
  * @author duncan
  */
-public class ObjCObjectInvocationHandler implements InvocationHandler {
+public class ObjCObjectInvocationHandler implements InvocationHandler, MethodInterceptor {
 
     private static final int FINALIZE_AUTORELEASE_BATCH_SIZE = 1000;
 
     private static final Logger logging = Logger.getLogger("org.rococoa.proxy");
 
-    public static final Method OBJECT_TOSTRING;
-    public static final Method OBJECT_HASHCODE;
-    public static final Method OBJECT_EQUALS;
-    public static final Method OCOBJECT_ID;
+    static final Method OBJECT_TOSTRING;
+    static final Method OBJECT_HASHCODE;
+    static final Method OBJECT_EQUALS;
+    static final Method OCOBJECT_ID;
 
     static {
         try {
@@ -147,6 +149,25 @@ public class ObjCObjectInvocationHandler implements InvocationHandler {
         if (isSpecialMethod(method)) {
             return invokeSpecialMethod(method, args);
         }
+        return invokeCocoa(method, args);
+    }
+
+    /**
+     * Callback from cglib proxy
+     */
+    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        if (logging.isLoggable(Level.FINEST)) {
+            logging.finest(String.format("invoking [%s %s].%s(%s)",
+                    javaClassName, ocInstance, method.getName(), new VarArgsUnpacker(args)));
+        }
+        if (isSpecialMethod(method)) {
+            return invokeSpecialMethod(method, args);
+        }
+        if (!Modifier.isAbstract(method.getModifiers())) {
+            // method is not abstract, so a Java override has been provided, which we call
+            return methodProxy.invokeSuper(proxy, args);
+        }
+        // normal case
         return invokeCocoa(method, args);
     }
 
@@ -292,22 +313,21 @@ public class ObjCObjectInvocationHandler implements InvocationHandler {
     }
 
     private String selectorNameFor(Method method) {
-        StringBuilder selector = new StringBuilder(method.getName());
-        if (selector.charAt(selector.length()-1) == '_') {
+        String methodName = method.getName();
+        if (methodName.endsWith("_")) {
             // lets us append _ to allow Java keywords as method names
-            selector.setLength(selector.length()-1);
+            methodName = methodName.substring(0, methodName.length() - 1);
         }
-        if (method.getParameterTypes().length > 0) {
-            for (int i = 0; i < selector.length(); i++) {
-                if (selector.charAt(i) == '_') {
-                    selector.setCharAt(i, ':');
-                }
-            }
-            selector.append(':');
+        if (method.getParameterTypes().length == 0) {
+            return methodName;
         }
-        return selector.toString();
+        String[] parts = methodName.split("_");
+        StringBuilder result = new StringBuilder();
+        for (String part : parts) {
+            result.append(part).append(":");
+        }
+        return result.toString();
     }
-
 
     private boolean shouldInvokeMethodsOnMainThread(AnnotatedElement element) {
         return element != null && element.getAnnotation(RunOnMainThread.class) != null;

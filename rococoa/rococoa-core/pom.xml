@@ -16,8 +16,8 @@
             <artifactId>jna</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
         </dependency>
         <dependency>
             <groupId>org.rococoa</groupId>

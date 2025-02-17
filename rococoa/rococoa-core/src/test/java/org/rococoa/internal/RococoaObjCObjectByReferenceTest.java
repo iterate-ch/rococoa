@@ -19,6 +19,7 @@
 
 package org.rococoa.internal;
 
+import com.sun.jna.Native;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.rococoa.ID;
@@ -34,6 +35,10 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.Assert.assertEquals;
 
 public class RococoaObjCObjectByReferenceTest extends RococoaTestCase {
+
+    static {
+        Native.load("rococoa-test", RococoaLibrary.class);
+    }
 
     private interface TestShunt extends ObjCObject {
         NSNumber testNumberFromInt(int value);

@@ -158,11 +158,7 @@ public abstract class Foundation {
         if (logging.isLoggable(Level.FINEST)) {
             logging.finest(String.format("calling objc_getClass(%s)", className));
         }
-        ID classID = foundationLibrary.objc_getClass(className);
-        if (classID.isNull()) {
-            throw new RococoaException(new ClassNotFoundException(className));
-        }
-        return classID;
+        return foundationLibrary.objc_getClass(className);
     }
 
     public static Selector selector(String selectorName) {
