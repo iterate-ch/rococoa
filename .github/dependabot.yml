@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: maven
-    directory: "/"
+    directory: "/rococoa"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 99
