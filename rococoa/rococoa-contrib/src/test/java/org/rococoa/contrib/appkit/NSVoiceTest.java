@@ -27,6 +27,7 @@ import org.rococoa.contrib.appkit.NSVoice.VoiceGender;
 import org.rococoa.test.RococoaTestCase;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -55,15 +56,11 @@ public class NSVoiceTest extends RococoaTestCase {
         assertTrue(individuallySpokenChars.count() > 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    @Ignore
+    @Test
     public void testBadIdentifier() {
         String badId = "This voice does not exist";
-        try {
-            new NSVoice(badId);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().indexOf(badId) > 0);
-            throw e;
-        }
+        final NSVoice voice = new NSVoice(badId);
+        assertNotNull(voice.getIdentifier());
+        assertNotEquals(badId, voice.getIdentifier());
     }
 }
