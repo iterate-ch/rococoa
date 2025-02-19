@@ -19,6 +19,7 @@
  
 package org.rococoa;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import net.bytebuddy.ByteBuddy;
@@ -53,13 +54,17 @@ public abstract class Rococoa  {
     public static <T extends ObjCClass> T createClass(String ocClassName, Class<T> type) {
         return wrap(Foundation.getClass(ocClassName), type, false);
     }
-    
+
     /**
      * Create a Java NSObject representing an instance of the Objective-C class
      * ocClassName. The Objective-C instance is created by calling the static 
      * factory method named ocMethodName, passing args.
      */
     public static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass, String ocMethodName, Object... args) {
+        return create(ocClassName, javaClass, null, ocMethodName, args);
+    }
+
+    public static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass, Method method, String ocMethodName, Object... args) {
         boolean weOwnObject = Foundation.selectorNameMeansWeOwnReturnedObject(ocMethodName);
         
         // If we don't own the object we know that it has been autorelease'd
@@ -68,7 +73,7 @@ public abstract class Rococoa  {
         // Objects that we own (because they were created with 'alloc' or 'new')
         // have not been autorelease'd, so we don't retain them.
         boolean retain = !weOwnObject;
-        return create(ocClassName, javaClass, ocMethodName, retain, args);
+        return create(ocClassName, javaClass, method, ocMethodName, retain, args);
     }
     
     /**
@@ -79,8 +84,8 @@ public abstract class Rococoa  {
         return create(ocClassName, javaClass, "new");
     }
 
-    private static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass,
-            String ocFactoryName, 
+    private static <T extends ObjCObject> T create(String ocClassName, Class<T> javaClass, Method method,
+            String ocFactoryName,
             boolean retain,
             Object... args) {
         if (logging.isLoggable(Level.FINEST)) {
@@ -88,7 +93,7 @@ public abstract class Rococoa  {
                     ocClassName, javaClass.getName(), ocFactoryName, new VarArgsUnpacker(args)));
         }
         ID ocClass = Foundation.getClass(ocClassName);
-        ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, args);
+        ID ocInstance = Foundation.send(ocClass, ocFactoryName, ID.class, method, args);
         CFIndex initialRetainCount = Foundation.cfGetRetainCount(ocInstance);
         T result = wrap(ocInstance, javaClass, retain);
         checkRetainCount(ocInstance, retain ? initialRetainCount.intValue() + 1 : initialRetainCount.intValue());

@@ -19,7 +19,6 @@
 
 package org.rococoa;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.rococoa.cocoa.foundation.*;
 import org.rococoa.test.RococoaTestCase;
@@ -34,17 +33,19 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
     public static boolean shouldNotBeInPool = false;
 
     @Test
-    public void directFactoryMethodsReturnsYieldsPooledObject() {
+    public void directFactoryMethodsReturnsYieldsPooledObject() throws Exception {
         check(shouldBeInPool,
                 new Factory() {
-                    public NSArray create() {
-                        return Rococoa.create("NSArray", NSArray.class, "arrayWithObjects:", NSNumber.CLASS.numberWithInt(0));
+                    public NSArray create() throws Exception {
+                        return Rococoa.create("NSArray", NSArray.class,
+                                NSArray._Class.class.getMethod("arrayWithObjects", NSObject[].class),
+                                "arrayWithObjects:", NSNumber.CLASS.numberWithInt(0));
                     }
                 });
     }
 
     @Test
-    public void factoryMethodOnClassYieldsPooledObject() {
+    public void factoryMethodOnClassYieldsPooledObject() throws Exception {
         check(shouldBeInPool,
                 new Factory() {
                     public NSArray create() {
@@ -54,8 +55,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
     }
 
     @Test
-    @Ignore
-    public void createYieldsNonPooledObject() {
+    public void createYieldsNonPooledObject() throws Exception {
         check(shouldNotBeInPool,
                 new Factory() {
                     public NSDate create() {
@@ -65,8 +65,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
     }
 
     @Test
-    @Ignore
-    public void newYieldsNonPooledObject() {
+    public void newYieldsNonPooledObject() throws Exception {
         // calling new on an NSClass results in a NOT autorelease'd object
         check(shouldNotBeInPool,
                 new Factory() {
@@ -77,7 +76,7 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
     }
 
     @Test
-    public void allocYieldsNonPooledObject() {
+    public void allocYieldsNonPooledObject() throws Exception {
         // calling alloc on an NSClass results in a NOT autorelease'd object
         check(shouldNotBeInPool,
                 new Factory() {
@@ -89,10 +88,10 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
     }
 
     private interface Factory {
-        NSObject create();
+        NSObject create() throws Exception;
     }
 
-    private void check(boolean expectedAutorelease, Factory factory) {
+    private void check(boolean expectedAutorelease, Factory factory) throws Exception {
         int expectedInitialRetainCount = expectedAutorelease ? 2 : 1;
         // that will decrease the count IF it was pooled
         int expectedFinalRetainCount = expectedAutorelease ?
