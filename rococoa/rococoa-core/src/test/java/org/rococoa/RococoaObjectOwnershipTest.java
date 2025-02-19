@@ -42,6 +42,13 @@ public class RococoaObjectOwnershipTest extends RococoaTestCase {
                                 "arrayWithObjects:", NSNumber.CLASS.numberWithInt(0));
                     }
                 });
+        check(shouldBeInPool,
+                new Factory() {
+                    public NSArray create() throws Exception {
+                        return Rococoa.create("NSArray", NSArray.class,
+                                "arrayWithObject:", NSNumber.CLASS.numberWithInt(0));
+                    }
+                });
     }
 
     @Test
