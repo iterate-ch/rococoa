@@ -4,7 +4,7 @@ Rococoa is a generic Java binding to the Mac Objective-C object system. It
 allows the creation and use of Objective-C objects in Java, and the 
 implementation of Objective-C interfaces in Java.
 
-![Java CI with Maven](https://github.com/iterate-ch/rococoa/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![Java CI with Maven](https://github.com/iterate-ch/rococoa/actions/workflows/test.yml/badge.svg)](https://github.com/iterate-ch/rococoa/actions/workflows/test.yml)
 
 ## Rococoa Acknowledgements
 Rococoa owes much to the following people and organisations
