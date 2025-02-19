@@ -25,51 +25,38 @@ _Make sure you comply with the GNU Lesser General Public License when releasing 
 ### Maven Artifacts (LGPL)
 Maven artifacts are available in a repository hosted on Amazon S3.
 
-- Use the following Maven configuration in your project POM to reference artifacts from Cyberduck
- ```xml
-<repositories>
-    <repository>
-        <id>maven.cyberduck.io-release</id>
-        <url>http://repo.maven.cyberduck.io.s3.amazonaws.com/releases/</url>
-        <layout>default</layout>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-```
+1. Use the following Maven configuration in your project POM to reference artifacts
+     ```xml
+    <repositories>
+        <repository>
+            <id>maven.cyberduck.io-release</id>
+            <url>http://repo.maven.cyberduck.io.s3.amazonaws.com/releases/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    ```
 
-- You will need to add the AWS Maven Wagon to your build using
-```xml
-<build>
-    <extensions>
-        <extension>
-            <groupId>org.springframework.build</groupId>
-            <artifactId>aws-maven</artifactId>
-            <version>5.0.0.RELEASE</version>
-        </extension>
-    </extensions>
-</build>
-```
-
-- Add the dependencies as follows
-```
-<dependency>
-    <groupId>org.rococoa</groupId>
-    <artifactId>rococoa-core</artifactId>
-    <version>0.9.1</version>
-</dependency>
-<dependency>
-    <groupId>org.rococoa</groupId>
-    <artifactId>librococoa</artifactId>
-    <version>0.9.1</version>
-    <type>dylib</type>
-    <scope>runtime</scope>
-</dependency>
-```
+2. Add the dependencies as follows
+    ```
+    <dependency>
+        <groupId>org.rococoa</groupId>
+        <artifactId>rococoa-core</artifactId>
+        <version>0.9.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.rococoa</groupId>
+        <artifactId>librococoa</artifactId>
+        <version>0.9.1</version>
+        <type>dylib</type>
+        <scope>runtime</scope>
+    </dependency>
+    ```
 
 ## Documentation
  * [Building](Building.md)
