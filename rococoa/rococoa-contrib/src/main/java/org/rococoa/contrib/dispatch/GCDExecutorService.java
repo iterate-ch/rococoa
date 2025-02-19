@@ -244,7 +244,7 @@ public class GCDExecutorService extends AbstractExecutorService {
                 super.run();
             } finally {
                 tasks.remove(invocation.id());
-                if ( state == State.SHUTDOWN ) {
+                if ( state == GCDExecutorService.State.SHUTDOWN ) {
                     //i.e. this is the last item on the queue
                     terminateIfDone(queue.operationCount().intValue() <= 1);
                 }
