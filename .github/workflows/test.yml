@@ -1,23 +1,19 @@
 name: Java CI with Maven
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 15
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
           cache: maven
       - name: Build with Maven
         run: mvn -B verify --file rococoa/pom.xml
