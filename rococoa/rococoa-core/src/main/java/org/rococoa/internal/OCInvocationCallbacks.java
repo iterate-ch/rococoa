@@ -122,7 +122,7 @@ public class OCInvocationCallbacks {
                     }
                 }
             }
-            logging.fine("No method " + methodName + " for selector:" + selectorName);
+            logging.fine("No method " + methodName + " for selector: " + selectorName + " in: " + javaObject);
             return null;
         } catch (Exception e) {
             logging.log(Level.SEVERE, "Exception finding methodForSelector", e);
